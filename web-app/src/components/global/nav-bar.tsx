@@ -1,5 +1,5 @@
 import { Search } from "~/components/dashboard/search"
-import TeamSwitcher from "../dashboard/team-switcher";
+// import TeamSwitcher from "../dashboard/team-switcher";
 import { UserButton } from "@clerk/nextjs";
 import { VeriShieldLogo } from "./logo";
 

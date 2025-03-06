@@ -12,10 +12,6 @@ import {
 import { CalendarDateRangePicker } from "~/components/dashboard/date-range-picker"
 import { Overview } from "~/components/dashboard/overview"
 import { RecentSales } from "~/components/dashboard/recent-sales"
-import { Search } from "~/components/dashboard/search"
-import TeamSwitcher from "~/components/dashboard/team-switcher"
-import { UserNav } from "~/components/dashboard/user-nav"
-import { UserButton } from "@clerk/nextjs"
 import { NavBar } from "~/components/global/nav-bar"
 
 export const metadata: Metadata = {
