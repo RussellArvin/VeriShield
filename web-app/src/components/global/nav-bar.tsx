@@ -5,7 +5,7 @@ import { VeriShieldLogo } from "./logo";
 
 export function NavBar(){
     return  (
-        <div className="border-b">
+        <div className="border-b bg-gray-800 text-white">
         <div className="flex h-16 items-center px-4">
           <VeriShieldLogo size="small" /> 
           {/* <MainNav className="mx-6" /> */}
