@@ -3,9 +3,9 @@ import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Shield, CheckCircle, BarChart2, Search, FileText, UserCheck } from 'lucide-react';
 
-const VerifAILogo = ({ size = "normal" }) => (
+const VeriShieldLogo = ({ size = "normal" }) => (
   <div className="flex items-center justify-center">
-    <div className={size === "large" ? "text-7xl font-bold" : "text-6xl font-bold"}>VerifAI</div>
+    <div className={size === "large" ? "text-7xl font-bold" : "text-6xl font-bold"}>VeriShield</div>
     <div className="ml-2">
       <svg 
         width={size === "large" ? "70" : "60"} 
@@ -49,7 +49,7 @@ const FeatureCard = ({ icon, title, description } : FeatureCardProps) => {
   );
 };
 
-const VerifAIPage = () => {
+const VeriShieldPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -126,7 +126,7 @@ const VerifAIPage = () => {
         {/* Hero Content */}
         <main className="container mx-auto grow flex flex-col items-center justify-center text-center px-4">
           <div className="max-w-3xl">
-            <VerifAILogo size="large" />
+            <VeriShieldLogo size="large" />
             
             <div className="mt-8 text-3xl md:text-4xl font-medium">
               Predict and counter
@@ -154,9 +154,9 @@ const VerifAIPage = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">About VerifAI</h2>
+            <h2 className="text-3xl font-bold mb-4">About VeriShield</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              VerifAI is an advanced platform designed to combat online falsehoods through AI-powered detection and prediction technology.
+              VeriShield is an advanced platform designed to combat online falsehoods through AI-powered detection and prediction technology.
             </p>
           </div>
           
@@ -263,7 +263,7 @@ const VerifAIPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
-              <VerifAILogo />
+              <VeriShieldLogo />
               <p className="mt-2 text-gray-400">Fighting misinformation with AI</p>
             </div>
             <div className="flex flex-wrap justify-center gap-8">
@@ -296,7 +296,7 @@ const VerifAIPage = () => {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
-            <p>© 2025 VerifAI. All rights reserved.</p>
+            <p>© 2025 VeriShield. All rights reserved.</p>
           </div>
         </div>
       </footer>
@@ -304,4 +304,4 @@ const VerifAIPage = () => {
   );
 };
 
-export default VerifAIPage;
+export default VeriShieldPage;
