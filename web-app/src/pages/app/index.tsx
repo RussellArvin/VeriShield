@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/card"
 import { CalendarDateRangePicker } from "~/components/dashboard/date-range-picker"
 import { MisinformationOverview } from "~/components/dashboard/overview"
-import { RecentSales } from "~/components/dashboard/recent-sales"
+import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
 import { NavBar } from "~/components/global/nav-bar"
 import { TrendingDown, TrendingUp } from "lucide-react"
 
@@ -126,13 +126,13 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="col-span-3">
                   <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
-                    <CardDescription>
+                    <CardTitle>Misinformation Threats</CardTitle>
+                    {/* <CardDescription>
                       You made 265 sales this month.
-                    </CardDescription>
+                    </CardDescription> */}
                   </CardHeader>
                   <CardContent>
-                    <RecentSales />
+                    <MisinformationThreats />
                   </CardContent>
                 </Card>
         </div>
