@@ -31,7 +31,7 @@ const VerifAILogo = ({ size = "normal" }) => (
 );
 
 interface FeatureCardProps {
-  icon: React.ComponentType<any>;
+  icon: React.ElementType;
   title: string;
   description: string;
 }
