@@ -2,8 +2,6 @@
 
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
 
-// Changed data to represent misinformation detections
-// Using more realistic values for misinformation counts
 const data = [
   { name: "Jan", detected: 42 },
   { name: "Feb", detected: 38 },
@@ -36,13 +34,15 @@ export function MisinformationOverview() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          // Removed dollar sign formatter since we're counting instances
-          tickFormatter={(value) => `${value}`}
+          // Fix: Convert value to string directly instead of using template literal
+          tickFormatter={(value) => String(value)}
         />
         <Tooltip 
-          formatter={(value) => [`${value}`, "Detected"]}
+          // Fix: Safely convert value to string 
+          formatter={(value) => [String(value), "Detected"]}
           contentStyle={{ backgroundColor: "hsl(var(--background))", borderColor: "hsl(var(--border))" }}
-          labelFormatter={(label) => `${label}: Misinformation Instances`}
+          // Fix: Make sure label is a string
+          labelFormatter={(label) => `${String(label)}: Misinformation Instances`}
         />
         <Line
           type="monotone"
