@@ -1,15 +1,8 @@
 import { UserButton } from "@clerk/nextjs";
 import Head from "next/head";
 import Link from "next/link";
-import { useSeedNewUser } from "~/hooks/use-seed-new-user";
-
-import { api } from "~/utils/api";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
-  const { data: userData, isLoading: userDataIsLoading } = api.user.get.useQuery();
-
-  useSeedNewUser({ data: userData, isLoading: userDataIsLoading });
 
   return (
     <>
@@ -49,7 +42,7 @@ export default function Home() {
             <UserButton />
           </div>
           <p className="text-2xl text-white">
-            {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+            HELLO
           </p>
         </div>
       </main>
