@@ -4,33 +4,8 @@ import { Card } from '~/components/ui/card';
 import { Shield, CheckCircle, BarChart2, Search, FileText, UserCheck } from 'lucide-react';
 import { Router, useRouter } from 'next/router';
 import APP_ROUTES from '~/server/constants/APP_ROUTES';
+import { VeriShieldLogo } from '~/components/global/logo';
 
-const VeriShieldLogo = ({ size = "normal" }) => (
-  <div className="flex items-center justify-center">
-    <div className={size === "large" ? "text-7xl font-bold" : "text-6xl font-bold"}>VeriShield</div>
-    <div className="ml-2">
-      <svg 
-        width={size === "large" ? "70" : "60"} 
-        height={size === "large" ? "70" : "60"} 
-        viewBox="0 0 200 200" 
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#2c3e50" />
-            <stop offset="100%" stopColor="#34495e" />
-          </linearGradient>
-        </defs>
-        <g>
-          <path d="M100,5 L180,40 C180,100 165,150 100,195 C35,150 20,100 20,40 L100,5" 
-                fill="url(#shieldGradient)" stroke="white" strokeWidth="8" />
-          <path d="M75,100 L95,120 L135,70" 
-                fill="none" stroke="white" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        </g>
-      </svg>
-    </div>
-  </div>
-);
 
 interface FeatureCardProps {
   icon: React.ElementType;
@@ -57,18 +32,27 @@ const VeriShieldPage = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col">
-        {/* Background */}
+        {/* Background - Changed from image to gradient */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div 
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: "url('/background.jpg')" }}
-          />
+            className="w-full h-full bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400"
+            style={{ 
+              backgroundSize: 'cover',
+              position: 'relative'
+            }}
+          >
+            {/* Optional: Add wave patterns with pseudo-elements or SVG overlay */}
+            <svg width="100%" height="100%" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" opacity="0.3">
+              <path d="M0,500 C200,400 300,300 500,500 C700,700 800,600 1000,500 L1000,1000 L0,1000 Z" fill="#ffffff" />
+              <path d="M0,600 C150,500 350,700 500,600 C650,500 850,700 1000,600 L1000,1000 L0,1000 Z" fill="#ffffff" />
+            </svg>
+          </div>
         </div>
         
         {/* Navigation */}
         <header className="absolute top-0 left-0 right-0 z-10 py-4">
           <nav className="container mx-auto flex justify-end items-center">
-            <a href="#" className="mr-6 font-medium hover:underline">API </a>
+            <a href="#" className="mr-6 font-medium hover:underline">API ACCESS</a>
             <Button onClick={() => router.push(APP_ROUTES.APP.HOME)} variant="outline" className="bg-white">
               GET STARTED
             </Button>
@@ -215,7 +199,7 @@ const VeriShieldPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
-              <VeriShieldLogo />
+              <VeriShieldLogo  size='medium'/>
               <p className="mt-2 text-gray-400">Fighting misinformation with AI</p>
             </div>
             <div className="flex flex-wrap justify-center gap-8">

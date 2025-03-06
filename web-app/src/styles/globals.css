@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import 'tailwindcss';
 
 @plugin 'tailwindcss-animate';
@@ -5,9 +6,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-audiowide: 'Audiowide', sans-serif;
+
   --font-sans:
     var(--font-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
