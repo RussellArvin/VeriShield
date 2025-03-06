@@ -55,7 +55,7 @@ const VerifAIPage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col">
         {/* Background */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-blue-100 to-blue-300 overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-blue-100 to-blue-300 overflow-hidden">
           {/* Top left wave group */}
           <svg className="absolute top-0 left-0 w-1/3 h-1/3 opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
             <path d="M-100,150 C0,100 50,50 100,75 C150,100 200,150 300,50 C350,0 400,-50 450,-100" 
@@ -124,7 +124,7 @@ const VerifAIPage = () => {
         </header>
         
         {/* Hero Content */}
-        <main className="container mx-auto flex-grow flex flex-col items-center justify-center text-center px-4">
+        <main className="container mx-auto grow flex flex-col items-center justify-center text-center px-4">
           <div className="max-w-3xl">
             <VerifAILogo size="large" />
             

@@ -11,6 +11,7 @@ export default {
   				'var(--font-sans)',
                     ...fontFamily.sans
                 ]
+			
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
