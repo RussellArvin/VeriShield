@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "~/components/ui/card"
 import { CalendarDateRangePicker } from "~/components/dashboard/date-range-picker"
-import { MisinformationOverview } from "~/components/dashboard/overview"
+import { MisinformationOverview } from "~/components/dashboard/misinformation-detected"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
 import { NavBar } from "~/components/global/nav-bar"
 import { TrendingDown, TrendingUp } from "lucide-react"
