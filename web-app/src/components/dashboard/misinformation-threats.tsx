@@ -27,7 +27,50 @@ interface MisinformationThreat {
   description: string
   source: string
   detection: string
-  status: string
+  status: "CRITICAL" | "MED" | "LOW"
+}
+
+type ThreatStatusProps = {
+  status: "CRITICAL" | "MED" | "LOW"
+}
+
+export const ThreatStatus = ({ status }: ThreatStatusProps) => {
+  // Set styling based on status
+  const getStyles = () => {
+    switch (status) {
+      case "CRITICAL":
+        return {
+          variant: "destructive", // Use built-in destructive variant for red
+          className: "px-4 py-1"
+        }
+      case "MED":
+        return {
+          variant: "outline", // Use outline and override with custom bg/text color
+          className: "px-4 py-1 bg-orange-500 text-white border-orange-500"
+        }
+      case "LOW":
+        return {
+          variant: "outline", // Use outline and override with custom bg/text color
+          className: "px-4 py-1 bg-green-500 text-white border-green-500"
+        }
+      default:
+        return {
+          variant: "secondary",
+          className: "px-4 py-1"
+        }
+    }
+  }
+
+  const styles = getStyles()
+
+  return (
+    <Badge
+      className={styles.className}
+      variant={styles.variant as any}
+    >
+      {status}
+    </Badge>
+  )
 }
 
 export function MisinformationThreats() {
@@ -54,15 +97,8 @@ export function MisinformationThreats() {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("status")
-        return (
-          <Badge
-            className="px-4 py-1"
-            variant={status === "CRITICAL" ? "destructive" : "secondary"}
-          >
-            {status as string}
-          </Badge>
-        )
+        const status = row.getValue("status") as "CRITICAL" | "MED" | "LOW"
+        return <ThreatStatus status={status} />
       },
     },
     {
@@ -94,7 +130,7 @@ export function MisinformationThreats() {
       description: "Financial performance rumours",
       source: "Investment Forums",
       detection: "3 days ago",
-      status: "MED",
+      status: "LOW",
     },
   ]
 
