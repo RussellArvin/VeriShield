@@ -55,62 +55,11 @@ const VeriShieldPage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex flex-col">
         {/* Background */}
-        <div className="absolute inset-0 -z-10 bg-linear-to-b from-blue-100 to-blue-300 overflow-hidden">
-          {/* Top left wave group */}
-          <svg className="absolute top-0 left-0 w-1/3 h-1/3 opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M-100,150 C0,100 50,50 100,75 C150,100 200,150 300,50 C350,0 400,-50 450,-100" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,170 C0,120 50,70 100,95 C150,120 200,170 300,70 C350,20 400,-30 450,-80" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,190 C0,140 50,90 100,115 C150,140 200,190 300,90 C350,40 400,-10 450,-60" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,210 C0,160 50,110 100,135 C150,160 200,210 300,110 C350,60 400,10 450,-40" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,230 C0,180 50,130 100,155 C150,180 200,230 300,130 C350,80 400,30 450,-20" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-          </svg>
-          
-          {/* Top right wave group */}
-          <svg className="absolute top-0 right-0 w-1/3 h-1/3 opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M500,150 C400,100 350,50 300,75 C250,100 200,150 100,50 C50,0 0,-50 -50,-100" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,170 C400,120 350,70 300,95 C250,120 200,170 100,70 C50,20 0,-30 -50,-80" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,190 C400,140 350,90 300,115 C250,140 200,190 100,90 C50,40 0,-10 -50,-60" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,210 C400,160 350,110 300,135 C250,160 200,210 100,110 C50,60 0,10 -50,-40" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,230 C400,180 350,130 300,155 C250,180 200,230 100,130 C50,80 0,30 -50,-20" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-          </svg>
-          
-          {/* Bottom left wave group */}
-          <svg className="absolute bottom-0 left-0 w-1/3 h-1/3 opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M-100,-150 C0,-100 50,-50 100,-75 C150,-100 200,-150 300,-50 C350,0 400,50 450,100" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,-170 C0,-120 50,-70 100,-95 C150,-120 200,-170 300,-70 C350,-20 400,30 450,80" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,-190 C0,-140 50,-90 100,-115 C150,-140 200,-190 300,-90 C350,-40 400,10 450,60" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,-210 C0,-160 50,-110 100,-135 C150,-160 200,-210 300,-110 C350,-60 400,-10 450,40" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M-100,-230 C0,-180 50,-130 100,-155 C150,-180 200,-230 300,-130 C350,-80 400,-30 450,20" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-          </svg>
-          
-          {/* Bottom right wave group */}
-          <svg className="absolute bottom-0 right-0 w-1/3 h-1/3 opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-            <path d="M500,-150 C400,-100 350,-50 300,-75 C250,-100 200,-150 100,-50 C50,0 0,50 -50,100" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,-170 C400,-120 350,-70 300,-95 C250,-120 200,-170 100,-70 C50,-20 0,30 -50,80" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,-190 C400,-140 350,-90 300,-115 C250,-140 200,-190 100,-90 C50,-40 0,10 -50,60" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,-210 C400,-160 350,-110 300,-135 C250,-160 200,-210 100,-110 C50,-60 0,-10 -50,40" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-            <path d="M500,-230 C400,-180 350,-130 300,-155 C250,-180 200,-230 100,-130 C50,-80 0,-30 -50,20" 
-                  fill="none" stroke="#ffffff" strokeWidth="1" />
-          </svg>
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div 
+            className="w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: "url('/background.jpg')" }}
+          />
         </div>
         
         {/* Navigation */}
