@@ -1,5 +1,5 @@
 const APP_ROUTES = {
-    LANDING: '/',
+    LANDING: '/test',
     CLERK_WEBHOOK:"/api/clerk"
 }
 
