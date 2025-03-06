@@ -64,7 +64,7 @@ const VeriShieldPage = () => {
           <div className="max-w-3xl">
             <VeriShieldLogo size="large" />
             
-            <div className="mt-8 text-3xl md:text-4xl font-medium">
+            <div className="mt-4 text-2xl md:text-3xl font-audiowide tracking-wider">
               Predict and counter
               <br />
               misinformation with AI

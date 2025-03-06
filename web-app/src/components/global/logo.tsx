@@ -18,8 +18,8 @@ const logoSizes: LogoSize[] = [
     },
     {   
         size: "large",
-        text: "text-7xl font-audiowide font-bold",
-        dimensions: "70"
+        text: "text-8xl font-audiowide font-bold",
+        dimensions: "80"
     }
 ];
 
