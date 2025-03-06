@@ -5,7 +5,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { userSchema } from "~/server/db/schema";
-import { getEmailFromClerk } from "~/server/utils/getUserDataFromClerk";
 
 export const userRouter = createTRPCRouter({
     get: protectedProcedure

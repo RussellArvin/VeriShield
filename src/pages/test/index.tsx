@@ -30,7 +30,13 @@ const VerifAILogo = ({ size = "normal" }) => (
   </div>
 );
 
-const FeatureCard = ({ icon, title, description }) => {
+interface FeatureCardProps {
+  icon: React.ComponentType<any>;
+  title: string;
+  description: string;
+}
+
+const FeatureCard = ({ icon, title, description } : FeatureCardProps) => {
   const Icon = icon;
   return (
     <Card className="p-6 flex flex-col items-center text-center h-full">

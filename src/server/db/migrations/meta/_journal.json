@@ -8,6 +8,13 @@
       "when": 1708661016642,
       "tag": "0000_hot_manta",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1741249862002,
+      "tag": "0001_rapid_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }
