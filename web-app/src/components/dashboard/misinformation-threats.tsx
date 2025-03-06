@@ -66,7 +66,7 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
   return (
     <Badge
       className={styles.className}
-      variant={styles.variant as any}
+      variant={styles.variant as "destructive" | "outline" | "secondary"}
     >
       {status}
     </Badge>
@@ -130,7 +130,7 @@ export function MisinformationThreats() {
       description: "Financial performance rumours",
       source: "Investment Forums",
       detection: "3 days ago",
-      status: "LOW",
+      status: "MED",
     },
   ]
 
