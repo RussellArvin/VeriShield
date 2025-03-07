@@ -106,7 +106,7 @@ export default function DashboardPage() {
                   RISK SCORE
                 </h2>
                 <div className="flex flex-col">
-                  <ColourPercentage value={90} invert={true} className="text-5xl" />
+                  <ColourPercentage value={90} className="text-5xl" />
                   <div className="flex items-center justify-end gap-1 text-red-500">
                     <TrendingDown className="h-4 w-4" />
                     <span className="text-sm">8% from yesterday</span>

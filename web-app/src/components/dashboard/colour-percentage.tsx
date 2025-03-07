@@ -8,7 +8,7 @@ interface ColorizedPercentageProps {
   invert?: boolean;
 }
 
-export const getColorForPercentage = (value: number, invert: boolean = false): string => {
+export const getColorForPercentage = (value: number, invert: boolean): string => {
   // Ensure the value is within 0-100 range
   const clampedValue = Math.max(0, Math.min(100, value));
   

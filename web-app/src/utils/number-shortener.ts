@@ -24,6 +24,6 @@ export const numberShortener = (num: number, digits = 1) => {
     } else {
       // For numbers close to the next unit, round to nearest whole number
       // 995000 -> 995K instead of 1.0M
-      return Math.round(value) + (units[unitIndex] || '');
+      return Math.round(value) + (units[unitIndex] ?? '');
     }
   }
