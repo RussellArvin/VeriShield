@@ -17,6 +17,7 @@ import { Navigation } from "~/components/global/navigation" // Import the new co
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
+import { numberShortener } from "~/utils/number-shortener"
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -72,7 +73,7 @@ export default function DashboardPage() {
                   SCANNED MEDIA
                 </h2>
                 <div className="flex flex-col">
-                  <div className="text-5xl font-bold">1.2M</div>
+                  <div className="text-5xl font-bold">{numberShortener(1200000)}</div>
                   <div className="flex items-center justify-end gap-1 text-red-500">
                     <TrendingDown className="h-4 w-4" />
                     <span className="text-sm">3% from yesterday</span>
