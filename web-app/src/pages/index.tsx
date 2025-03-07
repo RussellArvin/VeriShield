@@ -67,33 +67,7 @@ const VeriShieldPage = () => {
         </div>
         
         {/* Navigation */}
-        <header className="absolute top-0 left-0 right-0 z-10 py-4">
-          <nav className="container mx-auto flex justify-between items-center px-4">
-            <div>
-              <BlurFade delay={0.1} duration={0.5} className="">
-                <VeriShieldLogo size="small" />
-              </BlurFade>
-            </div>
-            <div className="flex items-center">
-              <div>
-                <BlurFade delay={0.2} duration={0.5} className="">
-                  <a href="#" className="mr-6 font-medium hover:underline">API ACCESS</a>
-                </BlurFade>
-              </div>
-              <div>
-                <BlurFade delay={0.3} duration={0.5} className="">
-                  <Button 
-                    onClick={() => router.push(APP_ROUTES.APP.HOME)} 
-                    variant="outline" 
-                    className="bg-white hover:bg-blue-50 transition-colors"
-                  >
-                    GET STARTED
-                  </Button>
-                </BlurFade>
-              </div>
-            </div>
-          </nav>
-        </header>
+
         
         {/* Hero Content */}
         <main className="container mx-auto grow flex flex-col items-center justify-center text-center px-4">
