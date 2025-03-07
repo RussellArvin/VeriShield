@@ -83,15 +83,6 @@ export default function SettingsPage() {
           <Button variant="outline">Cancel</Button>
           <Button>Save changes</Button>
         </div>
-
-        {/* Help Center */}
-        <div className="flex justify-between items-center border-t pt-4 px-8">
-          <div>
-            <p className="font-medium">Help Center</p>
-            <p className="text-sm text-gray-500">Access FAQs and support articles.</p>
-          </div>
-          <Button variant="outline" className="text-blue-600 self-start">Go to Help</Button>
-        </div>
       </div>
     </div>
   )
