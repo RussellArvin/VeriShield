@@ -5,7 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { userSchema } from "~/server/db/schema";
-import { threatService } from "../services";
+import { threatScanService, threatService } from "../services";
 
 export const userRouter = createTRPCRouter({
     get: protectedProcedure
@@ -26,6 +26,11 @@ export const userRouter = createTRPCRouter({
     .query(async({ctx})=>{
         const threatCount = await threatService.getActiveThreatCountByUserId(ctx.auth.userId);
         return threatCount;
+    }),
+    getScanCount: protectedProcedure
+    .query(async({ctx})=>{
+        const scanCount = await threatScanService.getCountByUserId(ctx.auth.userId);
+        return scanCount;
     }),
     // register: protectedProcedure
     // .mutation(async ({ctx})=>{

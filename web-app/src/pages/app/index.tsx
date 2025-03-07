@@ -26,7 +26,15 @@ export const metadata: Metadata = {
 }
 
 export default function DashboardPage() {
-  const {isLoading, data} = api.user.getActiveThreatCount.useQuery()
+  const {
+    isLoading: isthreatCountLoading, 
+    data: threatCount
+  } = api.user.getActiveThreatCount.useQuery()
+
+  const {
+    isLoading: isScanCountLoading,
+    data: scanCount
+  } = api.user.getScanCount.useQuery()
 
   return (
     <Navigation>
@@ -46,7 +54,7 @@ export default function DashboardPage() {
                   ACTIVE THREATS
                 </h2>
                 <div className="flex flex-col">
-                  {isLoading ? (
+                  {isthreatCountLoading || threatCount == undefined ? (
                     <>
                       <Skeleton className="h-10 w-20 mb-1" />
                       <div className="flex items-center justify-end gap-1">
@@ -56,7 +64,7 @@ export default function DashboardPage() {
                     </>
                   ) : (
                     <>
-                      <div className="text-5xl font-bold">{data}</div>
+                      <div className="text-5xl font-bold">{threatCount}</div>
                       <div className="flex items-center justify-end gap-1 text-emerald-500">
                         <TrendingUp className="h-4 w-4" />
                         <span className="text-sm">3% from yesterday</span>
@@ -74,11 +82,23 @@ export default function DashboardPage() {
                   SCANNED MEDIA
                 </h2>
                 <div className="flex flex-col">
-                  <div className="text-5xl font-bold">{numberShortener(1200000)}</div>
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">3% from yesterday</span>
-                  </div>
+                  {isScanCountLoading || scanCount == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-20 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-5xl font-bold">{numberShortener(scanCount)}</div>
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">3% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>
