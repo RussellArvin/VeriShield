@@ -18,6 +18,7 @@ import { TrendingDown, TrendingUp } from "lucide-react"
 import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
 import { numberShortener } from "~/utils/number-shortener"
+import ColourPercentage from "~/components/dashboard/colour-percentage"
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -89,7 +90,7 @@ export default function DashboardPage() {
                   BRAND SENTIMENT
                 </h2>
                 <div className="flex flex-col">
-                  <div className="text-5xl font-bold text-orange-400">63%</div>
+                 <ColourPercentage value={63} className="text-5xl" />
                   <div className="flex items-center justify-end gap-1 text-red-500">
                     <TrendingDown className="h-4 w-4" />
                     <span className="text-sm">5% from yesterday</span>
@@ -105,7 +106,7 @@ export default function DashboardPage() {
                   RISK SCORE
                 </h2>
                 <div className="flex flex-col">
-                  <div className="text-5xl font-bold text-red-500">63%</div>
+                  <ColourPercentage value={90} invert={true} className="text-5xl" />
                   <div className="flex items-center justify-end gap-1 text-red-500">
                     <TrendingDown className="h-4 w-4" />
                     <span className="text-sm">8% from yesterday</span>
