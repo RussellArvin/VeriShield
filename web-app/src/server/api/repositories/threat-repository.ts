@@ -2,10 +2,10 @@ import { threatSchema } from "~/server/db/schema";
 import { Threat } from "../models/threat";
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, getTableColumns } from "drizzle-orm";
+import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 export class ThreatRepository {
-    db: any;
-    constructor(private readonly threatModel: any) {}
+    constructor(private readonly db: PostgresJsDatabase) {}
 
     public async save(entity: Threat){
          try{
@@ -34,7 +34,7 @@ export class ThreatRepository {
                 eq(threatSchema.userId, userId),
                 eq(threatSchema.status, "active")
             ))
-            return results[0].count;
+            return results[0]?.count ?? 0;
         } catch(err){
             const e = err as Error;
             throw new TRPCError({
@@ -54,7 +54,7 @@ export class ThreatRepository {
             if(results.length === 0){
                 return null;
             }
-            else return results.map((result: any) => new Threat(result));
+            else return results.map((result) => new Threat(result));
         } catch(err){
             const e = err as Error;
             throw new TRPCError({

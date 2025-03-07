@@ -3,6 +3,7 @@ export interface ThreatProps {
     userId: string,
     description: string,
     sourceUrl: string,
+    source: string,
     createdAt: Date,
     status: string
 }
