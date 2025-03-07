@@ -1,7 +1,7 @@
 import { threatSchema } from "~/server/db/schema";
 import { Threat } from "../models/threat";
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, getTableColumns } from "drizzle-orm";
+import { and, count, eq, getTableColumns ,ne } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 export class ThreatRepository {
@@ -32,7 +32,6 @@ export class ThreatRepository {
             .from(threatSchema)
             .where(and(
                 eq(threatSchema.userId, userId),
-                eq(threatSchema.status, "active")
             ))
             return results[0]?.count ?? 0;
         } catch(err){

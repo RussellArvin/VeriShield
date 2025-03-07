@@ -8,8 +8,8 @@ interface LogoSize {
 const logoSizes: LogoSize[] = [
     {
         size: "small",
-        text: "text-4xl font-audiowide font-bold",
-        dimensions: "40"
+        text: "text-2xl font-audiowide font-bold",
+        dimensions: "30"
     },
     {
         size: "medium",

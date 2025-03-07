@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 import { userSchema } from "~/server/db/schema";
+import { threatService } from "../services";
 
 export const userRouter = createTRPCRouter({
     get: protectedProcedure
@@ -20,6 +21,11 @@ export const userRouter = createTRPCRouter({
         if(!userData[0]) throw new TRPCError({code:"NOT_FOUND"})
 
         return userData[0]
+    }),
+    getActiveThreatCount: protectedProcedure
+    .query(async({ctx})=>{
+        const threatCount = await threatService.getActiveThreatCountByUserId(ctx.auth.userId);
+        return threatCount;
     }),
     // register: protectedProcedure
     // .mutation(async ({ctx})=>{
