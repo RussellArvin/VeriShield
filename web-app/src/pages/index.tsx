@@ -20,7 +20,6 @@ const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) 
   return (
     <div>
       <BlurFade delay={delay} duration={0.5} className="">
-        {/* @ts-ignore - Passing children is valid according to BlurFade implementation */}
         <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300">
           <div className="mb-4 bg-blue-100 p-3 rounded-full">
             <Icon size={24} className="text-blue-700" />
@@ -72,20 +71,17 @@ const VeriShieldPage = () => {
           <nav className="container mx-auto flex justify-between items-center px-4">
             <div>
               <BlurFade delay={0.1} duration={0.5} className="">
-                {/* @ts-ignore - Passing children is valid */}
                 <VeriShieldLogo size="small" />
               </BlurFade>
             </div>
             <div className="flex items-center">
               <div>
                 <BlurFade delay={0.2} duration={0.5} className="">
-                  {/* @ts-ignore - Passing children is valid */}
                   <a href="#" className="mr-6 font-medium hover:underline">API ACCESS</a>
                 </BlurFade>
               </div>
               <div>
                 <BlurFade delay={0.3} duration={0.5} className="">
-                  {/* @ts-ignore - Passing children is valid */}
                   <Button 
                     onClick={() => router.push(APP_ROUTES.APP.HOME)} 
                     variant="outline" 
@@ -104,14 +100,12 @@ const VeriShieldPage = () => {
           <div className="max-w-3xl">
             <div>
               <BlurFade duration={0.5} className="">
-                {/* @ts-ignore - Passing children is valid */}
                 <VeriShieldLogo size="large" />
               </BlurFade>
             </div>
             
             <div>
               <BlurFade delay={0.2} duration={0.5} className="">
-                {/* @ts-ignore - Passing children is valid */}
                 <div className="mt-4 text-2xl md:text-3xl font-audiowide tracking-wider">
                   Predict and counter
                   <br />
@@ -122,7 +116,6 @@ const VeriShieldPage = () => {
             
             <div>
               <BlurFade delay={0.4} duration={0.5} className="">
-                {/* @ts-ignore - Passing children is valid */}
                 <p className="mt-6 text-lg text-gray-700 max-w-2xl mx-auto">
                   Our AI-powered platform helps organizations identify, analyze, and respond to false information before it spreads.
                 </p>
@@ -131,7 +124,6 @@ const VeriShieldPage = () => {
             
             <div>
               <BlurFade delay={0.6} duration={0.5} className="">
-                {/* @ts-ignore - Passing children is valid */}
                 <div className="mt-10">
                   <Button 
                     size="lg" 
