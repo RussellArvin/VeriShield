@@ -15,6 +15,13 @@
       "when": 1741249862002,
       "tag": "0001_rapid_sebastian_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1741342018345,
+      "tag": "0002_cuddly_sumo",
+      "breakpoints": true
     }
   ]
 }

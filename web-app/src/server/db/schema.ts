@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  integer,
   PgTable,
   pgTable,
   text,
@@ -10,7 +11,7 @@ import {
 export const userSchema = pgTable(
   "user",
   {
-    id:text("id").primaryKey(),
+    id:text("id").primaryKey().notNull(),
     firstName:text("first_name").notNull(),
     lastName:text("last_name").notNull(),
     email:text("email").unique().notNull(),
@@ -22,11 +23,12 @@ export const userSchema = pgTable(
     .notNull(),
   }
 );
+//TODO: PGENUM for status
 
-export const threats = pgTable(
+export const threatSchema = pgTable(
   "threats",
   {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().notNull(),
     userId: text("user_id").notNull().references(() => userSchema.id),
     description: text("description").notNull(),
     sourceUrl: text("source_url").notNull(),
@@ -37,21 +39,32 @@ export const threats = pgTable(
     status: text("status").notNull(),
   });
   
-export const threatMedia = pgTable(
+export const threatMediaSchema = pgTable(
   "threat_media",
   {
-    id: uuid("id").primaryKey(),
-    threatId: uuid("threat_id").notNull().references(() => threats.id),
+    id: uuid("id").primaryKey().notNull(),
+    threatId: uuid("threat_id").notNull().references(() => threatSchema.id),
     mediaUrl: text("media_url").notNull(),
     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
   }
 )
+
+export const threatScanSchema = pgTable(
+  "threat_scans",
+  {
+    id: uuid("id").primaryKey().notNull(),
+    userId: text("user_id").notNull().references(() => userSchema.id),
+    scannedThreats: integer("scanned_threats").notNull(),
+    createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  }
+)
+
   
- export const threatResponse = pgTable(
+ export const threatResponseSchema = pgTable(
   "threat_response",
   {
-    id: uuid("id").primaryKey(),
-    threatId: uuid("threat_id").notNull().references(() => threats.id),
+    id: uuid("id").primaryKey().notNull(),
+    threatId: uuid("threat_id").notNull().references(() => threatSchema.id),
     type: text("type").notNull(),
     response: text("response").notNull(),
     createdAt: timestamp("created_at")
