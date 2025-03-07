@@ -15,6 +15,8 @@ import { MisinformationOverview } from "~/components/dashboard/misinformation-de
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
 import { NavBar } from "~/components/global/nav-bar"
 import { TrendingDown, TrendingUp } from "lucide-react"
+import { api } from "~/utils/api"
+import { Skeleton } from "~/components/ui/skeleton" // Import Skeleton component
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -22,6 +24,9 @@ export const metadata: Metadata = {
 }
 
 export default function DashboardPage() {
+  
+  const {isLoading, data} = api.user.getActiveThreatCount.useQuery()
+
   return (
     <>
       <div className="hidden flex-col md:flex">
@@ -42,11 +47,23 @@ export default function DashboardPage() {
                         ACTIVE THREATS
                       </h2>
                       <div className="flex flex-col">
-                        <div className="text-5xl font-bold">14</div>
-                        <div className="flex items-center justify-end gap-1 text-emerald-500">
-                          <TrendingUp className="h-4 w-4" />
-                          <span className="text-sm">3% from yesterday</span>
-                        </div>
+                        {isLoading ? (
+                          <>
+                            <Skeleton className="h-10 w-20 mb-1" /> {/* Skeleton for number */}
+                            <div className="flex items-center justify-end gap-1">
+                              <Skeleton className="h-4 w-4" /> {/* Skeleton for trend icon */}
+                              <Skeleton className="h-4 w-32" /> {/* Skeleton for trend text */}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="text-5xl font-bold">{data}</div>
+                            <div className="flex items-center justify-end gap-1 text-emerald-500">
+                              <TrendingUp className="h-4 w-4" />
+                              <span className="text-sm">3% from yesterday</span>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -111,9 +128,6 @@ export default function DashboardPage() {
                 <Card className="col-span-3">
                   <CardHeader>
                     <CardTitle>Misinformation Threats</CardTitle>
-                    {/* <CardDescription>
-                      You made 265 sales this month.
-                    </CardDescription> */}
                   </CardHeader>
                   <CardContent>
                     <MisinformationThreats />
