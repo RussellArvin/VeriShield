@@ -3,7 +3,8 @@ const APP_ROUTES = {
     CLERK_WEBHOOK:"/api/clerk",
     DOCS:"/docs",
     APP:{
-        HOME:'/app'
+        HOME:'/app',
+        RESPONSE_CENTRE:'/app/response-centre',
     }
 }
 
