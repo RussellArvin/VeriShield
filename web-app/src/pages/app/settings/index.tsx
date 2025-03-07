@@ -5,13 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Switch } from "~/components/ui/switch"
 import { Select, SelectTrigger, SelectContent, SelectItem } from "~/components/ui/select"
-import { NavBar } from "~/components/global/nav-bar"
 import { Moon, Sun } from "lucide-react"
+import { Navigation } from "~/components/global/navigation" // Import the new Navigation component
 
 export default function SettingsPage() {
   return (
-    <div className="hidden flex-col md:flex">
-      <NavBar />
+    <Navigation>
       <div className="flex-1 space-y-6 p-8 pt-6">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
 
@@ -84,6 +83,6 @@ export default function SettingsPage() {
           <Button>Save changes</Button>
         </div>
       </div>
-    </div>
+    </Navigation>
   )
 }
