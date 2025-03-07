@@ -7,6 +7,10 @@ import APP_ROUTES from '~/server/constants/APP_ROUTES';
 import { VeriShieldLogo } from '~/components/global/logo';
 import BlurFade from '~/components/magicui/blur-fade';
 import type { ReactNode } from 'react';
+import { motion } from "framer-motion";
+import { useState } from "react";
+
+
 
 interface FeatureCardProps {
   icon: React.ElementType;
@@ -15,13 +19,14 @@ interface FeatureCardProps {
   delay?: number;
 }
 
+
 const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) => {
   const Icon = icon;
   return (
     <div>
-      <BlurFade delay={delay} duration={0.5} className="">
-        <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300">
-          <div className="mb-4 bg-blue-100 p-3 rounded-full">
+      <BlurFade delay={delay} duration={0.5}>
+        <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300 transform hover:scale-105">
+          <div className="mb-4 bg-blue-100 p-3 rounded-full transition-transform duration-500">
             <Icon size={24} className="text-blue-700" />
           </div>
           <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -31,6 +36,9 @@ const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) 
     </div>
   );
 };
+
+
+
 
 const VeriShieldPage = () => {
   const router = useRouter();
@@ -82,13 +90,13 @@ const VeriShieldPage = () => {
               </div>
               <div>
                 <BlurFade delay={0.3} duration={0.5} className="">
-                  <Button 
-                    onClick={() => router.push(APP_ROUTES.APP.HOME)} 
-                    variant="outline" 
-                    className="bg-white hover:bg-blue-50 transition-colors"
-                  >
-                    GET STARTED
-                  </Button>
+                <Button 
+                  onClick={() => router.push(APP_ROUTES.APP.HOME)} 
+                  variant="outline" 
+                  className="bg-white hover:bg-blue-50 hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
+                >
+                  GET STARTED
+                </Button>
                 </BlurFade>
               </div>
             </div>
@@ -187,7 +195,7 @@ const VeriShieldPage = () => {
               title="User-friendly Interface" 
               description="Access powerful verification tools through an intuitive dashboard designed for both experts and casual users."
               delay={0.6}
-            />
+            /> 
           </div>
         </div>
       </section>
@@ -204,12 +212,20 @@ const VeriShieldPage = () => {
           
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center mb-16">
-              <BlurFade className="md:w-1/2 md:pr-8 mb-6 md:mb-0" delay={0.2}>
-                <div className="bg-blue-100 p-8 rounded-lg flex justify-center items-center h-64 overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-200 opacity-50"></div>
-                  <Shield size={80} className="text-blue-600 relative z-10" />
-                </div>
-              </BlurFade>
+            <BlurFade className="md:w-1/2 md:pr-8 mb-6 md:mb-0" delay={0.2}>
+              <div className="bg-blue-100 p-8 rounded-lg flex justify-center items-center h-64 overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-200 opacity-50"></div>
+
+                {/* Hover-triggered rotation for Shield */}
+                <motion.div
+                  whileHover={{ rotateY: 360 }} // Rotates 360° when hovered
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="relative z-10"
+                >
+                  <Shield size={80} className="text-blue-600" />
+                </motion.div>
+              </div> 
+            </BlurFade>
               <BlurFade className="md:w-1/2" delay={0.4}>
                 <h3 className="text-2xl font-semibold mb-4">Content Analysis</h3>
                 <p className="text-gray-600 mb-4">
@@ -243,7 +259,7 @@ const VeriShieldPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="py-20 bg-gradient-to-r from-blue-300 to-blue-400 text-white">
         <div className="container mx-auto px-4 text-center">
           <BlurFade>
             <h2 className="text-3xl font-bold mb-6">Ready to Combat Misinformation?</h2>
@@ -255,13 +271,14 @@ const VeriShieldPage = () => {
           </BlurFade>
           <BlurFade delay={0.4}>
             <div>
-              <Button 
+            <Button 
                 size="lg" 
                 className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg"
               >
                 START FREE TRIAL
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              </Button> 
+
             </div>
           </BlurFade>
         </div>
