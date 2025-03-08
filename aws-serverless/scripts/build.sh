@@ -1,20 +1,40 @@
 #!/bin/bash
+# scripts/build.sh
 
-# Build scheduler Lambda
-cd lambdas/scheduler
+echo "Building Lambda functions..."
+
+# Navigate to project root
+cd "$(dirname "$0")/.."
+ROOT_DIR=$(pwd)
+
+# Create scheduler Lambda zip
+echo "Building scheduler Lambda..."
+cd $ROOT_DIR/lambdas/scheduler
 npm install
 npm run build
-# Create deployment package with compiled code and node_modules
-mkdir -p ../../terraform/build
-cp -r dist node_modules package.json ../../terraform/build/scheduler
-cd ../../terraform/build/scheduler
-zip -r ../scheduler.zip .
+zip -r $ROOT_DIR/lambdas/scheduler.zip dist node_modules package.json
 
-# Build worker Lambda (similar process)
-cd ../../../lambdas/worker
+# Create subreddit-retrieval Lambda zip
+echo "Building subreddit-retrieval Lambda..."
+cd $ROOT_DIR/lambdas/subreddit-retrieval
 npm install
 npm run build
-mkdir -p ../../terraform/build/worker
-cp -r dist node_modules package.json ../../terraform/build/worker
-cd ../../terraform/build/worker
-zip -r ../worker.zip .
+zip -r $ROOT_DIR/lambdas/subreddit-retrieval.zip dist node_modules package.json
+
+# Create reddit-scraper Lambda zip
+echo "Building reddit-scraper Lambda..."
+cd $ROOT_DIR/lambdas/reddit-scraper
+npm install
+npm run build
+zip -r $ROOT_DIR/lambdas/reddit-scraper.zip dist node_modules package.json
+
+# Create google-news Lambda zip
+echo "Building google-news Lambda..."
+cd $ROOT_DIR/lambdas/google-news
+npm install
+npm run build
+zip -r $ROOT_DIR/lambdas/google-news.zip dist node_modules package.json
+
+echo "All Lambda functions built successfully!"
+echo "Zip files created at:"
+ls -la $ROOT_DIR/lambdas/*.zip
