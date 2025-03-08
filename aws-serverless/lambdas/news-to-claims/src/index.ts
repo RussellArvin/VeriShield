@@ -63,7 +63,25 @@ export const handler = async (event: SNSEvent, context: Context) => {
       // Extract claims from each article
       const allClaims: Claim[] = [];
       
+      // Check if articles exist and is an array before iterating
+      if (!newsData.articles || !Array.isArray(newsData.articles)) {
+        console.log(`[${correlationId}] Error: newsData.articles is not iterable`, typeof newsData.articles);
+        console.log(`[${correlationId}] Message content:`, JSON.stringify(parsedMessage));
+        // Create an empty array if not present or not an array
+        newsData.articles = [];
+      }
+      
       for (const article of newsData.articles) {
+        // Skip if article is null or undefined
+        if (!article) {
+          console.log(`[${correlationId}] Skipping null or undefined article`);
+          continue;
+        }
+        
+        // Ensure article has required properties
+        if (!article.title) article.title = "Untitled Article";
+        if (!article.url) article.url = "https://unknown-source.com";
+        
         console.log(`[${correlationId}] Processing article: ${article.title}`);
         
         if (!article.content || article.content.trim() === '') {

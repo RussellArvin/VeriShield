@@ -16,6 +16,10 @@ resource "aws_sns_topic" "reddit_posts_topic" {
   name = "reddit-posts-topic"
 }
 
+resource "aws_sns_topic" "google_news_data_topic" {
+  name = "google-news-data-topic"
+}
+
 resource "aws_sns_topic" "news_claims_topic" {
   name = "news-claims-topic"
 }
@@ -322,7 +326,7 @@ resource "aws_iam_role_policy" "google_news_policy" {
       {
         Action   = "sns:Publish"
         Effect   = "Allow"
-        Resource = aws_sns_topic.user_data_topic.arn
+        Resource = aws_sns_topic.google_news_data_topic.arn
       },
       {
         Action = [
@@ -353,7 +357,7 @@ resource "aws_lambda_function" "google_news" {
       SUPABASE_URL = var.supabase_url
       SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
       OPENAI_API_KEY = var.openai_api_key
-      SNS_TOPIC_ARN = aws_sns_topic.user_data_topic.arn
+      SNS_TOPIC_ARN = aws_sns_topic.google_news_data_topic.arn
     }
   }
 }
@@ -442,9 +446,9 @@ resource "aws_lambda_function" "news_to_claims" {
   }
 }
 
-# SNS subscription for the News to Claims Lambda
+# SNS subscription for the News to Claims Lambda from Google News
 resource "aws_sns_topic_subscription" "news_to_claims_subscription" {
-  topic_arn = aws_sns_topic.user_data_topic.arn
+  topic_arn = aws_sns_topic.google_news_data_topic.arn
   protocol  = "lambda"
   endpoint  = aws_lambda_function.news_to_claims.arn
 }
@@ -454,7 +458,7 @@ resource "aws_lambda_permission" "allow_sns_to_news_to_claims" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.news_to_claims.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = aws_sns_topic.user_data_topic.arn
+  source_arn    = aws_sns_topic.google_news_data_topic.arn
 }
 
 # Reddit to Claims Lambda role
