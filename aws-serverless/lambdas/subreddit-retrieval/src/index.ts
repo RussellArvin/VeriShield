@@ -23,7 +23,7 @@ const openai = new OpenAI({
 });
 
 const snsClient = new SNSClient({});
-const SNS_TOPIC_ARN = process.env.SNS_TOPIC_ARN as string;
+const SNS_TOPIC_ARN = process.env.SNS_TOPIC_ARN as string;z
 
 export const handler = async (event: SNSEvent, context: Context) => {
   try {
