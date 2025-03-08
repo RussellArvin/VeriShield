@@ -7,6 +7,7 @@ interface UserData {
   userId: string | number;
   keywords: string[] | string;
   persona: string;
+  correlationId?: string;
 }
 
 interface NewsArticle {
@@ -35,6 +36,7 @@ interface ProcessedResult {
   generatedKeywords: string[];
   persona: string;
   articles: NewsArticle[];
+  correlationId?: string;
 }
 
 // Initialize clients
@@ -49,9 +51,19 @@ export const handler = async (event: SNSEvent, context: Context) => {
   try {
     // Process each message from SNS
     for (const record of event.Records) {
+      // Get message ID and attributes
+      const messageId = record.Sns.MessageId;
+      console.log(`Received SNS message ${messageId} with attributes:`, JSON.stringify(record.Sns.MessageAttributes));
+      
       // Parse the user data from the SNS message
-      const userData: UserData = JSON.parse(record.Sns.Message);
-      console.log('Processing user data:', JSON.stringify(userData));
+      const parsedMessage = JSON.parse(record.Sns.Message);
+      console.log(`Received SNS message content:`, JSON.stringify(parsedMessage));
+      
+      // Extract user data and correlation ID
+      const userData: UserData = parsedMessage;
+      const correlationId = parsedMessage.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+      
+      console.log(`[${correlationId}] Processing user data for user ${userData.userId}`);
       
       // Format keywords for the OpenAI prompt
       const initialKeywords = Array.isArray(userData.keywords) 
@@ -60,20 +72,28 @@ export const handler = async (event: SNSEvent, context: Context) => {
           ? userData.keywords.split(',').map(k => k.trim())
           : [];
       
+      console.log(`[${correlationId}] Initial keywords: ${initialKeywords.join(', ')}`);
+      
       // Generate additional keywords using OpenAI
       const generatedKeywords = await generateRelatedKeywords(
         userData.persona, 
         initialKeywords
       );
       
-      console.log(`Generated ${generatedKeywords.length} additional keywords`);
+      console.log(`[${correlationId}] Generated ${generatedKeywords.length} additional keywords: ${generatedKeywords.join(', ')}`);
       
       // Combine initial and generated keywords
       const allKeywords = [...initialKeywords, ...generatedKeywords];
       
       // Fetch news articles based on keywords
       const newsArticles = await fetchNews(allKeywords);
-      console.log(`Found ${newsArticles.length} news articles for user ${userData.userId}`);
+      console.log(`[${correlationId}] Found ${newsArticles.length} news articles for user ${userData.userId}`);
+      
+      // Log a sample of article titles (just the first 3)
+      if (newsArticles.length > 0) {
+        const sampleTitles = newsArticles.slice(0, 3).map(article => article.title);
+        console.log(`[${correlationId}] Sample articles:`, JSON.stringify(sampleTitles));
+      }
       
       // Create processed result
       const result: ProcessedResult = {
@@ -81,12 +101,18 @@ export const handler = async (event: SNSEvent, context: Context) => {
         keywords: initialKeywords,
         generatedKeywords: generatedKeywords,
         persona: userData.persona,
-        articles: newsArticles
+        articles: newsArticles,
+        correlationId: correlationId
       };
       
-      // Log the results (in production you might want to send this somewhere)
-      console.log(`Completed processing for user ${userData.userId}`);
-      console.log(`Result: ${newsArticles.length} articles found`);
+      // Log the results with detailed information
+      console.log(`[${correlationId}] Completed processing for user ${userData.userId}`);
+      console.log(`[${correlationId}] Result summary: ${newsArticles.length} articles found from ${newsArticles.reduce((sources, article) => {
+        if (!sources.includes(article.source.name)) {
+          sources.push(article.source.name);
+        }
+        return sources;
+      }, [] as string[]).length} different sources`);
     }
     
     return {

@@ -14,6 +14,7 @@ interface SubredditResult {
   keywords: string[] | string;
   persona: string;
   subreddits: string[];
+  correlationId?: string; // Optional for backward compatibility
 }
 
 // Initialize clients
@@ -28,9 +29,19 @@ export const handler = async (event: SNSEvent, context: Context) => {
   try {
     // Process each message from SNS
     const processPromises = event.Records.map(async (record) => {
+      // Get message ID from SNS
+      const messageId = record.Sns.MessageId;
+      console.log(`Received SNS message ${messageId} with attributes:`, JSON.stringify(record.Sns.MessageAttributes));
+      
       // Parse the user data from the SNS message
-      const userData: UserData = JSON.parse(record.Sns.Message);
-      console.log('Processing user data:', JSON.stringify(userData));
+      const parsedMessage = JSON.parse(record.Sns.Message);
+      console.log(`Received SNS message content:`, JSON.stringify(parsedMessage));
+      
+      // Extract user data and the correlation ID if it exists
+      const userData: UserData = parsedMessage;
+      const correlationId = parsedMessage.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+      
+      console.log(`[${correlationId}] Processing user data for user ${userData.userId}`);
       
       // Format keywords for the OpenAI prompt, including persona as a keyword
       let allKeywords: string[] = [];
@@ -48,17 +59,19 @@ export const handler = async (event: SNSEvent, context: Context) => {
       }
       
       const keywordText = allKeywords.join(', ');
+      console.log(`[${correlationId}] Using keywords: ${keywordText}`);
 
       // Get subreddit suggestions based on combined keywords
       const subreddits = await suggestSubreddits(keywordText);
-      console.log(`Found ${subreddits.length} subreddits for user ${userData.userId}`);
+      console.log(`[${correlationId}] Found ${subreddits.length} subreddits for user ${userData.userId}: ${subreddits.join(', ')}`);
 
       // Prepare data for the next Lambda
       const resultData: SubredditResult = {
         userId: userData.userId,
         keywords: userData.keywords,
         persona: userData.persona,
-        subreddits: subreddits
+        subreddits: subreddits,
+        correlationId: correlationId  // Include correlation ID in the data
       };
       
       // Publish to the next SNS topic
@@ -108,6 +121,10 @@ const suggestSubreddits = async (keywords: string): Promise<string[]> => {
 };
 
 const publishToSNS = async (data: SubredditResult): Promise<void> => {
+  const correlationId = data.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+  
+  console.log(`[${correlationId}] Publishing to SNS topic ${SNS_TOPIC_ARN}:`, JSON.stringify(data));
+  
   const command = new PublishCommand({
     TopicArn: SNS_TOPIC_ARN,
     Message: JSON.stringify(data),
@@ -115,10 +132,14 @@ const publishToSNS = async (data: SubredditResult): Promise<void> => {
       'userId': {
         DataType: 'String',
         StringValue: String(data.userId)
+      },
+      'correlationId': {
+        DataType: 'String',
+        StringValue: correlationId
       }
     }
   });
   
-  await snsClient.send(command);
-  console.log(`Published subreddit data for user ${data.userId} to SNS`);
+  const result = await snsClient.send(command);
+  console.log(`[${correlationId}] Published subreddit data for user ${data.userId} to SNS, MessageId: ${result.MessageId}`);
 };

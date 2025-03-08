@@ -28,7 +28,8 @@ export const handler = async (event: ScheduledEvent, context: Context) => {
         const { data, error } = await supabase
             .from('user')
             .select('id, keywords, persona')
-            .limit(100);
+            .eq('can_scan', true)
+            .limit(1);
         
         if (error) {
             console.error('Error querying Supabase:', error);
@@ -61,19 +62,32 @@ export const handler = async (event: ScheduledEvent, context: Context) => {
                 persona: item.persona || ''
             };
             
+            // Create a correlation ID to track this request through the system
+            const correlationId = `req-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+            
+            // Log the outgoing message content
+            console.log(`[${correlationId}] Sending message to SNS:`, JSON.stringify(message));
+            
             const command = new PublishCommand({
                 TopicArn: SNS_TOPIC_ARN,
-                Message: JSON.stringify(message),
+                Message: JSON.stringify({ 
+                    ...message, 
+                    correlationId 
+                }),
                 MessageAttributes: {
                     'userId': {
                         DataType: 'String',
                         StringValue: String(item.id)
+                    },
+                    'correlationId': {
+                        DataType: 'String',
+                        StringValue: correlationId
                     }
                 }
             });
             
-            await snsClient.send(command);
-            console.log(`Published message for user ${item.id}`);
+            const result = await snsClient.send(command);
+            console.log(`[${correlationId}] Published message for user ${item.id}, MessageId: ${result.MessageId}`);
         });
         
         await Promise.all(publishPromises);

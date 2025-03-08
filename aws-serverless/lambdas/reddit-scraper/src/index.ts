@@ -8,6 +8,7 @@ interface SubredditData {
   keywords: string[] | string;
   persona: string;
   subreddits: string[];
+  correlationId?: string;
 }
 
 interface RedditPost {
@@ -30,6 +31,7 @@ interface ScrapedResult {
   keywords: string[] | string;
   persona: string;
   results: SubredditResult[];
+  correlationId?: string;
 }
 
 // Initialize SNS client
@@ -48,9 +50,19 @@ export const handler = async (event: SNSEvent, context: Context) => {
   try {
     // Process each message from SNS
     for (const record of event.Records) {
+      // Get the message ID and attributes from SNS
+      const messageId = record.Sns.MessageId;
+      console.log(`Received SNS message ${messageId} with attributes:`, JSON.stringify(record.Sns.MessageAttributes));
+      
       // Parse the data from the SNS message
-      const data: SubredditData = JSON.parse(record.Sns.Message);
-      console.log(`Processing data for user ${data.userId} with ${data.subreddits.length} subreddits`);
+      const parsedMessage = JSON.parse(record.Sns.Message);
+      console.log(`Received SNS message content:`, JSON.stringify(parsedMessage));
+      
+      // Extract data and correlation ID
+      const data: SubredditData = parsedMessage;
+      const correlationId = parsedMessage.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+      
+      console.log(`[${correlationId}] Processing data for user ${data.userId} with ${data.subreddits.length} subreddits`);
       
       // Ensure we have a valid access token
       await ensureAccessToken();
@@ -64,8 +76,16 @@ export const handler = async (event: SNSEvent, context: Context) => {
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
-        console.log(`Fetching posts from r/${subreddit}`);
+        console.log(`[${correlationId}] Fetching posts from r/${subreddit}`);
         const result = await fetchRedditPosts(subreddit);
+        console.log(`[${correlationId}] Found ${result.posts.length} posts in r/${subreddit}`);
+        
+        // Log a sample of post titles (just the first 3)
+        if (result.posts.length > 0) {
+          const sampleTitles = result.posts.slice(0, 3).map(p => p.title);
+          console.log(`[${correlationId}] Sample posts from r/${subreddit}:`, JSON.stringify(sampleTitles));
+        }
+        
         results.push(result);
       }
       
@@ -74,8 +94,11 @@ export const handler = async (event: SNSEvent, context: Context) => {
         userId: data.userId,
         keywords: data.keywords,
         persona: data.persona,
-        results: results
+        results: results,
+        correlationId: correlationId
       };
+      
+      console.log(`[${correlationId}] Scraped ${results.reduce((sum, r) => sum + r.posts.length, 0)} total posts across ${results.length} subreddits`);
       
       // You could publish this to another SNS topic if needed
       if (SNS_TOPIC_ARN) {
@@ -185,6 +208,15 @@ const fetchRedditPosts = async (subreddit: string): Promise<SubredditResult> => 
 };
 
 const publishToSNS = async (data: ScrapedResult): Promise<void> => {
+  const correlationId = data.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+  
+  console.log(`[${correlationId}] Publishing to SNS topic ${SNS_TOPIC_ARN}:`, JSON.stringify({
+    userId: data.userId,
+    keywords: data.keywords,
+    persona: data.persona,
+    resultSummary: `${data.results.length} subreddits, ${data.results.reduce((sum, r) => sum + r.posts.length, 0)} total posts`
+  }));
+  
   const command = new PublishCommand({
     TopicArn: SNS_TOPIC_ARN,
     Message: JSON.stringify(data),
@@ -192,10 +224,14 @@ const publishToSNS = async (data: ScrapedResult): Promise<void> => {
       'userId': {
         DataType: 'String',
         StringValue: String(data.userId)
+      },
+      'correlationId': {
+        DataType: 'String',
+        StringValue: correlationId
       }
     }
   });
   
-  await snsClient.send(command);
-  console.log(`Published scraped data for user ${data.userId} to SNS`);
+  const result = await snsClient.send(command);
+  console.log(`[${correlationId}] Published scraped data for user ${data.userId} to SNS, MessageId: ${result.MessageId}`);
 };
