@@ -26,3 +26,9 @@ variable "reddit_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "google_news_api_key" {
+  description = "API key for Google News"
+  type        = string
+  sensitive   = true
+}

@@ -242,3 +242,73 @@ resource "aws_lambda_permission" "allow_sns_to_reddit_scraper" {
   principal     = "sns.amazonaws.com"
   source_arn    = aws_sns_topic.subreddit_data_topic.arn
 }
+
+# Google News Lambda role
+resource "aws_iam_role" "google_news_role" {
+  name = "google-news-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Policy for Google News Lambda
+resource "aws_iam_role_policy" "google_news_policy" {
+  name = "google-news-policy"
+  role = aws_iam_role.google_news_role.id
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+      Effect   = "Allow"
+      Resource = "arn:aws:logs:*:*:*"
+    }]
+  })
+}
+
+# Google News Lambda function
+resource "aws_lambda_function" "google_news" {
+  function_name    = "google-news"
+  filename         = "${path.module}/../lambdas/google-news.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/google-news.zip")
+  handler          = "dist/index.handler"
+  runtime          = "nodejs18.x"
+  timeout          = 30
+  memory_size      = 256
+  role             = aws_iam_role.google_news_role.arn
+  
+  environment {
+    variables = {
+      GOOGLE_NEWS_API_KEY = var.google_news_api_key
+      SUPABASE_URL = var.supabase_url
+      SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
+    }
+  }
+}
+
+# SNS subscription for the Google News Lambda
+resource "aws_sns_topic_subscription" "google_news_subscription" {
+  topic_arn = aws_sns_topic.user_data_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.google_news.arn
+}
+
+resource "aws_lambda_permission" "allow_sns_to_google_news" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.google_news.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.user_data_topic.arn
+}
