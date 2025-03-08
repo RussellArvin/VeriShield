@@ -1,6 +1,6 @@
 # Provider configuration
 provider "aws" {
-  region = "us-east-1"  # Or your preferred region
+  region = "ap-southeast-1"  # Or your preferred region
 }
 
 # First SNS Topic - For communication between scheduler and subredditRetrieval
@@ -50,6 +50,14 @@ resource "aws_iam_role_policy" "scheduler_policy" {
         Action   = "sns:Publish"
         Effect   = "Allow"
         Resource = aws_sns_topic.user_data_topic.arn
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
       }
     ]
   })
@@ -133,6 +141,14 @@ resource "aws_iam_role_policy" "subreddit_retrieval_policy" {
         Action   = "sns:Publish"
         Effect   = "Allow"
         Resource = aws_sns_topic.subreddit_data_topic.arn
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
       }
     ]
   })
@@ -195,15 +211,25 @@ resource "aws_iam_role_policy" "reddit_scraper_policy" {
   
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Action = [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ]
-      Effect   = "Allow"
-      Resource = "arn:aws:logs:*:*:*"
-    }]
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
   })
 }
 
@@ -266,15 +292,25 @@ resource "aws_iam_role_policy" "google_news_policy" {
   
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Action = [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ]
-      Effect   = "Allow"
-      Resource = "arn:aws:logs:*:*:*"
-    }]
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
   })
 }
 
@@ -294,6 +330,7 @@ resource "aws_lambda_function" "google_news" {
       GOOGLE_NEWS_API_KEY = var.google_news_api_key
       SUPABASE_URL = var.supabase_url
       SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
+      OPENAI_API_KEY = var.openai_api_key
     }
   }
 }
