@@ -44,6 +44,8 @@ export const threatSchema = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     status: text("status").notNull(),
+    factCheckerUrl: text("fact_checker_url").notNull(),
+    factCheckerDescription: text("fact_checker_description").notNull(),
   });
   
 export const threatMediaSchema = pgTable(
