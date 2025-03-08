@@ -15,6 +15,11 @@ export const userSchema = pgTable(
     firstName:text("first_name").notNull(),
     lastName:text("last_name").notNull(),
     email:text("email").unique().notNull(),
+    persona: text("persona"),
+    keywords: text("keywords")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
