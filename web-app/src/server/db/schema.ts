@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   integer,
   PgTable,
   pgTable,
@@ -26,6 +27,7 @@ export const userSchema = pgTable(
     updatedAt: timestamp("updatedAt")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+    canScan: boolean("can_scan").notNull().default(false),
   }
 );
 //TODO: PGENUM for status

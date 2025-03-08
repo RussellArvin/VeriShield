@@ -7,6 +7,7 @@ export interface UserProps {
     persona: string | null;
     createdAt: Date;
     updatedAt: Date;
+    canScan: boolean;
 }
 
 export class User{
