@@ -3,8 +3,11 @@ export interface UserProps {
     firstName: string,
     lastName: string
     email: string;
+    keywords: string[];
+    persona: string | null;
     createdAt: Date;
     updatedAt: Date;
+    canScan: boolean;
 }
 
 export class User{

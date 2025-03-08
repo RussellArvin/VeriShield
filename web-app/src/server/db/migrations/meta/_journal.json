@@ -22,6 +22,20 @@
       "when": 1741342018345,
       "tag": "0002_cuddly_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1741404899297,
+      "tag": "0003_reflective_sentry",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1741425805200,
+      "tag": "0004_bizarre_cerebro",
+      "breakpoints": true
     }
   ]
 }
