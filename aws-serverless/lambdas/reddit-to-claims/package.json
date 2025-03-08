@@ -1,0 +1,27 @@
+{
+    "name": "reddit-to-claims",
+    "version": "1.0.0",
+    "description": "Lambda function to extract claims from Reddit posts",
+    "main": "dist/index.js",
+    "scripts": {
+      "build": "tsc",
+      "watch": "tsc -w",
+      "test": "jest",
+      "zip": "zip -r reddit-to-claims.zip dist node_modules package.json",
+      "deploy": "npm run build && npm run zip"
+    },
+    "dependencies": {
+      "@aws-sdk/client-sns": "^3.470.0",
+      "openai": "^4.20.0"
+    },
+    "devDependencies": {
+      "@types/aws-lambda": "^8.10.130",
+      "@types/jest": "^29.5.10",
+      "@types/node": "^20.10.3",
+      "jest": "^29.7.0",
+      "ts-jest": "^29.1.1",
+      "typescript": "^5.3.2"
+    },
+    "author": "",
+    "license": "ISC"
+  }

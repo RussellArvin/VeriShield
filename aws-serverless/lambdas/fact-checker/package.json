@@ -1,0 +1,27 @@
+{
+    "name": "fact-checker",
+    "version": "1.0.0",
+    "description": "Lambda function to verify claims using Google Fact Check API",
+    "main": "dist/index.js",
+    "scripts": {
+      "build": "tsc",
+      "watch": "tsc -w",
+      "test": "jest",
+      "zip": "zip -r fact-checker.zip dist node_modules",
+      "deploy": "npm run build && npm run zip"
+    },
+    "dependencies": {
+      "axios": "^1.6.2",
+      "zod": "^3.22.4"
+    },
+    "devDependencies": {
+      "@types/aws-lambda": "^8.10.130",
+      "@types/jest": "^29.5.10",
+      "@types/node": "^20.10.3",
+      "jest": "^29.7.0",
+      "ts-jest": "^29.1.1",
+      "typescript": "^5.3.2"
+    },
+    "author": "",
+    "license": "ISC"
+  }

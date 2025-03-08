@@ -1,6 +1,7 @@
 import { SNSEvent, Context } from 'aws-lambda';
 import OpenAI from 'openai';
 import axios from 'axios';
+import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 
 // Types for our data
 interface UserData {
@@ -43,6 +44,9 @@ interface ProcessedResult {
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY as string,
 });
+
+const snsClient = new SNSClient({});
+const SNS_TOPIC_ARN = process.env.SNS_TOPIC_ARN;
 
 const GOOGLE_NEWS_API_KEY = process.env.GOOGLE_NEWS_API_KEY as string;
 const NEWS_API_BASE_URL = 'https://newsapi.org/v2';
@@ -113,6 +117,13 @@ export const handler = async (event: SNSEvent, context: Context) => {
         }
         return sources;
       }, [] as string[]).length} different sources`);
+      
+      // Publish to SNS for next Lambda in pipeline
+      if (SNS_TOPIC_ARN) {
+        await publishToSNS(result);
+      } else {
+        console.log(`[${correlationId}] SNS_TOPIC_ARN not configured, skipping publishing`);
+      }
     }
     
     return {
@@ -217,4 +228,36 @@ const fetchNews = async (
     // Return empty array instead of throwing to keep pipeline running
     return [];
   }
+};
+
+/**
+ * Publish the processed news data to the next SNS topic in the pipeline
+ */
+const publishToSNS = async (data: ProcessedResult): Promise<void> => {
+  const correlationId = data.correlationId || `corr-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+  
+  console.log(`[${correlationId}] Publishing to SNS topic ${SNS_TOPIC_ARN}:`, JSON.stringify({
+    userId: data.userId,
+    keywords: data.keywords,
+    persona: data.persona,
+    articlesSummary: `${data.articles.length} articles found`
+  }));
+  
+  const command = new PublishCommand({
+    TopicArn: SNS_TOPIC_ARN,
+    Message: JSON.stringify(data),
+    MessageAttributes: {
+      'userId': {
+        DataType: 'String',
+        StringValue: String(data.userId)
+      },
+      'correlationId': {
+        DataType: 'String',
+        StringValue: correlationId
+      }
+    }
+  });
+  
+  const result = await snsClient.send(command);
+  console.log(`[${correlationId}] Published news data for user ${data.userId} to SNS, MessageId: ${result.MessageId}`);
 };
