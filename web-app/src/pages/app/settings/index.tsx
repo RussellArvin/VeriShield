@@ -23,14 +23,14 @@ export default function SettingsPage() {
   ])
   const [darkMode, setDarkMode] = useState(false)
 
-  const handleSourceChange = (source) => {
+  const handleSourceChange = (source: keyof typeof selectedSources) => {
     setSelectedSources({
       ...selectedSources,
       [source]: !selectedSources[source]
     })
   }
 
-  const handleKeywordInputChange = (e) => {
+  const handleKeywordInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeywordInput(e.target.value)
   }
 
@@ -41,14 +41,14 @@ export default function SettingsPage() {
     }
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault()
       addKeyword()
     }
   }
 
-  const removeKeyword = (keywordToRemove) => {
+  const removeKeyword = (keywordToRemove: string) => {
     setKeywords(prevKeywords => prevKeywords.filter(keyword => keyword !== keywordToRemove))
   }
 
