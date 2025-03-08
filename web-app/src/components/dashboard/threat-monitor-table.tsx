@@ -21,15 +21,9 @@ import {
   TableRow,
 } from "~/components/ui/table"
 import { Badge } from "~/components/ui/badge"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
 
 // Define the type for our data
-interface MisinformationThreat {
+interface ThreatMonitorTable {
   description: string
   source: string
   detection: string
@@ -79,9 +73,9 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
   )
 }
 
-export function MisinformationThreats() {
+export function ThreatMonitorTable() {
   // Define your columns with proper typing
-  const columns: ColumnDef<MisinformationThreat>[] = [
+  const columns: ColumnDef<ThreatMonitorTable>[] = [
     {
       accessorKey: "description",
       header: "Description",
@@ -111,25 +105,15 @@ export function MisinformationThreats() {
       accessorKey: "action",
       header: "Action",
       cell: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="w-full">
-              QUICK RESPONSE
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Disclaimer</DropdownMenuItem>
-            <DropdownMenuItem>Email</DropdownMenuItem>
-            <DropdownMenuItem>Press Statement</DropdownMenuItem>
-            <DropdownMenuItem>Social Media</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="secondary" className="w-full">
+          RESPOND
+        </Button>
       ),
     },
   ]
 
   // Sample data based on your image
-  const data: MisinformationThreat[] = [
+  const data: ThreatMonitorTable[] = [
     {
       description: "Product safety allegations",
       source: "Twitter, Reddit",
