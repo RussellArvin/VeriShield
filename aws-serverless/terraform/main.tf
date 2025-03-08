@@ -184,6 +184,8 @@ resource "aws_lambda_function" "subreddit_retrieval" {
     variables = {
       OPENAI_API_KEY = var.openai_api_key
       SNS_TOPIC_ARN = aws_sns_topic.subreddit_data_topic.arn
+      REDDIT_CLIENT_ID = var.reddit_client_id
+      REDDIT_CLIENT_SECRET = var.reddit_client_secret
     }
   }
 }
