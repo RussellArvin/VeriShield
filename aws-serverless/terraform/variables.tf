@@ -1,16 +1,18 @@
+# Variables
 variable "supabase_url" {
-  description = "The URL for your Supabase instance"
+  description = "Supabase URL"
   type        = string
+  sensitive   = true
 }
 
 variable "supabase_key" {
-  description = "The service role key for your Supabase instance"
+  description = "Supabase service role key"
   type        = string
   sensitive   = true
 }
 
 variable "openai_api_key" {
-  description = "OpenAI API key for subreddit retrieval"
+  description = "OpenAI API key"
   type        = string
   sensitive   = true
 }
@@ -28,7 +30,13 @@ variable "reddit_client_secret" {
 }
 
 variable "google_news_api_key" {
-  description = "API key for Google News"
+  description = "Google News API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_fact_check_api_key" {
+  description = "Google Fact Check Tools API key"
   type        = string
   sensitive   = true
 }

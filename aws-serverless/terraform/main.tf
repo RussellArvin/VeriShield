@@ -3,14 +3,25 @@ provider "aws" {
   region = "ap-southeast-1"  # Or your preferred region
 }
 
-# First SNS Topic - For communication between scheduler and subredditRetrieval
+# SNS Topics for communication between various Lambdas
 resource "aws_sns_topic" "user_data_topic" {
   name = "user-data-topic"
 }
 
-# Second SNS Topic - For communication between subredditRetrieval and redditScraper
 resource "aws_sns_topic" "subreddit_data_topic" {
   name = "subreddit-data-topic"
+}
+
+resource "aws_sns_topic" "reddit_posts_topic" {
+  name = "reddit-posts-topic"
+}
+
+resource "aws_sns_topic" "news_claims_topic" {
+  name = "news-claims-topic"
+}
+
+resource "aws_sns_topic" "reddit_claims_topic" {
+  name = "reddit-claims-topic"
 }
 
 # IAM role for the scheduler Lambda
@@ -222,6 +233,11 @@ resource "aws_iam_role_policy" "reddit_scraper_policy" {
         Resource = "arn:aws:logs:*:*:*"
       },
       {
+        Action   = "sns:Publish"
+        Effect   = "Allow"
+        Resource = aws_sns_topic.reddit_posts_topic.arn
+      },
+      {
         Action = [
           "kms:Decrypt",
           "kms:DescribeKey"
@@ -250,6 +266,7 @@ resource "aws_lambda_function" "reddit_scraper" {
       REDDIT_CLIENT_SECRET = var.reddit_client_secret
       SUPABASE_URL = var.supabase_url
       SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
+      SNS_TOPIC_ARN = aws_sns_topic.reddit_posts_topic.arn
     }
   }
 }
@@ -303,6 +320,11 @@ resource "aws_iam_role_policy" "google_news_policy" {
         Resource = "arn:aws:logs:*:*:*"
       },
       {
+        Action   = "sns:Publish"
+        Effect   = "Allow"
+        Resource = aws_sns_topic.user_data_topic.arn
+      },
+      {
         Action = [
           "kms:Decrypt",
           "kms:DescribeKey"
@@ -331,6 +353,7 @@ resource "aws_lambda_function" "google_news" {
       SUPABASE_URL = var.supabase_url
       SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
       OPENAI_API_KEY = var.openai_api_key
+      SNS_TOPIC_ARN = aws_sns_topic.user_data_topic.arn
     }
   }
 }
@@ -348,4 +371,265 @@ resource "aws_lambda_permission" "allow_sns_to_google_news" {
   function_name = aws_lambda_function.google_news.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = aws_sns_topic.user_data_topic.arn
+}
+
+# News to Claims Lambda role
+resource "aws_iam_role" "news_to_claims_role" {
+  name = "news-to-claims-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Policy for News to Claims Lambda
+resource "aws_iam_role_policy" "news_to_claims_policy" {
+  name = "news-to-claims-policy"
+  role = aws_iam_role.news_to_claims_role.id
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action   = "sns:Publish"
+        Effect   = "Allow"
+        Resource = aws_sns_topic.news_claims_topic.arn
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# News to Claims Lambda function
+resource "aws_lambda_function" "news_to_claims" {
+  function_name    = "news-to-claims"
+  filename         = "${path.module}/../lambdas/news-to-claims.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/news-to-claims.zip")
+  handler          = "dist/index.handler"
+  runtime          = "nodejs18.x"
+  timeout          = 60                   # Increased for OpenAI processing
+  memory_size      = 256
+  role             = aws_iam_role.news_to_claims_role.arn
+  
+  environment {
+    variables = {
+      OPENAI_API_KEY = var.openai_api_key
+      SNS_TOPIC_ARN = aws_sns_topic.news_claims_topic.arn
+    }
+  }
+}
+
+# SNS subscription for the News to Claims Lambda
+resource "aws_sns_topic_subscription" "news_to_claims_subscription" {
+  topic_arn = aws_sns_topic.user_data_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.news_to_claims.arn
+}
+
+resource "aws_lambda_permission" "allow_sns_to_news_to_claims" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.news_to_claims.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.user_data_topic.arn
+}
+
+# Reddit to Claims Lambda role
+resource "aws_iam_role" "reddit_to_claims_role" {
+  name = "reddit-to-claims-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Policy for Reddit to Claims Lambda
+resource "aws_iam_role_policy" "reddit_to_claims_policy" {
+  name = "reddit-to-claims-policy"
+  role = aws_iam_role.reddit_to_claims_role.id
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action   = "sns:Publish"
+        Effect   = "Allow"
+        Resource = aws_sns_topic.reddit_claims_topic.arn
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Reddit to Claims Lambda function
+resource "aws_lambda_function" "reddit_to_claims" {
+  function_name    = "reddit-to-claims"
+  filename         = "${path.module}/../lambdas/reddit-to-claims.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/reddit-to-claims.zip")
+  handler          = "dist/index.handler"
+  runtime          = "nodejs18.x"
+  timeout          = 60                   # Increased for OpenAI processing
+  memory_size      = 256
+  role             = aws_iam_role.reddit_to_claims_role.arn
+  
+  environment {
+    variables = {
+      OPENAI_API_KEY = var.openai_api_key
+      SNS_TOPIC_ARN = aws_sns_topic.reddit_claims_topic.arn
+    }
+  }
+}
+
+# SNS subscription for the Reddit to Claims Lambda
+resource "aws_sns_topic_subscription" "reddit_to_claims_subscription" {
+  topic_arn = aws_sns_topic.reddit_posts_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.reddit_to_claims.arn
+}
+
+resource "aws_lambda_permission" "allow_sns_to_reddit_to_claims" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.reddit_to_claims.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.reddit_posts_topic.arn
+}
+
+# Fact Checker Lambda role
+resource "aws_iam_role" "fact_checker_role" {
+  name = "fact-checker-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Policy for Fact Checker Lambda
+resource "aws_iam_role_policy" "fact_checker_policy" {
+  name = "fact-checker-policy"
+  role = aws_iam_role.fact_checker_role.id
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Fact Checker Lambda function
+resource "aws_lambda_function" "fact_checker" {
+  function_name    = "fact-checker"
+  filename         = "${path.module}/../lambdas/fact-checker.zip"
+  source_code_hash = filebase64sha256("${path.module}/../lambdas/fact-checker.zip")
+  handler          = "dist/index.handler"
+  runtime          = "nodejs18.x"
+  timeout          = 60                   # Increased for API calls
+  memory_size      = 256
+  role             = aws_iam_role.fact_checker_role.arn
+  
+  environment {
+    variables = {
+      GOOGLE_FACT_CHECK_API_KEY = var.google_fact_check_api_key
+    }
+  }
+}
+
+# SNS subscription for the Fact Checker Lambda from news-claims-topic
+resource "aws_sns_topic_subscription" "fact_checker_news_subscription" {
+  topic_arn = aws_sns_topic.news_claims_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.fact_checker.arn
+}
+
+resource "aws_lambda_permission" "allow_news_sns_to_fact_checker" {
+  statement_id  = "AllowExecutionFromNewsSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.fact_checker.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.news_claims_topic.arn
+}
+
+# SNS subscription for the Fact Checker Lambda from reddit-claims-topic
+resource "aws_sns_topic_subscription" "fact_checker_reddit_subscription" {
+  topic_arn = aws_sns_topic.reddit_claims_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.fact_checker.arn
+}
+
+resource "aws_lambda_permission" "allow_reddit_sns_to_fact_checker" {
+  statement_id  = "AllowExecutionFromRedditSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.fact_checker.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.reddit_claims_topic.arn
 }
