@@ -9,8 +9,9 @@ const GOOGLE_FACT_CHECK_API_KEY = process.env.GOOGLE_FACT_CHECK_API_KEY as strin
 // Zod schemas for validation
 const ClaimSchema = z.object({
   text: z.string(),
-  articleUrl: z.string().url(),
-  articleTitle: z.string(),
+  sourceUrl: z.string().url(),
+  sourceTitle: z.string(),
+  sourceType: z.string(),
   source: z.string().optional()
 });
 
@@ -93,7 +94,8 @@ export const handler = async (event: SNSEvent, context: Context) => {
         // Log detailed results
         results.forEach((result, index) => {
           console.log(`[${correlationId}] Claim ${index + 1}: "${result.claim.text.substring(0, 100)}..."`);
-          console.log(`[${correlationId}] Source: ${result.claim.articleUrl}`);
+          console.log(`[${correlationId}] Source: ${result.claim.sourceUrl} (${result.claim.sourceType})`);
+          console.log(`[${correlationId}] Title: ${result.claim.sourceTitle}`);
           
           if (result.factCheckResults && result.factCheckResults.length > 0) {
             console.log(`[${correlationId}] Found ${result.factCheckResults.length} fact check(s):`);
