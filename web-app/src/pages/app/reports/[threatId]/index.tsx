@@ -11,6 +11,7 @@ import { api } from "~/utils/api"
 import { formatTimeAgo } from "~/utils/formatTimeAgo"
 import { ChevronRight } from "lucide-react"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { Url } from "next/dist/shared/lib/router/router"
 
 export default function ProductSafetyReport() {
   const router = useRouter()
@@ -22,8 +23,8 @@ export default function ProductSafetyReport() {
   )
 
   // Function to handle navigation
-  const handleBreadcrumbNavigation = (path) => {
-    router.push(path);
+  const handleBreadcrumbNavigation = async (path: Url) => {
+    await router.push(path);
   };
   
   // Breadcrumb items

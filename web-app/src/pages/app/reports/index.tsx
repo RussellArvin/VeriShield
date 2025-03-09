@@ -8,13 +8,14 @@ import { Filter, ChevronRight } from "lucide-react"
 import { ReportsTable } from "~/components/dashboard/reports-table"
 import { useRouter } from "next/router"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { Url } from "next/dist/shared/lib/router/router"
 
 export default function ReportsPage() {
   const router = useRouter();
   
   // Function to handle navigation
-  const handleBreadcrumbNavigation = (path) => {
-    router.push(path);
+  const handleBreadcrumbNavigation = async (path: Url) => {
+    await router.push(path);
   };
   
   // Breadcrumb items

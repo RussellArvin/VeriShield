@@ -10,6 +10,7 @@ const APP_ROUTES = {
             ITEM: (id: string) => { return `/app/threat-monitor/${id}` }
         },
         HOME:'/app',
+        REPORTS: '/app/reports',
         RESPONSE_CENTRE: {
             HOME: '/app/response-centre',
             ITEM: (id: string) => { return `/app/response-centre/${id}`}
