@@ -117,7 +117,7 @@ function NavItem({ href, icon, label, collapsed, pathname }: NavItemProps) {
   const isActive = 
     href === "/app" 
       ? pathname === "/app" || pathname === "/app/" 
-      : pathname.startsWith(href);
+      : pathname && pathname.startsWith(href);
 
   return (
     <Link
