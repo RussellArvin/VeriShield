@@ -26,7 +26,7 @@ export class ThreatService {
     ) {
         const threat = (await this.threatRepository.findOneById(threatId)).getValue()
         if(!threat.responseId) throw new TRPCError({code:"NOT_FOUND"})
-        const threatResponse = (await this.threatResponseRepository.findOneByIdAndUserId(threatId,userId)).getValue()
+        const threatResponse = (await this.threatResponseRepository.findOneByIdAndUserId(threatId,threat.responseId)).getValue()
 
 
         return {...threat, response: threatResponse}
