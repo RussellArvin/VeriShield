@@ -1,7 +1,7 @@
 import { threatSchema } from "~/server/db/schema";
 import { Threat } from "../models/threat";
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, getTableColumns ,isNull,ne, sql } from "drizzle-orm";
+import { and, count, eq, getTableColumns ,isNotNull,isNull,ne, sql } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 export class ThreatRepository {
@@ -218,6 +218,26 @@ export class ThreatRepository {
                 code:"INTERNAL_SERVER_ERROR",
                 message:e.message
             })
+        }
+    }
+    public async findAllResolvedByUserId(userId: string): Promise<Threat[]> {
+        try{
+            const results = await this.db
+                .select(getTableColumns(threatSchema))
+                .from(threatSchema)
+                .where(and(
+                    eq(threatSchema.userId,userId),
+                    isNotNull(threatSchema.responseId)
+                ))
+            if(results.length == 0) return []
+            return results.map((result) => new Threat(result))
+
+        } catch(err){
+            const e = err as Error;
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: e.message
+            });
         }
     }
 

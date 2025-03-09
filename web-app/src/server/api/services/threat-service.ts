@@ -20,6 +20,11 @@ export class ThreatService {
         return {threat}
     }
 
+    public async findAllResolvedByUserId(userId:string){
+        const threats = await this.threatRepository.findAllResolvedByUserId(userId)
+        return threats.map((result)=> result.getValue())
+    }
+
     public async findThreatsByDay(userId: string) {
         return await this.threatRepository.findManyByDay(userId);
     }

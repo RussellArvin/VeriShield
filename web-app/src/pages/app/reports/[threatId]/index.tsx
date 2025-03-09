@@ -69,12 +69,6 @@ export default function ProductSafetyReport() {
                   </span>
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Search misinformation threats"
-                  className="w-64"
-                />
-              </div>
             </div>
 
             <div className="mt-6">

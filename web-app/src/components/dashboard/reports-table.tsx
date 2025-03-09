@@ -25,19 +25,20 @@ import { Skeleton } from "~/components/ui/skeleton"
 import { Input } from "~/components/ui/input"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { api } from "~/utils/api"
+import { formatTimeAgo } from "~/utils/formatTimeAgo"
 
-// Define the type for our table view data
+// Define the type for our table view data from the API
 interface ReportsTable {
   id: string
   description: string
-  template: string
-  lastEdited: string
-  region: string
-  status: "CRITICAL" | "MILD" | "LOW"
+  source: string
+  createdAt: Date
+  status: string
 }
 
 type ReportStatusProps = {
-  status: "CRITICAL" | "MILD" | "LOW"
+  status: string
 }
 
 export const ReportStatus = ({ status }: ReportStatusProps) => {
@@ -49,7 +50,7 @@ export const ReportStatus = ({ status }: ReportStatusProps) => {
           variant: "destructive", // Use built-in destructive variant for red
           className: "px-4 py-1"
         }
-      case "MILD":
+      case "MED":
         return {
           variant: "outline", // Use outline and override with custom bg/text color
           className: "px-4 py-1 bg-orange-500 text-white border-orange-500"
@@ -83,28 +84,21 @@ export function ReportsTable() {
   const router = useRouter();
   const [globalFilter, setGlobalFilter] = React.useState("");
   
-  // Sample data for reports - in a real implementation, this would come from an API
-  const data: ReportsTable[] = React.useMemo(() => [
-    {
-      id: "product-safety",
-      description: "Product safety allegations",
-      template: "Social Media",
-      lastEdited: "7 Mar 2025",
-      region: "New York, USA",
-      status: "CRITICAL",
-    },
-    {
-      id: "ceo-statement",
-      description: "CEO statement misquote",
-      template: "Press Statement",
-      lastEdited: "27 Feb 2025",
-      region: "California, USA",
-      status: "MILD",
-    }
-  ], []);
+  // Fetch resolved threats from API
+  const { data: resolvedThreats, isLoading } = api.threat.getAllResolved.useQuery();
   
-  // In a real implementation, we would have a loading state from an API
-  const isLoading = false;
+  // Transform the data for the table
+  const tableData: ReportsTable[] = React.useMemo(() => {
+    if (!resolvedThreats) return [];
+    
+    return resolvedThreats.map(threat => ({
+      id: threat.id,
+      description: threat.description,
+      source: threat.source,
+      createdAt: threat.createdAt,
+      status: threat.status
+    }));
+  }, [resolvedThreats]);
 
   // Handle navigation to report detail page
   const navigateToReportDetail = (reportId: string) => {
@@ -123,23 +117,23 @@ export function ReportsTable() {
       ),
     },
     {
-      accessorKey: "template",
-      header: "Template",
+      accessorKey: "source",
+      header: "Source",
     },
     {
-      accessorKey: "lastEdited",
-      header: "Last Edited",
-    },
-    {
-      accessorKey: "region",
-      header: "Region",
+      accessorKey: "createdAt",
+      header: "Created",
+      cell: ({ row }) => {
+        const date = row.original.createdAt;
+        return formatTimeAgo(date);
+      },
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("status") as "CRITICAL" | "MILD" | "LOW"
-        return <ReportStatus status={status} />
+        const status = row.getValue("status")
+        return <ReportStatus status={status as string} />
       },
     },
     {
@@ -158,7 +152,7 @@ export function ReportsTable() {
   ]
 
   const table = useReactTable({
-    data: data ?? [],
+    data: tableData ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

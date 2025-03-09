@@ -24,6 +24,10 @@ export const threatRouter = createTRPCRouter({
         const threat = await threatService.getOneResolvedByThreatIdAndUserId(input.threatId,ctx.auth.userId)
         return threat;
     }),
+    getAllResolved:protectedProcedure
+    .query(async ({ctx}) => {
+        return await threatService.findAllResolvedByUserId(ctx.auth.userId)
+    }),
     findThreatsByDay: protectedProcedure
     .query(async ({ctx}) => {
         return await threatService.findThreatsByDay(ctx.auth.userId)
