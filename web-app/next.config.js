@@ -20,6 +20,10 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  // Allow images from S3 bucket
+  images: {
+    domains: ['verishield-images.s3.ap-southeast-1.amazonaws.com'],
+  },
 };
 
 export default config;
