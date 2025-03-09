@@ -73,7 +73,7 @@ export function Navigation({ children }: NavigationProps) {
         <div className="space-y-1 px-3 py-4 flex-grow">
           <NavItem href="/app" icon={<LayoutDashboard size={20} />} label="Dashboard" collapsed={isLoaded && collapsed} pathname={pathname} />
           <NavItem href="/app/threat-monitor" icon={<Shield size={20} />} label="Threat Monitor" collapsed={isLoaded && collapsed} pathname={pathname} />
-          <NavItem href="/app/response-centre/item" icon={<MessagesSquare size={20} />} label="Response Centre" collapsed={isLoaded && collapsed} pathname={pathname} />
+          <NavItem href="/app/response-centre" icon={<MessagesSquare size={20} />} label="Response Centre" collapsed={isLoaded && collapsed} pathname={pathname} />
           <NavItem href="/app/analytics" icon={<BarChart3 size={20} />} label="Analytics" collapsed={isLoaded && collapsed} pathname={pathname} />
           <NavItem href="/app/reports" icon={<FileText size={20} />} label="Reports" collapsed={isLoaded && collapsed} pathname={pathname} />
           <NavItem href="/app/settings" icon={<Settings size={20} />} label="Settings" collapsed={isLoaded && collapsed} pathname={pathname} />
