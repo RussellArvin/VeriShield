@@ -27,14 +27,9 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   const {
-    isLoading: isthreatCountLoading, 
-    data: threatCount
-  } = api.user.getActiveThreatCount.useQuery()
-
-  const {
-    isLoading: isScanCountLoading,
-    data: scanCount
-  } = api.user.getScanCount.useQuery()
+    isLoading: isDetailsLoading,
+    data: details
+  } = api.user.getDashboardData.useQuery()
 
   return (
     <Navigation>
@@ -54,7 +49,7 @@ export default function DashboardPage() {
                   ACTIVE THREATS
                 </h2>
                 <div className="flex flex-col">
-                  {isthreatCountLoading || threatCount == undefined ? (
+                  {isDetailsLoading || details == undefined ? (
                     <>
                       <Skeleton className="h-10 w-20 mb-1" />
                       <div className="flex items-center justify-end gap-1">
@@ -64,7 +59,7 @@ export default function DashboardPage() {
                     </>
                   ) : (
                     <>
-                      <div className="text-5xl font-bold">{threatCount}</div>
+                      <div className="text-5xl font-bold">{details.threatCount}</div>
                       <div className="flex items-center justify-end gap-1 text-emerald-500">
                         <TrendingUp className="h-4 w-4" />
                         <span className="text-sm">3% from yesterday</span>
@@ -82,7 +77,7 @@ export default function DashboardPage() {
                   SCANNED MEDIA
                 </h2>
                 <div className="flex flex-col">
-                  {isScanCountLoading || scanCount == undefined ? (
+                  {isDetailsLoading || details == undefined ? (
                     <>
                       <Skeleton className="h-10 w-20 mb-1" />
                       <div className="flex items-center justify-end gap-1">
@@ -92,7 +87,7 @@ export default function DashboardPage() {
                     </>
                   ) : (
                     <>
-                      <div className="text-5xl font-bold">{numberShortener(scanCount)}</div>
+                      <div className="text-5xl font-bold">{numberShortener(details.scanCount)}</div>
                       <div className="flex items-center justify-end gap-1 text-red-500">
                         <TrendingDown className="h-4 w-4" />
                         <span className="text-sm">3% from yesterday</span>
@@ -107,14 +102,26 @@ export default function DashboardPage() {
             <CardContent className="pt-6">
               <div className="space-y-2">
                 <h2 className="text-lg font-bold uppercase tracking-wider">
-                  BRAND SENTIMENT
+                  Misinfo Sentiment
                 </h2>
                 <div className="flex flex-col">
-                 <ColourPercentage value={63} className="text-5xl" />
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">5% from yesterday</span>
-                  </div>
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-24 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ColourPercentage value={details.misinformationSentiment} invert={true} className="text-5xl" />
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">5% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -126,11 +133,23 @@ export default function DashboardPage() {
                   RISK SCORE
                 </h2>
                 <div className="flex flex-col">
-                  <ColourPercentage value={90} className="text-5xl" />
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">8% from yesterday</span>
-                  </div>
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-24 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ColourPercentage invert={true} value={details.riskThreat} className="text-5xl" />
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">8% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>

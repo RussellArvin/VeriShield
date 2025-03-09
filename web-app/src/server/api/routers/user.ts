@@ -21,6 +21,19 @@ export const userRouter = createTRPCRouter({
 
     //     return userData[0]
     // }),
+    getDashboardData: protectedProcedure
+    .query(async({ctx})=>{
+        const threatCount = await threatService.getActiveThreatCountByUserId(ctx.auth.userId);
+        const scanCount = await threatScanService.getCountByUserId(ctx.auth.userId);
+        const misinformationSentiment = await threatService.getMisinformationSentiment(ctx.auth.userId)
+        const riskThreat = await threatService.getRiskThreatByUserId(ctx.auth.userId);
+        return {
+            threatCount,
+            scanCount,
+            misinformationSentiment,
+            riskThreat
+        }
+    }),
     getActiveThreatCount: protectedProcedure
     .query(async({ctx})=>{
         const threatCount = await threatService.getActiveThreatCountByUserId(ctx.auth.userId);

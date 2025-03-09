@@ -23,6 +23,68 @@ export class ThreatRepository {
              }
     }
 
+    public async findCriticalThreatCountByUserId(userId: string) : Promise<number>{
+        try{
+            const results = await this.db
+            .select({
+                count: count()
+            })
+            .from(threatSchema)
+            .where(and(
+                eq(threatSchema.userId, userId),
+                eq(threatSchema.status,"CRITICAL")
+            ))
+            return results[0]?.count ?? 0;
+        } catch(err){
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
+
+    public async findMediumThreatCountByUserId(userId: string) : Promise<number>{
+        try{
+            const results = await this.db
+            .select({
+                count: count()
+            })
+            .from(threatSchema)
+            .where(and(
+                eq(threatSchema.userId, userId),
+                eq(threatSchema.status,"MED")
+            ))
+            return results[0]?.count ?? 0;
+        } catch(err){
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
+    public async findLowThreatCountByUserId(userId: string) : Promise<number>{
+        try{
+            const results = await this.db
+            .select({
+                count: count()
+            })
+            .from(threatSchema)
+            .where(and(
+                eq(threatSchema.userId, userId),
+                eq(threatSchema.status,"LOW")
+            ))
+            return results[0]?.count ?? 0;
+        } catch(err){
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
+
     public async findActiveThreatCountByUserId(userId: string) : Promise<number>{
         try{
             const results = await this.db
@@ -62,6 +124,7 @@ export class ThreatRepository {
             })
         }
     }
+    
 
     public async findAllByUserIdOrNull(userId: string) : Promise<Threat[]>{
         try{

@@ -5,6 +5,6 @@ export const threatRouter = createTRPCRouter({
     getCriticalAndMedThreats: protectedProcedure
     .query(async({ctx})=>{
         const threats = await threatService.getCriticalAndMedThreatsByUserIdOrNull(ctx.auth.userId);
-        return threats;
+        return threats.map((threat) => threat.getValue());
     })
 });
