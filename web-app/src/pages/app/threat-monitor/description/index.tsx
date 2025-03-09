@@ -20,42 +20,51 @@ export default function ThreatDescriptionPage() {
           <h2 className="text-3xl font-bold tracking-tight">Threat Details</h2>
         </div>
 
-        {/* Threat Overview */}
-        <Card className="mt-8 max-w-md"> {/* Compress the table width */}
-        <CardHeader>
-            <CardTitle>Product Safety Allegations</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <div className="flex justify-start"> {/* Aligns table to the left */}
-            <Table className="w-full">
-                <TableHeader>
-                <TableRow className="text-sm">
-                    <TableHead className="text-left w-1/2 px-2">Source</TableHead> {/* Reduce width & padding */}
-                    <TableHead className="text-center w-1/2 px-20">Detected</TableHead> {/* Reduce width & padding */}
-                    <TableHead className="text-center w-1 px-2">Status</TableHead> {/* Reduce width & padding */}
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                <TableRow className="text-sm">
-                    <TableCell className="text-left px-2">Twitter, Reddit</TableCell> {/* Reduce padding */}
-                    <TableCell className="text-center px-2">6 hours ago</TableCell> {/* Reduce padding */}
-                    <TableCell className="text-center px-2">
-                    <Badge variant="destructive" className="text-sm px-3 py-1"> {/* Smaller text & padding */}
-                        CRITICAL
-                    </Badge>
-                    </TableCell>
-                </TableRow>
-                </TableBody>
-            </Table>
-            </div>
-        </CardContent>
-        </Card>
+        {/* Table & Source Content Layout */}
+        <div className="mt-8 flex gap-6">
+          {/* Threat Overview Table - Fixed Width on Left */}
+          <Card className="max-w-md flex-shrink-0">
+            <CardHeader>
+              <CardTitle>Product Safety Allegations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-start">
+                <Table className="w-full">
+                  <TableHeader>
+                    <TableRow className="text-sm">
+                      <TableHead className="text-left w-1/3 px-2">Source</TableHead>
+                      <TableHead className="text-center w-1/3 px-2">Detected</TableHead>
+                      <TableHead className="text-center w-1/3 px-2">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow className="text-sm">
+                      <TableCell className="text-left px-2">Twitter, Reddit</TableCell>
+                      <TableCell className="text-center px-2">6 hours ago</TableCell>
+                      <TableCell className="text-center px-2">
+                        <Badge variant="destructive" className="text-sm px-3 py-1">
+                          CRITICAL
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
 
-
-        {/* Placeholder for Threat Source Content */}
-        <Card className="mt-8 flex items-center justify-center h-40 text-gray-500">
-          <p>No source content available.</p>
-        </Card>
+          {/* Threat Source Content - Expands to Fill Space & Increased Height */}
+          <Card className="flex-1 min-h-80 overflow-auto"> {/* Increased height */}
+            <CardHeader>
+              <CardTitle>Threat Source</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">
+                No source content available. If there was a long text, this card would scroll automatically.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Analysis and Image Row */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -100,7 +109,7 @@ export default function ThreatDescriptionPage() {
                 className="rounded-lg shadow-md"
               />
               <div className="mt-4 text-center">
-                <p className="text-xl font-bold text-gray-800">This is a deepfake image. </p>
+                <p className="text-xl font-bold text-gray-800">This is a deepfake image.</p>
               </div>
             </CardContent>
           </Card>
