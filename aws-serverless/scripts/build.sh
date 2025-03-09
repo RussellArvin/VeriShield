@@ -64,6 +64,15 @@ rm -f $ROOT_DIR/lambdas/fact-checker.zip
 cd dist
 zip -r $ROOT_DIR/lambdas/fact-checker.zip . ../package.json
 
+# Create sagemaker-proxy Lambda zip
+echo "Building sagemaker-proxy Lambda..."
+cd $ROOT_DIR/lambdas/sagemaker-proxy
+npm install
+# Use esbuild to create a bundled version with all dependencies included
+npx esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.js --external:aws-sdk
+# Create smaller package with just the bundled code
+zip -r $ROOT_DIR/lambdas/sagemaker-proxy.zip dist package.json
+
 echo "All Lambda functions built successfully!"
 echo "Zip files created at:"
 ls -la $ROOT_DIR/lambdas/*.zip

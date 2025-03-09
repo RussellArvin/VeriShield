@@ -2,11 +2,19 @@
     "name": "sagemaker-proxy",
     "version": "1.0.0",
     "description": "Lambda function to interact with SageMaker endpoint for deepfake detection",
-    "main": "index.js",
+    "main": "dist/index.js",
     "dependencies": {
         "aws-sdk": "^2.1692.0"
     },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.126",
+        "@types/node": "^18.18.9",
+        "esbuild": "^0.19.5",
+        "typescript": "^5.2.2"
+    },
     "scripts": {
+        "build": "npx esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.js --external:aws-sdk",
+        "typecheck": "tsc --noEmit",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
