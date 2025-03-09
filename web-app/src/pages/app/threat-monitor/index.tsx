@@ -116,10 +116,6 @@ export default function ThreatMonitorPage() {
                   ) : (
                     <>
                       <div className="text-5xl font-bold">{details.threatCount}</div>
-                      <div className="flex items-center justify-end gap-1 text-emerald-500">
-                        <TrendingUp className="h-4 w-4" />
-                        <span className="text-sm">3% from yesterday</span>
-                      </div>
                     </>
                   )}
                 </div>
@@ -144,10 +140,6 @@ export default function ThreatMonitorPage() {
                   ) : (
                     <>
                       <div className="text-5xl font-bold">{numberShortener(details.scanCount)}</div>
-                      <div className="flex items-center justify-end gap-1 text-red-500">
-                        <TrendingDown className="h-4 w-4" />
-                        <span className="text-sm">3% from yesterday</span>
-                      </div>
                     </>
                   )}
                 </div>
@@ -172,10 +164,6 @@ export default function ThreatMonitorPage() {
                   ) : (
                     <>
                       <ColourPercentage value={details.misinformationSentiment} invert={true} className="text-5xl" />
-                      <div className="flex items-center justify-end gap-1 text-red-500">
-                        <TrendingDown className="h-4 w-4" />
-                        <span className="text-sm">5% from yesterday</span>
-                      </div>
                     </>
                   )}
                 </div>
@@ -200,10 +188,6 @@ export default function ThreatMonitorPage() {
                   ) : (
                     <>
                       <ColourPercentage invert={true} value={details.riskThreat} className="text-5xl" />
-                      <div className="flex items-center justify-end gap-1 text-red-500">
-                        <TrendingDown className="h-4 w-4" />
-                        <span className="text-sm">8% from yesterday</span>
-                      </div>
                     </>
                   )}
                 </div>
