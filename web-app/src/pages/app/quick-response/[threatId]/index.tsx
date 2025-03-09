@@ -119,7 +119,9 @@ export default function DashboardPage() {
       });
     },
     onError: (error) => {
+      console.error("Error generating quick response:", error);
       setIsGenerating(false);
+      // Don't reset the hasTriedGenerating flag on error - we've still tried
       toast.error("Error generating response", {
         description: error.message
       });
@@ -142,23 +144,34 @@ export default function DashboardPage() {
     },
   });
   
-  // Function to generate initial response (only called once on load)
-  const generateInitialResponse = useCallback(() => {
-    if (!data?.threat?.id) return;
-    
-    setIsGenerating(true);
-    getQuickResponsesMutation.mutate({
-      threatId: data.threat.id,
-      threatType: threatType as "social-media" | "disclaimer" | "email" | "press-statement"
-    });
-  }, [data?.threat?.id, getQuickResponsesMutation, threatType]);
+  // Track whether we've already attempted to generate a response
+  const [hasTriedGenerating, setHasTriedGenerating] = useState(false);
   
-  // Generate the response on page load if threat ID is available
+  // Generate the response on initial load only when threat data is available
+  // Use a ref to track if we've fired the request to prevent multiple calls
   useEffect(() => {
-    if (!isThreatLoading && data?.threat?.id) {
-      generateInitialResponse();
+    // Only proceed if:
+    // 1. We have the data
+    // 2. We don't already have a response ID
+    // 3. We haven't tried generating yet (prevents loops)
+    // 4. We're not currently generating
+    if (data?.threat?.id && !responseId && !hasTriedGenerating && !isGenerating) {
+      console.log("Starting quick response generation");
+      setIsGenerating(true);
+      setHasTriedGenerating(true);
+      
+      // Important: Capture the current values to use in the mutation
+      const currentThreatId = data.threat.id;
+      const currentThreatType = threatType;
+      
+      getQuickResponsesMutation.mutate({
+        threatId: currentThreatId,
+        threatType: currentThreatType as "social-media" | "disclaimer" | "email" | "press-statement"
+      });
     }
-  }, [isThreatLoading, data, formatQueryParam, generateInitialResponse]);
+  // Deliberately exclude getQuickResponsesMutation and threatType from dependencies
+  // to prevent unnecessary effect triggers
+  }, [data?.threat?.id, responseId, hasTriedGenerating, isGenerating]);
   
   // Handle saving the response
   const handleSave = () => {

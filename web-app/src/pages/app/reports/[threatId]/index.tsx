@@ -61,9 +61,9 @@ export default function ProductSafetyReport() {
               <div>
                 <h2 className="text-2xl font-bold mb-2">Threat Report</h2>
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>{sourceParts[0] || "Unknown Source"}</span>
+                  <span>{sourceParts[0] ?? "Unknown Source"}</span>
                   <span>{formatTimeAgo(resolvedThreat.createdAt)}</span>
-                  <span>{sourceParts[1] || ""}</span>
+                  <span>{sourceParts[1] ?? ""}</span>
                   <span className="px-2 py-1 rounded bg-red-500 text-white text-xs">
                     {resolvedThreat.status || "ACTIVE"}
                   </span>

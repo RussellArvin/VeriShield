@@ -31,7 +31,7 @@ export default function ThreatDescriptionPage() {
     isLoading,
     data
   } = api.threat.getOne.useQuery(
-    { threatId: threatId as string },
+    { threatId: threatId! },
     {
       enabled: !!threatId, // Only run the query if threatId exists
     }
@@ -52,7 +52,7 @@ export default function ThreatDescriptionPage() {
           {/* Threat Overview Table - Fixed Width on Left */}
           <Card className="md:max-w-md flex-shrink-0">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-gray-900">{data?.threat?.description || "Threat Information"}</CardTitle>
+              <CardTitle className="text-xl font-bold text-gray-900">{data?.threat?.description ?? "Threat Information"}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex justify-start">
@@ -113,7 +113,7 @@ export default function ThreatDescriptionPage() {
                       <p className="text-gray-500 text-center text-sm">
                         External content preview not available. 
                         <br />
-                        Click 'Visit' to open in a new tab.
+                        Click &apos;Visit&apos; to open in a new tab.
                       </p>
                     </div>
                   </div>

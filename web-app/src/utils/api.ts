@@ -43,6 +43,17 @@ export const api = createTRPCNext<AppRouter>({
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
+      
+      // Prevent React Query from automatically retrying failed queries
+      // This helps avoid duplicate requests
+      queryClientConfig: {
+        defaultOptions: {
+          mutations: {
+            // Don't retry mutations as it can lead to duplicate effects
+            retry: false,
+          },
+        },
+      },
     };
   },
   /**
