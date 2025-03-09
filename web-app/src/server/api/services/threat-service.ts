@@ -11,6 +11,9 @@ export class ThreatService {
     public async getActiveThreatCountByUserId(userId: string) : Promise<number> {
         return this.threatRepository.findActiveThreatCountByUserId(userId);
     }
+    public getOneByThreatIdAndUserId(threatId: string, userId: string){
+        return this.threatRepository.findOneByIdAndUserId(threatId,userId)
+    }
 
     public async getCriticalAndMedThreatsByUserIdOrNull(userId: string) : Promise<Threat[]> {
         return this.threatRepository.findAllCriticalAndMedByUserIdOrNull(userId);

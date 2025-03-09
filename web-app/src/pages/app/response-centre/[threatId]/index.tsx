@@ -16,10 +16,14 @@ import { Navigation } from "~/components/global/navigation"
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { Label } from "~/components/ui/label"
 import { Shield } from "lucide-react"
+import { useRouter } from "next/router"
 
 // Removed metadata export as it's not compatible with "use client"
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const threatId = router.query.threatId as string;
+
   return (
     <Navigation>
       {/* Main content */}
