@@ -1,9 +1,9 @@
-"use client"
-
-import { useParams } from "next/navigation"
+import { useRouter } from "next/router" 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Navigation } from "~/components/global/navigation"
 import { Button } from "~/components/ui/button"
+import dynamic from 'next/dynamic'
 
 // Define the structure for reports
 type Report = {
@@ -67,37 +67,67 @@ const reports: Record<string, Report> = {
       likes: "1.2K",
     },
     response:
-      "We want to clarify the CEO’s statement, which has been misrepresented in the media...",
+      "We want to clarify the CEO's statement, which has been misrepresented in the media...",
   },
 };
 
-export default function ReportDetailPage() {
-  const params = useParams() as { id?: string }; // Ensure params is typed correctly
-  const report = params.id ? reports[params.id] : undefined;
-
-  if (!report) {
-    return <div className="p-8 text-center text-red-500 text-xl">Report Not Found</div>;
+// Create the component without default export 
+function ReportDetailPageComponent() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [reportData, setReportData] = useState<Report | undefined>(undefined);
+  
+  useEffect(() => {
+    if (!router.isReady) return;
+    
+    const { id } = router.query;
+    const reportId = Array.isArray(id) ? id[0] : id as string;
+    
+    if (reportId && reports[reportId]) {
+      setReportData(reports[reportId]);
+    }
+    setIsLoading(false);
+  }, [router.isReady, router.query]);
+  
+  if (isLoading) {
+    return (
+      <Navigation>
+        <div className="flex-1 p-8 pt-6 text-center">
+          Loading...
+        </div>
+      </Navigation>
+    );
   }
-
+  
+  if (!reportData) {
+    return (
+      <Navigation>
+        <div className="flex-1 p-8 pt-6 text-center text-red-500 text-xl">
+          Report Not Found
+        </div>
+      </Navigation>
+    );
+  }
+  
   return (
     <Navigation>
       <div className="flex-1 p-8 pt-6">
         {/* Breadcrumb Navigation */}
         <div className="text-sm text-gray-500">
-          Home &gt; Reports &gt; <span className="font-semibold">{report.title}</span>
+          Home &gt; Reports &gt; <span className="font-semibold">{reportData.title}</span>
         </div>
 
         {/* Report Header */}
         <div className="mt-4">
-          <h2 className="text-3xl font-bold tracking-tight">{report.title}</h2>
+          <h2 className="text-3xl font-bold tracking-tight">{reportData.title}</h2>
           <div className="flex items-center space-x-4 mt-2 text-gray-700">
-            <span>{report.platform}</span>
+            <span>{reportData.platform}</span>
             <span>•</span>
-            <span>{report.timeAgo}</span>
+            <span>{reportData.timeAgo}</span>
             <span>•</span>
-            <span>{report.location}</span>
-            <span className={`px-2 py-1 text-white ${report.statusColor} rounded text-sm`}>
-              {report.status}
+            <span>{reportData.location}</span>
+            <span className={`px-2 py-1 text-white ${reportData.statusColor} rounded text-sm`}>
+              {reportData.status}
             </span>
           </div>
         </div>
@@ -105,7 +135,7 @@ export default function ReportDetailPage() {
         {/* Description */}
         <div className="mt-6">
           <h3 className="text-lg font-semibold">Description:</h3>
-          <p className="mt-2 p-4 bg-gray-100 rounded">{report.description}</p>
+          <p className="mt-2 p-4 bg-gray-100 rounded">{reportData.description}</p>
         </div>
 
         {/* Social Media Post & Action Taken */}
@@ -115,17 +145,17 @@ export default function ReportDetailPage() {
             <CardContent className="p-6">
               <div className="bg-white shadow-md rounded-lg p-4 border">
                 <div className="flex items-center space-x-2">
-                  <img src="/user-avatar.png" alt="User Avatar" className="w-10 h-10 rounded-full" />
+                  <div className="w-10 h-10 rounded-full bg-gray-300"></div>
                   <div>
-                    <p className="font-semibold">{report.post.user}</p>
-                    <p className="text-gray-500">{report.post.username}</p>
+                    <p className="font-semibold">{reportData.post.user}</p>
+                    <p className="text-gray-500">{reportData.post.username}</p>
                   </div>
                 </div>
-                <p className="mt-4 text-gray-800">{report.post.content}</p>
-                <p className="mt-4 text-sm text-gray-500">{report.post.time}</p>
+                <p className="mt-4 text-gray-800">{reportData.post.content}</p>
+                <p className="mt-4 text-sm text-gray-500">{reportData.post.time}</p>
                 <div className="flex space-x-4 mt-2 text-gray-600 text-sm">
-                  <span>{report.post.retweets} retweets</span>
-                  <span>{report.post.likes} likes</span>
+                  <span>{reportData.post.retweets} retweets</span>
+                  <span>{reportData.post.likes} likes</span>
                 </div>
               </div>
             </CardContent>
@@ -139,7 +169,7 @@ export default function ReportDetailPage() {
             <CardContent>
               <div className="p-4 border rounded-lg bg-gray-100">
                 <h4 className="font-semibold">Fact-Based Response Post</h4>
-                <p className="mt-3 text-gray-800">{report.response}</p>
+                <p className="mt-3 text-gray-800">{reportData.response}</p>
               </div>
             </CardContent>
           </Card>
@@ -147,9 +177,21 @@ export default function ReportDetailPage() {
 
         {/* Back Button */}
         <div className="mt-6">
-          <Button variant="outline" onClick={() => history.back()}>← Back to Reports</Button>
+          <Button 
+            variant="outline" 
+            onClick={() => router.back()}
+          >
+            ← Back to Reports
+          </Button>
         </div>
       </div>
     </Navigation>
-  )
+  );
 }
+
+// Use dynamic import with SSR disabled to completely avoid hydration issues
+const ReportDetailPage = dynamic(() => Promise.resolve(ReportDetailPageComponent), {
+  ssr: false
+});
+
+export default ReportDetailPage;

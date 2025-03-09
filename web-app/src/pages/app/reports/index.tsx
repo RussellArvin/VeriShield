@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export default function ReportsPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const router = useRouter() // <-- Added for navigation
+  const router = useRouter()
 
   const resolvedThreats = [
     { id: "product-safety", description: "Product safety allegations", template: "Social Media", lastEdited: "7 Mar 2025", region: "New York, USA", status: "CRITICAL" },
@@ -21,6 +21,15 @@ export default function ReportsPage() {
   const filteredThreats = resolvedThreats.filter(threat =>
     threat.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  // Function to handle viewing a report
+  const handleViewReport = (threatId: string): void => {
+    // Log for analytics (optional)
+    console.log(`Viewing report: ${threatId}`)
+    
+    // Navigate to your desired page
+    router.push(`/app/reports/page2${threatId}`)
+  }
 
   return (
     <Navigation>
@@ -70,7 +79,16 @@ export default function ReportsPage() {
                 {filteredThreats.map((threat) => (
                   <TableRow key={threat.id}>
                     <TableCell>
-                      <a href="#" className="text-blue-600 hover:underline">{threat.description}</a>
+                      <a 
+                        href="#" 
+                        className="text-blue-600 hover:underline"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleViewReport(threat.id);
+                        }}
+                      >
+                        {threat.description}
+                      </a>
                     </TableCell>
                     <TableCell>{threat.template}</TableCell>
                     <TableCell>{threat.lastEdited}</TableCell>
@@ -81,7 +99,12 @@ export default function ReportsPage() {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Button variant="secondary" onClick={() => router.push(`/reports/${threat.id}`)}>VIEW</Button> 
+                      <Button 
+                        variant="secondary" 
+                        onClick={() => handleViewReport(threat.id)}
+                      >
+                        VIEW
+                      </Button> 
                     </TableCell>
                   </TableRow>
                 ))}
