@@ -194,45 +194,6 @@ export default function SettingsPage() {
                 )}
               </div>
             </div>
-            <div>
-              <p className="text-sm font-medium">Sources to track</p>
-              <div className="mt-2 space-y-1">
-                {isUserDataLoading ? (
-                  <>
-                    <Skeleton className="h-6 w-32" />
-                    <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-6 w-28" />
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="social-media" 
-                        checked={selectedSources.socialMedia}
-                        onCheckedChange={() => handleSourceChange('socialMedia')}
-                      />
-                      <Label htmlFor="social-media" className="text-sm">Social media</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="blogs" 
-                        checked={selectedSources.blogs}
-                        onCheckedChange={() => handleSourceChange('blogs')}
-                      />
-                      <Label htmlFor="blogs" className="text-sm">Blogs</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="news-sites" 
-                        checked={selectedSources.newsSites}
-                        onCheckedChange={() => handleSourceChange('newsSites')}
-                      />
-                      <Label htmlFor="news-sites" className="text-sm">News sites</Label>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
           </CardContent>
         </Card>
 
