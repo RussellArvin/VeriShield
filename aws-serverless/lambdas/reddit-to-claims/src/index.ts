@@ -1,6 +1,7 @@
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import OpenAI from "openai";
 import { SNSEvent, Context } from 'aws-lambda';
+import { createClient } from '@supabase/supabase-js';
 
 // Types for our data
 interface ScrapedResult {
@@ -50,6 +51,11 @@ const openai = new OpenAI({
 const snsClient = new SNSClient({});
 const SNS_TOPIC_ARN = process.env.SNS_TOPIC_ARN as string;
 
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL as string;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export const handler = async (event: SNSEvent, context: Context) => {
   try {
     // Process each message from SNS
@@ -94,6 +100,12 @@ export const handler = async (event: SNSEvent, context: Context) => {
       
       console.log(`[${correlationId}] Extracted total of ${allClaims.length} claims for user ${redditData.userId}`);
 
+      // Calculate total posts processed
+      let totalPosts = 0;
+      for (const subredditResult of redditData.results) {
+        totalPosts += subredditResult.posts.length;
+      }
+
       // Prepare data for the next Lambda
       const resultData: ClaimsResult = {
         userId: redditData.userId,
@@ -102,6 +114,9 @@ export const handler = async (event: SNSEvent, context: Context) => {
         claims: allClaims,
         correlationId: correlationId
       };
+      
+      // Store scan information in Supabase
+      await storeScanInSupabase(String(redditData.userId), totalPosts);
       
       // Publish to the next SNS topic
       await publishToSNS(resultData);
@@ -201,4 +216,24 @@ const publishToSNS = async (data: ClaimsResult): Promise<void> => {
   
   const result = await snsClient.send(command);
   console.log(`[${correlationId}] Published claims data for user ${data.userId} to SNS, MessageId: ${result.MessageId}`);
+};
+
+const storeScanInSupabase = async (userId: string, scannedCount: number): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('threat_scans')
+      .insert({
+        id: crypto.randomUUID(),
+        userId: userId,
+        scannedThreats: scannedCount
+      });
+    
+    if (error) {
+      console.error('Error storing scan data in Supabase:', error);
+    } else {
+      console.log(`Successfully stored scan data for user ${userId} with ${scannedCount} scanned Reddit posts`);
+    }
+  } catch (error) {
+    console.error('Exception when storing scan data in Supabase:', error);
+  }
 };

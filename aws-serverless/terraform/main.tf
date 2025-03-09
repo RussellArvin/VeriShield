@@ -444,6 +444,8 @@ resource "aws_lambda_function" "news_to_claims" {
     variables = {
       OPENAI_API_KEY = var.openai_api_key
       SNS_TOPIC_ARN = aws_sns_topic.news_claims_topic.arn
+      SUPABASE_URL = var.supabase_url
+      SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
     }
   }
 }
@@ -528,6 +530,8 @@ resource "aws_lambda_function" "reddit_to_claims" {
     variables = {
       OPENAI_API_KEY = var.openai_api_key
       SNS_TOPIC_ARN = aws_sns_topic.reddit_claims_topic.arn
+      SUPABASE_URL = var.supabase_url
+      SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
     }
   }
 }
