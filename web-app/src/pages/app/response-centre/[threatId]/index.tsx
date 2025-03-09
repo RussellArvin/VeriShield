@@ -49,27 +49,35 @@ export default function DashboardPage() {
         
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle>Description</CardTitle>
-            <CardDescription>
-              Current safety allegations requiring immediate attention
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
               <div className="grid grid-cols-5 p-4 text-sm font-medium">
-                <div>Product safety allegations</div>
                 <div>Twitter, Reddit</div>
                 <div>6 hours ago</div>
-                <div>New York, USA</div>
                 <div className="inline-flex justify-center w-16 items-center rounded-full bg-red-100 py-0.5 text-xs font-semibold text-red-800">
                   CRITICAL
+                </div>
+                <div className="col-span-2"></div>
+                <div className="col-span-5 flex items-center pt-2">
+                  <a href="https://example.com" className="text-blue-600 hover:underline">https://example.com/incident</a>
                 </div>
               </div>
             </div>
             
-            <div className="mt-4 text-sm">
-              [Company Name] is currently facing false allegations regarding the safety of our product, [Product Name], claiming it poses health risks due to harmful ingredients. These accusations are completely unfounded and lack scientific evidence. If not addressed promptly, these rumors could severely damage our brand reputation, erode consumer trust, and lead to potential legal and financial consequences. We are taking immediate action to provide transparent, factual information and reassure our customers about the product safety.
-            </div>
+            <div className="mb-8">
+  <h3 className="text-md font-semibold mb-2 pt-4">The Real Story:</h3>
+  
+        {/* Placeholder Card */}
+        <div className="border rounded-lg p-4 bg-gray-50">
+  <div className="h-20 bg-gray-200 rounded flex items-center justify-center">
+    <span className="text-gray-500 text-sm">Description content will be added here</span>
+  </div>
+  <div className="mt-3">
+    <a href="https://example.com/detailed-report" className="text-blue-600 hover:text-blue-800 text-sm block mt-2">https://example.com/detailed-report</a>
+  </div>
+</div>
+      </div>
           </CardContent>
         </Card>
         
