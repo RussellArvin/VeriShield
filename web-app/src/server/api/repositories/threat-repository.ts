@@ -43,7 +43,27 @@ export class ThreatRepository {
         }
     }
 
-    public async findAllByUserIdOrNull(userId: string) : Promise<Threat[] | null>{
+    public async findAllCriticalAndMedByUserIdOrNull(userId: string) : Promise<Threat[]>{
+        try{
+            const results = await this.db
+            .select(getTableColumns(threatSchema))
+            .from(threatSchema)
+            .where(and(eq(threatSchema.userId, userId),ne(threatSchema.status,"low")))
+
+            if(results.length === 0){
+                return []
+            }
+            else return results.map((result) => new Threat(result));
+        } catch(err){
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
+
+    public async findAllByUserIdOrNull(userId: string) : Promise<Threat[]>{
         try{
             const results = await this.db
             .select(getTableColumns(threatSchema))
@@ -51,7 +71,7 @@ export class ThreatRepository {
             .where(eq(threatSchema.userId, userId))
 
             if(results.length === 0){
-                return null;
+                return []
             }
             else return results.map((result) => new Threat(result));
         } catch(err){

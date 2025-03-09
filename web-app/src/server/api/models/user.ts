@@ -16,4 +16,19 @@ export class User{
     public getValue(): UserProps{
         return this.props;
     }
+
+    public updateDetails(
+        firstName: string,
+        lastName: string,
+        keywords: string[],
+        persona: string
+    ){
+        return new User({
+            ...this.props,
+            firstName,
+            lastName,
+            keywords,
+            persona
+        })
+    }
 }
