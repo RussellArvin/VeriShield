@@ -11,6 +11,14 @@ export class ThreatResponseService {
         private readonly threatResponseRepository: ThreatResponseRepository
     ) {}
 
+    public async checkAndGenerateQuickResponse(
+        threatId: string,
+        userId: string
+    ) {
+        const threat = (await this.threatRepository.findOneByIdAndUserId(threatId,userId)).getValue()
+        const existingResponses = await this.threatResponseRepository.findManyByThreatId(threatId);
+    }
+
     public async checkAndGenerateResponses(
         threatId: string,
         userId: string

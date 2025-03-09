@@ -75,6 +75,7 @@ export const threatScanSchema = pgTable(
     id: uuid("id").primaryKey().notNull(),
     threatId: uuid("threat_id").notNull().references(() => threatSchema.id),
     type: text("type").notNull(),
+    length: text("length").notNull(),
     response: text("response").notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)

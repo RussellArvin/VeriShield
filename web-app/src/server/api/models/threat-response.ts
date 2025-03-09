@@ -2,6 +2,7 @@ export interface ThreatResponseProps {
     id: string,
     threatId: string,
     type: string,
+    length: string
     response: string,
     createdAt: Date,
     updatedAt: Date
