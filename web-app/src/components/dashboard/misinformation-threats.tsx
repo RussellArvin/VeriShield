@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -9,6 +8,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  getFilteredRowModel,
 } from "@tanstack/react-table"
 
 import { Button } from "~/components/ui/button"
@@ -30,6 +30,8 @@ import {
 import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
+import { Input } from "~/components/ui/input"
+import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 
 // Define the type for our table view data
 interface MisinformationThreat {
@@ -103,6 +105,7 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
 export function MisinformationThreats() {
   // Query the API to get threats
   const { data: apiThreats, isLoading } = api.threat.getCriticalAndMedThreats.useQuery();
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   // Define your columns with proper typing
   const columns: ColumnDef<MisinformationThreat>[] = [
@@ -210,14 +213,34 @@ export function MisinformationThreats() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
+    state: {
+      globalFilter,
+    },
     initialState: {
       pagination: {
         pageSize: 5,
       },
     },
   })
+
   return (
     <div className="w-full">
+      {/* Search input */}
+      <div className="flex items-center py-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search threats..."
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+      </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -271,23 +294,70 @@ export function MisinformationThreats() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage() || isLoading}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage() || isLoading}
-        >
-          Next
-        </Button>
+
+      {/* Enhanced pagination controls */}
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length > 0 &&
+            `Showing ${table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to ${Math.min(
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+              table.getFilteredRowModel().rows.length
+            )} of ${table.getFilteredRowModel().rows.length} entries`}
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage() || isLoading}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Previous
+          </Button>
+          
+          {/* Page number buttons */}
+          <div className="flex items-center space-x-1">
+            {Array.from({ length: table.getPageCount() }, (_, i) => (
+              <Button
+                key={`page-${i}`}
+                variant={table.getState().pagination.pageIndex === i ? "default" : "outline"}
+                size="sm"
+                onClick={() => table.setPageIndex(i)}
+                disabled={isLoading}
+                className="w-8 h-8 p-0"
+              >
+                {i + 1}
+              </Button>
+            ))}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage() || isLoading}
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+          
+          {/* Items per page selector */}
+          <select
+            className="h-8 rounded-md border border-input px-3 py-1 text-sm"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => {
+              table.setPageSize(Number(e.target.value));
+            }}
+            disabled={isLoading}
+          >
+            {[5, 10, 20, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize} per page
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   )
