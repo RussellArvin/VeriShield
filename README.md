@@ -2,6 +2,12 @@
 
 VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and responding to misinformation. It helps organizations protect their brand reputation and stakeholders by proactively identifying false narratives across digital channels.
 
+<p align="center">
+  <a href="https://youtu.be/wfSEPD1uwUk?si=i5-C_owfAJZ2zROd" title="Verishield Demo>
+    <img src="/logo.jpg">
+  </a>
+</p>
+
 ## Table of Contents
 1. [Overview](#overview)
 2. [Key Features](#key-features)
