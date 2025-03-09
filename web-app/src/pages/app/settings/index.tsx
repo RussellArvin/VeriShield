@@ -145,7 +145,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Detection Preferences */}
+                        {/* Detection Preferences */}
         <Card>
           <CardHeader>
             <CardTitle>Detection preferences</CardTitle>
@@ -179,14 +179,14 @@ export default function SettingsPage() {
                   </>
                 ) : (
                   keywords.map((keyword, index) => (
-                    <div key={`${keyword}-${index}`} className="w-full sm:w-auto">
+                    <div key={`${keyword}-${index}`} className="w-auto max-w-full break-words">
                       <Button
                         variant="outline"
-                        className="w-full sm:max-w-xs md:max-w-sm lg:max-w-md flex justify-between items-center overflow-hidden truncate px-3"
+                        className="w-auto max-w-full flex justify-between items-center px-3 py-1 break-words"
                         onClick={() => removeKeyword(keyword)}
-                        title={keyword} // Shows full text on hover
+                        title={keyword} 
                       >
-                        <span className="truncate max-w-[75%]">{keyword}</span> 
+                        <span className="break-words whitespace-normal">{keyword}</span> 
                         <span>✖</span>
                       </Button>
                     </div>
