@@ -26,9 +26,11 @@ import { Skeleton } from "~/components/ui/skeleton"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 import { Input } from "~/components/ui/input"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 // Define the type for our table view data
 interface ThreatMonitorTable {
+  id: string // Added ID field for routing
   description: string
   source: string
   detection: string
@@ -79,9 +81,15 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
 }
 
 export function ThreatMonitorTable() {
+  const router = useRouter(); // Initialize the router for navigation
   // Query the API to get threats - using the same endpoint as MisinformationThreats
   const { data: apiThreats, isLoading } = api.threat.getAll.useQuery();
   const [globalFilter, setGlobalFilter] = React.useState("");
+
+  // Handle navigation to threat detail page
+  const navigateToThreatDetail = (threatId: string) => {
+    router.push(`/app/threat-monitor/${threatId}`);
+  };
 
   // Define your columns with proper typing
   const columns: ColumnDef<ThreatMonitorTable>[] = [
@@ -89,9 +97,12 @@ export function ThreatMonitorTable() {
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => (
-        <a href="#" className="font-medium underline">
+        <button 
+          onClick={() => navigateToThreatDetail(row.original.id)}
+          className="font-medium text-blue-600 hover:text-blue-800 underline text-left w-full"
+        >
           {row.getValue("description")}
-        </a>
+        </button>
       ),
     },
     {
@@ -113,8 +124,12 @@ export function ThreatMonitorTable() {
     {
       accessorKey: "action",
       header: "Action",
-      cell: () => (
-        <Button variant="secondary" className="w-full">
+      cell: ({ row }) => (
+        <Button 
+          variant="secondary" 
+          className="w-full"
+          onClick={() => router.push(`/response-centre?threatId=${row.original.id}`)}
+        >
           RESPOND
         </Button>
       ),
@@ -161,6 +176,7 @@ export function ThreatMonitorTable() {
       }
       
       return {
+        id: threat.id, // Include the threat ID for routing
         description: threat.description,
         source: capitaliseFirstLetter(threat.source),
         detection: formatTimeAgo(new Date(threat.createdAt)), // Ensure createdAt is a Date object

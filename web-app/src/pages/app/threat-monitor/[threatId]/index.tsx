@@ -13,6 +13,7 @@ import { formatTimeAgo } from "~/utils/formatTimeAgo"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 import { ThreatStatus } from "~/components/dashboard/misinformation-threats"
 import { useState, useEffect } from "react"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
 
 export default function ThreatDescriptionPage() {
   const router = useRouter();
@@ -69,13 +70,7 @@ export default function ThreatDescriptionPage() {
                       <TableCell className="text-center px-2 py-3">{data?.threat?.createdAt ? formatTimeAgo(data.threat.createdAt) : '-'}</TableCell>
                       <TableCell className="text-center px-2 py-3">
                         {data?.threat?.status ? (
-                          <Badge className={`px-2 py-1 ${
-                            data.threat.status.toLowerCase() === 'high' ? 'bg-red-500' : 
-                            data.threat.status.toLowerCase() === 'med' ? 'bg-orange-500' :
-                            'bg-yellow-500'
-                          }`}>
-                            {data.threat.status}
-                          </Badge>
+                          <ThreatStatus status={data.threat.status} />
                         ) : '-'}
                       </TableCell>
                     </TableRow>
@@ -157,18 +152,7 @@ export default function ThreatDescriptionPage() {
                 <div className="mt-4 mb-2">
                   {data?.threat?.status ? (
                     <div className="flex items-center">
-                      <Badge className={`px-2 py-1 ${
-                        data.threat.status.toLowerCase() === 'high' ? 'bg-red-500' : 
-                        data.threat.status.toLowerCase() === 'med' ? 'bg-orange-500' :
-                        'bg-yellow-500'
-                      }`}>
-                        {data.threat.status}
-                      </Badge>
-                      <span className="ml-2 text-sm font-medium text-gray-700">
-                        {data.threat.status.toLowerCase() === 'high' ? 'High threat level - immediate action required' : 
-                         data.threat.status.toLowerCase() === 'med' ? 'Medium threat level - investigation needed' :
-                         'Low threat level - monitoring recommended'}
-                      </span>
+                      <ThreatStatus status={data.threat.status} />
                     </div>
                   ) : null}
                 </div>
@@ -223,7 +207,7 @@ export default function ThreatDescriptionPage() {
         {/* Response Button */}
         <div className="mt-6 flex justify-end">
           <Button 
-            onClick={() => router.push("/response-centre")}
+            onClick={() => router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(threatId!))}
             className="bg-black hover:bg-gray-800 text-white font-medium px-6 py-2"
           >
             Respond to Threat

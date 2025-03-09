@@ -1,11 +1,14 @@
+import { TRPCError } from "@trpc/server";
 import { Threat } from "../models/threat";
 import { ThreatRepository } from "../repositories/threat-repository";
 import { ThreatScanRepository } from "../repositories/threat-scan-repository";
+import { ThreatResponseRepository } from "../repositories/threat-response-repository";
 
 export class ThreatService {
     constructor(
         private readonly threatRepository: ThreatRepository,
-        private readonly threatScanRepositroy: ThreatScanRepository
+        private readonly threatScanRepositroy: ThreatScanRepository,
+        private readonly threatResponseRepository: ThreatResponseRepository
     ) {}
 
     public async getActiveThreatCountByUserId(userId: string) : Promise<number> {
@@ -15,6 +18,18 @@ export class ThreatService {
         const threat =  (await this.threatRepository.findOneByIdAndUserId(threatId,userId)).getValue()
 
         return {threat}
+    }
+
+    public async getOneResolvedByThreatIdAndUserId(
+        threatId: string,
+        userId: string
+    ) {
+        const threat = (await this.threatRepository.findOneById(threatId)).getValue()
+        if(!threat.responseId) throw new TRPCError({code:"NOT_FOUND"})
+        const threatResponse = (await this.threatResponseRepository.findOneByIdAndUserId(threatId,userId)).getValue()
+
+
+        return {...threat, response: threatResponse}
     }
 
     public async getCriticalAndMedThreatsByUserIdOrNull(userId: string) : Promise<Threat[]> {
