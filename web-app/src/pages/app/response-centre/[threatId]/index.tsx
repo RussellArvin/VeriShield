@@ -13,7 +13,7 @@ import {
 import { Navigation } from "~/components/global/navigation" 
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { Label } from "~/components/ui/label"
-import { Shield, Clock, Info, Link2, Check } from "lucide-react"
+import { Shield, Clock, Info, Link2, Check, ChevronRight } from "lucide-react"
 import { useRouter } from "next/router"
 import { api } from "~/utils/api"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
@@ -136,10 +136,51 @@ export default function DashboardPage() {
     });
   };
 
+  // Base breadcrumb items
+  const baseBreadcrumbItems = [
+    { name: "Home", href: APP_ROUTES.APP.HOME },
+    { name: "Response Centre", href: APP_ROUTES.APP.RESPONSE_CENTRE },
+  ];
+  
+  // Complete breadcrumb items (adding the dynamic threat item)
+  const breadcrumbItems = [
+    ...baseBreadcrumbItems,
+    ...(isThreatLoading ? [] : [{ name: data?.threat?.description || "", href: "#" }])
+  ];
+
   return (
     <Navigation>
       {/* Main content */}
       <div className="flex-1 space-y-4 p-8 pt-6">
+        {/* Breadcrumb navigation */}
+        <nav className="flex mb-4" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            {breadcrumbItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                {index > 0 && (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                )}
+                {index === breadcrumbItems.length - 1 ? (
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </li>
+            ))}
+            {isThreatLoading && (
+              <li className="flex items-center">
+                <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                <Skeleton className="h-4 w-32" />
+              </li>
+            )}
+          </ol>
+        </nav>
+        
         {/* Improved Header Section */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

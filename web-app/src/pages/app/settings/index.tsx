@@ -11,6 +11,10 @@ import { Label } from "~/components/ui/label"
 import { Moon } from "lucide-react"
 import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
+import Link from "next/link"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { ChevronRight } from "lucide-react";
+
 
 export default function SettingsPage() {
   const { 
@@ -97,13 +101,45 @@ export default function SettingsPage() {
     })
   }
 
+  const breadcrumbItems = [
+    { name: "Home", href: APP_ROUTES.APP.HOME },
+    { name: "Settings", href: "/app/settings" } // ✅ Correct route
+
+  ];
+
+
   // Render the page with skeleton loaders while data is loading
   return (
     <Navigation>
       <div className="flex-1 space-y-6 p-8 pt-6">
+
+         {/* Breadcrumb navigation */}
+         <nav className="flex mb-4" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            {breadcrumbItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                {index > 0 && (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                )}
+                {index === breadcrumbItems.length - 1 ? (
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         </div>
+
+
 
         {/* Profile Information */}
         <Card>
