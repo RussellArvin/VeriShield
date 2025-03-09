@@ -16,8 +16,14 @@ import { useState, useEffect } from "react"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
 import Link from "next/link";
 
-// Fix 1: Remove redundant type constituents in the union type
-type ThreatStatusType = 'critical' | 'medium' | 'low' | Omit<string, 'critical' | 'medium' | 'low'>;
+// Simplified type definition
+type ThreatStatusType = 'critical' | 'medium' | 'low' | string;
+
+// Define media type
+interface Media {
+  mediaUrl: string;
+  isDeepfake: boolean;
+}
 
 interface Threat {
   id: string;
@@ -30,14 +36,15 @@ interface Threat {
   factCheckerUrl?: string;
 }
 
-// Fix 2: Remove unused interface
-// interface ThreatData {
-//   threat?: Threat;
-// }
+// Define the API response type
+interface ThreatResponse {
+  threat?: Threat;
+  media?: Media[];
+}
 
 export default function ThreatDescriptionPage() {
   const router = useRouter();
-  const [threatId, setThreatId] = useState<string | null>(null);
+  const [threatId, setThreatId] = useState<string>("");
   
   // Get the threatId from URL params
   useEffect(() => {
@@ -51,21 +58,23 @@ export default function ThreatDescriptionPage() {
     isLoading,
     data
   } = api.threat.getOne.useQuery(
-    { threatId: threatId ?? "" },
+    { threatId }, 
     {
-      enabled: !!threatId, // Only run the query if threatId exists
+      enabled: threatId !== "", // Only run the query if threatId exists
     }
   );
   
-  // Fix 3: Use isLoading variable
   const loadingMessage = isLoading ? "Loading threat data..." : "";
   
   const breadcrumbItems = [
     { name: "Home", href: APP_ROUTES.APP.HOME },
-    // Fix 4: Remove unnecessary type assertion
     { name: "Threat Monitor", href: APP_ROUTES.APP.THREAT_MONITOR.HOME },
     { name: "Threat Details", href: "#" }
   ];
+  
+  // Safe access to media
+  const mediaItems = data?.media ?? [];
+  const firstMedia = mediaItems[0];
   
   return (
     <Navigation>
@@ -231,25 +240,43 @@ export default function ThreatDescriptionPage() {
             </CardHeader>
             <CardContent className="pt-4 flex-1 flex flex-col items-center justify-between">
               <div className="w-full flex flex-col items-center">
-                <div className="relative w-full max-w-lg">
-                  <Image 
-                    src="/deepfake.jpg" 
-                    alt="Comparison of deepfake and original image" 
-                    width={500} 
-                    height={400} 
-                    className="rounded-lg shadow-md w-full"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white py-2 px-3 rounded-b-lg flex justify-between">
-                    <span className="text-sm font-medium">Deepfake</span>
-                    <span className="text-sm font-medium">Original</span>
+                {firstMedia?.mediaUrl ? (
+                  <div className="relative w-full max-w-lg">
+                    <Image 
+                      src={firstMedia.mediaUrl}
+                      alt="Comparison of deepfake and original image" 
+                      width={500} 
+                      height={400} 
+                      className="rounded-lg shadow-md w-full"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white py-2 px-3 rounded-b-lg flex justify-between">
+                      <span className="text-sm font-medium">Deepfake</span>
+                      <span className="text-sm font-medium">Original</span>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-4 flex items-center justify-center">
-                  <Badge className="bg-red-600 text-white px-3 py-1">DEEPFAKE DETECTED</Badge>
-                </div>
+                ) : (
+                  <div className="flex items-center justify-center h-40 w-full bg-gray-100 rounded-lg">
+                    <p className="text-gray-500">No media available</p>
+                  </div>
+                )}
+                
+                {firstMedia ? (
+                  <div className="mt-4 flex items-center justify-center">
+                    {firstMedia.isDeepFake ? (
+                      <Badge className="bg-red-600 text-white px-3 py-1">DEEPFAKE DETECTED</Badge>
+                    ) : (
+                      <Badge className="bg-green-600 text-white px-3 py-1">AUTHENTIC MEDIA</Badge>
+                    )}
+                  </div>
+                ) : null}
+                
                 <p className="mt-3 text-center text-gray-700">
-                  Our analysis has determined that this image has been digitally manipulated 
-                  using AI technology to create a false representation.
+                  {firstMedia?.isDeepFake 
+                    ? "Our analysis has determined that this image has been digitally manipulated using AI technology to create a false representation."
+                    : firstMedia 
+                      ? "Our analysis indicates this media is authentic."
+                      : "No media analysis available."
+                  }
                 </p>
               </div>
             </CardContent>

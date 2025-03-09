@@ -1,0 +1,1 @@
+ALTER TABLE "threat_media" ADD COLUMN "is_deepfake" boolean DEFAULT false NOT NULL;

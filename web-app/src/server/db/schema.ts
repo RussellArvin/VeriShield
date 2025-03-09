@@ -56,6 +56,7 @@ export const threatMediaSchema = pgTable(
     id: uuid("id").primaryKey().notNull(),
     threatId: uuid("threat_id").notNull().references(() => threatSchema.id),
     mediaUrl: text("media_url").notNull(),
+    isDeepFake: boolean("is_deepfake").notNull().default(false),
     createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
   }
 )

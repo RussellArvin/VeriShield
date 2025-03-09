@@ -4,12 +4,14 @@ import { ThreatRepository } from "../repositories/threat-repository";
 import { ThreatScanRepository } from "../repositories/threat-scan-repository";
 import { ThreatResponseRepository } from "../repositories/threat-response-repository";
 import { analysisService } from ".";
+import { ThreatMediaRepository } from "../repositories/threat-media-repository";
 
 export class ThreatService {
     constructor(
         private readonly threatRepository: ThreatRepository,
         private readonly threatScanRepositroy: ThreatScanRepository,
-        private readonly threatResponseRepository: ThreatResponseRepository
+        private readonly threatResponseRepository: ThreatResponseRepository,
+        private readonly threatMediaRepository: ThreatMediaRepository,
     ) {}
 
     public async getActiveThreatCountByUserId(userId: string) : Promise<number> {
@@ -17,10 +19,9 @@ export class ThreatService {
     }
     public async getOneByThreatIdAndUserId(threatId: string, userId: string){
         const threat = await this.threatRepository.findOneByIdAndUserId(threatId, userId);
-        
-        if(threat.getValue().analysis != null) {
-            return {threat: threat.getValue()};
-        } else {
+        const threatMedia = await this.threatMediaRepository.findManyByThreatId(threatId)
+        if(threat.getValue().analysis != null) return {threat: threat.getValue(), media: threatMedia.map((media) => media.getValue())};
+        else{
             const analysis = await analysisService.generate(
                 threat.getValue().description,
                 threat.getValue().factCheckerDescription,
@@ -28,7 +29,7 @@ export class ThreatService {
             );
             const updatedThreat = threat.setAnalysis(analysis);
             await this.threatRepository.update(updatedThreat);
-            return {threat: updatedThreat.getValue()};
+            return {threat: updatedThreat.getValue(), media: threatMedia.map((media) => media.getValue())};
         }
     }
 
