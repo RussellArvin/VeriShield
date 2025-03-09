@@ -242,6 +242,7 @@ const VeriShieldPage = () => {
               <Button 
                 size="lg" 
                 className="bg-white text-blue-500 hover:bg-gray-100 px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg"
+                onClick={() => router.push(APP_ROUTES.APP.HOME)} 
               >
                 GET STARTED
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
