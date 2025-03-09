@@ -27,13 +27,34 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
+import { api } from "~/utils/api"
+import { Skeleton } from "~/components/ui/skeleton"
+import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 
-// Define the type for our data
+// Define the type for our table view data
 interface MisinformationThreat {
   description: string
   source: string
   detection: string
   status: "CRITICAL" | "MED" | "LOW"
+}
+
+// API threat data type
+interface ThreatProps {
+  id: string
+  userId: string
+  description: string
+  sourceUrl: string
+  source: string
+  createdAt: Date
+  status: string
+  factCheckerUrl: string
+  factCheckerDescription: string
+}
+
+// Threat class returned by the API
+interface Threat {
+  getValue(): ThreatProps
 }
 
 type ThreatStatusProps = {
@@ -80,6 +101,9 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
 }
 
 export function MisinformationThreats() {
+  // Query the API to get threats
+  const { data: apiThreats, isLoading } = api.threat.getCriticalAndMedThreats.useQuery();
+
   // Define your columns with proper typing
   const columns: ColumnDef<MisinformationThreat>[] = [
     {
@@ -113,7 +137,10 @@ export function MisinformationThreats() {
       cell: () => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="w-full">
+            <Button 
+              variant="secondary" 
+              className="w-full transition-all duration-300 hover:bg-primary hover:text-primary-foreground"
+            >
               QUICK RESPONSE
             </Button>
           </DropdownMenuTrigger>
@@ -128,30 +155,57 @@ export function MisinformationThreats() {
     },
   ]
 
-  // Sample data based on your image
-  const data: MisinformationThreat[] = [
-    {
-      description: "Product safety allegations",
-      source: "Twitter, Reddit",
-      detection: "6 hours ago",
-      status: "CRITICAL",
-    },
-    {
-      description: "CEO statement misquote",
-      source: "News site, Facebook",
-      detection: "2 days ago",
-      status: "MED",
-    },
-    {
-      description: "Financial performance rumours",
-      source: "Investment Forums",
-      detection: "3 days ago",
-      status: "MED",
-    },
-  ]
+  // Transform API data to table data format
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(date).getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    
+    if (diffMinutes < 1) {
+      return "Now";
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+    } else {
+      const diffHours = Math.floor(diffMinutes / 60);
+      if (diffHours < 24) {
+        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+      } else {
+        const diffDays = Math.floor(diffHours / 24);
+        return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+      }
+    }
+  };
+
+  // Map API data to our table format
+  const data: MisinformationThreat[] = React.useMemo(() => {
+    if (!apiThreats) return [];
+    
+    return apiThreats.map((threat) => {
+      
+      // Convert status to expected format
+      let status: "CRITICAL" | "MED" | "LOW";
+      const threatStatus = threat.status.toLowerCase();
+      
+      if (threatStatus === "critical") {
+        status = "CRITICAL";
+      } else if (threatStatus === "med" || threatStatus === "medium") {
+        status = "MED";
+      } else {
+        status = "LOW";
+      }
+      
+      return {
+        sourceUrl: threat.sourceUrl,
+        description: threat.description,
+        source: capitaliseFirstLetter(threat.source),
+        detection: formatTimeAgo(new Date(threat.createdAt)), // Ensure createdAt is a Date object
+        status,
+      };
+    });
+  }, [apiThreats]);
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -183,7 +237,18 @@ export function MisinformationThreats() {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              // Loading skeleton state
+              Array.from({ length: 3 }).map((_, index) => (
+                <TableRow key={`loading-${index}`}>
+                  {Array.from({ length: columns.length }).map((_, cellIndex) => (
+                    <TableCell key={`cell-${index}-${cellIndex}`} className="py-4">
+                      <Skeleton className="h-6 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -211,7 +276,7 @@ export function MisinformationThreats() {
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          disabled={!table.getCanPreviousPage() || isLoading}
         >
           Previous
         </Button>
@@ -219,7 +284,7 @@ export function MisinformationThreats() {
           variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          disabled={!table.getCanNextPage() || isLoading}
         >
           Next
         </Button>
