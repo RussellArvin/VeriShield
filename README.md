@@ -220,9 +220,15 @@ Each Lambda function is triggered by events from SNS topics, creating a loosely 
 1. **Set up AWS credentials**
    Configure your AWS CLI with appropriate credentials.
 
-2. **Deploy serverless infrastructure**
+2. **Build Lambda functions**
    ```bash
    cd aws-serverless
+   ./scripts/build.sh
+   ```
+
+3. **Deploy serverless infrastructure**
+   ```bash
+   cd terraform
    terraform init
    terraform apply
    ```
