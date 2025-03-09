@@ -6,95 +6,136 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent } from "~/components/ui/card"
 import { Navigation } from "~/components/global/navigation"
 import { Input } from "~/components/ui/input"
+import { Filter, ChevronDown } from "lucide-react"
+import { VeriShieldLogo } from "~/components/global/logo"
 
-export default function ProductSafetyReport() {
+export default function ReportsPage() {
   return (
     <Navigation>
-      <div className="flex-1 p-8 pt-6">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center space-x-2 text-sm mb-4">
-          <Link href="/app/dashboard" className="text-gray-500 hover:text-blue-600">Home</Link>
-          <span className="text-gray-500">/</span>
-          <Link href="/app/reports" className="text-gray-500 hover:text-blue-600">Reports</Link>
-          <span className="text-gray-500">/</span>
-          <span className="text-gray-900">Product safety allegations</span>
-        </div>
-
-        {/* Report Details Card */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">Product Safety Allegations</h2>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span>Twitter</span>
-                  <span>2 months ago</span>
-                  <span>London, UK</span>
-                  <span className="px-2 py-1 rounded bg-red-500 text-white text-xs">CRITICAL</span>
+      <div className="flex-1 bg-blue-50">
+        {/* Header with navigation */}
+        <header className="bg-white border-b border-gray-200 py-3 px-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex items-center text-sm text-gray-500 space-x-1">
+                <Link href="/app/dashboard" className="hover:text-blue-600">Home</Link>
+                <span>/</span>
+                <span className="text-gray-700">Reports</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search misinformation threats"
+                  className="bg-gray-100 rounded-full py-1.5 px-10 text-sm w-64 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <div className="absolute left-3 top-2.5 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Search misinformation threats"
-                  className="w-64"
+              
+              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                <img 
+                  src="/api/placeholder/32/32" 
+                  alt="User avatar" 
+                  className="rounded-full" 
                 />
               </div>
             </div>
-
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">Description:</h3>
-              <p className="text-gray-700 mb-6">
-                [Company Name] is currently facing false allegations regarding the safety of our product, [Product Name], claiming it poses health risks due to harmful ingredients. These
-                accusations are completely unfounded and lack scientific evidence. If not addressed promptly, these rumors could severely damage our brand reputation, erode consumer
-                trust, and lead to potential legal and financial consequences. We are taking immediate action to provide transparent, factual information and reassure our customers about the
-                product&apos;s safety.
-              </p>
+          </div>
+        </header>
+        
+        {/* Main content */}
+        <main className="p-6">
+          <div className="mb-4 flex justify-between items-center">
+            <h1 className="text-xl font-semibold">Resolved Threats</h1>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-sm flex items-center space-x-1 bg-white"
+              >
+                <span>Filter by...</span>
+                <Filter size={14} />
+              </Button>
             </div>
-
-            {/* Twitter Post */}
-            <div className="border rounded-lg p-4 mb-6">
-              <div className="flex items-start mb-3">
-                <div className="w-12 h-12 rounded-full bg-gray-300 flex-shrink-0"></div>
-                <div className="ml-3">
-                  <div className="flex items-center">
-                    <span className="font-semibold">Justin Welsh</span>
-                    <svg className="h-4 w-4 text-blue-500 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                    </svg>
-                    <span className="ml-2 text-gray-500">@thejustinwelsh</span>
-                  </div>
-                  <p className="my-2">
-                    ⚠️ WARNING ⚠️ I just found out that [Product Name] is SUPER dangerous! It contains harmful chemicals that could seriously hurt you. People who used it, and they had a terrible reaction. Please be careful. DO NOT use it! Please RT! #ProductRecall #HealthHazard
-                  </p>
-                  <div className="text-gray-500 text-sm">03:35 PM · Aug 28, 2023</div>
-                  <div className="flex space-x-4 mt-2 text-gray-500 text-sm">
-                    <span>480 retweets</span>
-                    <span>3.06K likes</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Taken Section */}
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-4">Action taken</h3>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-semibold">1. Fact Based Response Post</h4>
-                  <button className="text-gray-500">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="mb-2 text-sm text-gray-500">Platform: Social Media</div>
-                <p className="text-gray-700">
-                  We take product safety seriously. We are aware of recent allegations regarding [Product Name]. We want to assure our customers that these claims are not based on facts. Our product has passed rigorous safety testing and fully complies with all industry standards. Here&apos;s the full report from [reputable testing lab name] proving its safety: [Link to report]
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-left">
+                  <th className="py-3 px-4 font-medium text-gray-700">Description</th>
+                  <th className="py-3 px-4 font-medium text-gray-700">Template</th>
+                  <th className="py-3 px-4 font-medium text-gray-700">Last Edited</th>
+                  <th className="py-3 px-4 font-medium text-gray-700">Region</th>
+                  <th className="py-3 px-4 font-medium text-gray-700">Status</th>
+                  <th className="py-3 px-4 font-medium text-gray-700">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-3 px-4">
+                    <Link href="/app/reports/product-safety" className="text-gray-900 hover:text-blue-600 font-medium">
+                      Product safety allegations
+                    </Link>
+                  </td>
+                  <td className="py-3 px-4 text-gray-700">Social Media</td>
+                  <td className="py-3 px-4 text-gray-700">7 Mar 2025</td>
+                  <td className="py-3 px-4 text-gray-700">New York, USA</td>
+                  <td className="py-3 px-4">
+                    <span className="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded uppercase font-medium">
+                      Critical
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <Link href="/app/reports/page2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="text-xs px-4"
+                      >
+                        VIEW
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4">
+                    <Link href="/app/reports/ceo-statement" className="text-gray-900 hover:text-blue-600 font-medium">
+                      CEO statement misquote
+                    </Link>
+                  </td>
+                  <td className="py-3 px-4 text-gray-700">Press Statement</td>
+                  <td className="py-3 px-4 text-gray-700">27 Feb 2025</td>
+                  <td className="py-3 px-4 text-gray-700">California, USA</td>
+                  <td className="py-3 px-4">
+                    <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded uppercase font-medium">
+                      Mild
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <Link href="/app/reports/page2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="text-xs px-4"
+                      >
+                        VIEW
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
       </div>
     </Navigation>
   )
