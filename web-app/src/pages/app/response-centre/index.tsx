@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/card"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
 import { Navigation } from "~/components/global/navigation" // Import the Navigation component
-import { ThreatMonitorTable } from "~/components/dashboard/threat-monitor-table"
+import { ThreatMonitorTable } from "~/components/dashboard/serious-threats-table"
 
 export const metadata: Metadata = {
   title: "Dashboard",
