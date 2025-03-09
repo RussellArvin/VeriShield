@@ -10,19 +10,13 @@ import { TrendingDown, TrendingUp } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
-<<<<<<< HEAD
-=======
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
->>>>>>> main
 import { ThreatMonitorTable } from "~/components/dashboard/threat-monitor-table"
 
 export default function ThreatMonitorPage() {
   const [showThreats, setShowThreats] = useState(false)
-<<<<<<< HEAD
-=======
   const [file, setFile] = useState<File | null>(null)
   const [url, setUrl] = useState<string>("")
->>>>>>> main
 
   const misinformationThreats = [
     { description: "Product safety allegations", source: "Twitter, Reddit", detection: "6 hours ago", region: "New York, USA", status: "CRITICAL" },
@@ -43,15 +37,6 @@ export default function ThreatMonitorPage() {
         {/* Top Bar */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Threat Monitor</h2>
-<<<<<<< HEAD
-          <div className="flex items-center space-x-2">
-            <Input placeholder="Search misinformation threats" className="w-80" />
-            <Button onClick={() => setShowThreats(!showThreats)}>
-              {showThreats ? "Go to Overview" : "View Threats"}
-            </Button>
-          </div>
-        </div>
-=======
 
           {/* Dialog Trigger Button */}
           <Dialog>
@@ -103,7 +88,6 @@ export default function ThreatMonitorPage() {
           </Dialog>
         </div>
 
->>>>>>> main
         {/* Threat Overview Page */}
         {!showThreats && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-6">

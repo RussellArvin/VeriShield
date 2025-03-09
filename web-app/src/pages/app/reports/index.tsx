@@ -43,10 +43,6 @@ export default function ReportsPage() {
                 <DropdownMenuItem>All</DropdownMenuItem>
                 <DropdownMenuItem>Critical</DropdownMenuItem>
                 <DropdownMenuItem>Medium</DropdownMenuItem>
-<<<<<<< HEAD
-                <DropdownMenuItem>Low</DropdownMenuItem>
-=======
->>>>>>> main
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
