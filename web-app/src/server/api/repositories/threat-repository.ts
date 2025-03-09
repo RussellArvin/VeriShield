@@ -227,7 +227,7 @@ export class ThreatRepository {
             // Only include threats from the current week
             const results = await this.db
                 .select({
-                    day: sql<string>`to_char(${threatSchema.createdAt}, 'Day')`,
+                    day: sql<string>`trim(to_char(${threatSchema.createdAt}, 'Day'))`,
                     status: threatSchema.status,
                     count: count()
                 })

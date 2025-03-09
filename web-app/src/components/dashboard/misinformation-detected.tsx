@@ -1,44 +1,94 @@
 "use client"
 
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
+import { api } from "~/utils/api"
+import { useState, useEffect } from "react"
+import { Skeleton } from "~/components/ui/skeleton"
 
-// Get the past 7 days (including today)
-const generateDailyData = () => {
-  const today = new Date()
-  const data = []
+// Function to prepare data from API response
+const prepareChartData = (apiData: Array<{day: string, count: number, status: string}>) => {
+  // Get the days of the week
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  const shortDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(today.getDate() - i)
+  // Create a map to hold counts by day
+  const dayData = new Map<string, {name: string, fullDate: string, detected: number}>()
+  
+  // Initialize all days with 0 count
+  const today = new Date()
+  const startOfWeek = new Date(today)
+  startOfWeek.setDate(today.getDate() - today.getDay()) // Get Sunday of current week
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(startOfWeek)
+    date.setDate(startOfWeek.getDate() + i)
     
-    // Format the date as day name (e.g., "Monday")
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
-    
-    // Add date in format MM/DD for tooltip
+    // Get day of week
+    const dayIndex = date.getDay()
+    const dayName = shortDays[dayIndex]
     const fullDate = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
     
-    // Generate some random but realistic data
-    // Using a base number and adding some variation to make it look natural
-    const baseDetected = 15
-    const randomVariation = Math.floor(Math.random() * 20) - 5
-    const detected = Math.max(5, baseDetected + randomVariation)
-    
-    data.push({
+    const dayOfWeek = days[dayIndex]
+    dayData.set(dayOfWeek, {
       name: dayName,
       fullDate,
-      detected
+      detected: 0
     })
   }
   
-  return data
+  // Update counts from API data
+  apiData.forEach(item => {
+    // PostgreSQL's to_char function adds padding, so we need to trim it
+    const dayWithoutPadding = item.day.trim()
+    
+    // Find the matching day regardless of case
+    const matchingDay = days.find(day => 
+      day.toLowerCase() === dayWithoutPadding.toLowerCase()
+    )
+    
+    if (matchingDay && dayData.has(matchingDay)) {
+      const data = dayData.get(matchingDay)
+      if (data) {
+        data.detected += item.count
+      }
+    }
+  })
+  
+  // Convert map to array and sort by day of week
+  return Array.from(dayData.values())
+    .sort((a, b) => {
+      const dayA = shortDays.indexOf(a.name)
+      const dayB = shortDays.indexOf(b.name)
+      return dayA - dayB
+    })
 }
 
-const dailyData = generateDailyData()
-
 export function MisinformationOverview() {
+  const [chartData, setChartData] = useState<Array<{name: string, fullDate: string, detected: number}>>([])
+  
+  // Fetch threats by day using TRPC
+  const { data: threatsByDay, isLoading } = api.threat.findThreatsByDay.useQuery()
+  
+  useEffect(() => {
+    if (threatsByDay) {
+      console.log("API Data:", threatsByDay)
+      const prepared = prepareChartData(threatsByDay)
+      console.log("Prepared Data:", prepared)
+      setChartData(prepared)
+    }
+  }, [threatsByDay])
+  
+  if (isLoading) {
+    return (
+      <div className="w-full h-[350px] flex items-center justify-center">
+        <Skeleton className="w-full h-[300px] rounded-md" />
+      </div>
+    )
+  }
+  
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={dailyData}>
+      <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="name"
