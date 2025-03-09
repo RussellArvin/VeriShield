@@ -36,10 +36,10 @@ export default function SettingsPage() {
   
   // Initialize the update mutation
   const updateUserMutation = api.user.updateUserDetails.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Refetch user data after successful update
       // This will refresh the data displayed on the page
-      refetchUserData()
+      await refetchUserData()
     }
   })
 
@@ -52,9 +52,9 @@ export default function SettingsPage() {
       }
       
       // Set profile information
-      setFirstName(userData.firstName || "")
-      setLastName(userData.lastName || "")
-      setPersona(userData.persona || "")
+      setFirstName(userData.firstName ?? "")
+      setLastName(userData.lastName ?? "")
+      setPersona(userData.persona ?? "")
     }
   }, [userData]) // This dependency array ensures this only runs when userData changes
 

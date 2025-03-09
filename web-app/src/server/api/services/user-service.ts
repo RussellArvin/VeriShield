@@ -47,7 +47,7 @@ export class UserService {
     const user = await this.userRepository.findOneByUserId(userId);
     const updatedUser = user.updateDetails(firstName, lastName, keywords, persona);
 
-    Promise.all([
+    await Promise.all([
       clerkClient.users.updateUser(userId,{
         firstName,
         lastName
