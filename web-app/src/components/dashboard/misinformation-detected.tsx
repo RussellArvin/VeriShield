@@ -2,25 +2,43 @@
 
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
 
-const data = [
-  { name: "Jan", detected: 42 },
-  { name: "Feb", detected: 38 },
-  { name: "Mar", detected: 56 },
-  { name: "Apr", detected: 67 },
-  { name: "May", detected: 48 },
-  { name: "Jun", detected: 72 },
-  { name: "Jul", detected: 83 },
-  { name: "Aug", detected: 62 },
-  { name: "Sep", detected: 51 },
-  { name: "Oct", detected: 64 },
-  { name: "Nov", detected: 78 },
-  { name: "Dec", detected: 91 }
-]
+// Get the past 7 days (including today)
+const generateDailyData = () => {
+  const today = new Date()
+  const data = []
+  
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(today.getDate() - i)
+    
+    // Format the date as day name (e.g., "Monday")
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
+    
+    // Add date in format MM/DD for tooltip
+    const fullDate = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+    
+    // Generate some random but realistic data
+    // Using a base number and adding some variation to make it look natural
+    const baseDetected = 15
+    const randomVariation = Math.floor(Math.random() * 20) - 5
+    const detected = Math.max(5, baseDetected + randomVariation)
+    
+    data.push({
+      name: dayName,
+      fullDate,
+      detected
+    })
+  }
+  
+  return data
+}
+
+const dailyData = generateDailyData()
 
 export function MisinformationOverview() {
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={data}>
+      <LineChart data={dailyData}>
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="name"
@@ -34,15 +52,18 @@ export function MisinformationOverview() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          // Fix: Convert value to string directly instead of using template literal
           tickFormatter={(value) => String(value)}
         />
         <Tooltip 
-          // Fix: Safely convert value to string 
           formatter={(value) => [String(value), "Detected"]}
           contentStyle={{ backgroundColor: "hsl(var(--background))", borderColor: "hsl(var(--border))" }}
-          // Fix: Make sure label is a string
-          labelFormatter={(label) => `${String(label)}: Misinformation Instances`}
+          labelFormatter={(label, payload) => {
+            // Use the fullDate from the payload data for better tooltip labeling
+            if (payload?.length > 0 && payload[0]?.payload) {
+              return `${label} (${payload[0].payload.fullDate}): Misinformation Instances`
+            }
+            return `${String(label)}: Misinformation Instances`
+          }}
         />
         <Line
           type="monotone"
