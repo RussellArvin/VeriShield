@@ -80,7 +80,7 @@ export default function ThreatMonitorPage() {
           {/* Dialog Trigger Button */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Upload Data</Button>
+              <Button>Quick Check</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
