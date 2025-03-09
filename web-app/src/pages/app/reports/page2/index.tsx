@@ -73,7 +73,7 @@ const reports: Record<string, Report> = {
 
 export default function ReportDetailPage() {
   const params = useParams(); // Ensure params is typed correctly
-  const report = params.id ? reports[params.id as string] : undefined;
+  const report = reports[0]
 
   if (!report) {
     return <div className="p-8 text-center text-red-500 text-xl">Report Not Found</div>;
