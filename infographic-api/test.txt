@@ -1,9 +1,0 @@
-curl -X POST http://localhost:3000/generate-infographic \
--H "Content-Type: application/json" \
--d '{
-  "description": "The Earth is flat because cities cannot be upside-down",
-  "source": "Social Media",
-  "status": "False",
-  "source_url": "https://example.com/flat-earth-claim",
-  "fact_checked_url": "https://www.usatoday.com/story/news/factcheck/2022/12/13/fact-check-gravity-pulls-objects-toward-center-earth/10840434002/"
-}'
