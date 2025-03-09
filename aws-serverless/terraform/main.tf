@@ -612,6 +612,8 @@ resource "aws_lambda_function" "fact_checker" {
       SUPABASE_URL = var.supabase_url
       SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
       GOOGLE_FACT_CHECK_API_KEY = var.google_fact_check_api_key
+      OPENAI_API_KEY = var.openai_api_key
+      DEEPFAKE_API_ENDPOINT = "${aws_api_gateway_stage.stage.invoke_url}/predict"
     }
   }
 }

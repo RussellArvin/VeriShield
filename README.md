@@ -46,12 +46,30 @@ VERISHIELD uses a serverless architecture with AWS Lambda functions to process d
 4. **Threat Analysis** - Verified misinformation is assessed for risk
    - Evaluates potential reach and impact
    - Assigns threat levels from 'Low' to 'Critical'
+   - Examines images for manipulation using deepfake detection
 
 5. **Response Generation** - AI creates appropriate responses
    - Tailors responses based on threat level and content
    - Provides quick-response templates and detailed response options
 
 All data is stored in Supabase and displayed in the Next.js web application.
+
+### Deepfake Detection
+
+VERISHIELD integrates advanced deep learning for detecting manipulated media content. Our system:
+
+1. **Automatically extracts images** from source URLs of verified misinformation
+2. **Analyzes each image** for potential manipulation using a state-of-the-art deepfake detection model
+3. **Stores detection results** alongside the threat data for a comprehensive analysis
+
+For our deepfake detection capabilities, we leverage [prithivMLmods/Deep-Fake-Detector-Model](https://huggingface.co/prithivMLmods/Deep-Fake-Detector-Model) from Hugging Face. This model:
+
+- Is trained on diverse datasets of real and manipulated images
+- Provides confidence scores for classification decisions
+- Has been optimized for both accuracy and performance in a serverless environment
+- Is deployed as a SageMaker endpoint through AWS infrastructure
+
+The model is integrated into our serverless architecture using AWS SageMaker, with an API Gateway and Lambda proxy to ensure secure, scalable access from our processing pipeline.
 
 ### Lambda Function Pipeline
 
@@ -79,28 +97,42 @@ The following diagram illustrates the data flow through our serverless architect
        ▼                         ┌─────────────────┐                ┌────────────────┐
 ┌─────────────┐                  │                 │                │                │
 │             │                  │ News-to-        │                │ Fact Checker   │
-│ Google News │────SNS Topic─────▶ Claims Lambda   │────SNS Topic───▶ Lambda         │
-│ Lambda      │  (news-data)     │                 │  (claims)      │                │
-│             │                  │                 │                │                │
-└─────────────┘                  └─────────────────┘                └────────────────┘
-                                                                            │
-                                                                            │
-                                                                            ▼
-                                                                    ┌────────────────┐
-                                                                    │                │
-                                                                    │   Supabase     │
-                                                                    │   Database     │
-                                                                    │                │
-                                                                    └────────────────┘
-                                                                            │
-                                                                            │
-                                                                            ▼
-                                                                    ┌────────────────┐
-                                                                    │                │
-                                                                    │   Web App      │
-                                                                    │   (Next.js)    │
-                                                                    │                │
-                                                                    └────────────────┘
+│ Google News │────SNS Topic─────▶ Claims Lambda   │────SNS Topic───▶ Lambda         │────┐
+│ Lambda      │  (news-data)     │                 │  (claims)      │                │    │
+│             │                  │                 │                │                │    │
+└─────────────┘                  └─────────────────┘                └────────────────┘    │
+                                                                            │             │
+                                                                            │             │
+                                                                            ▼             │
+                                                                    ┌────────────────┐    │
+                                                                    │                │    │
+                                                                    │   Supabase     │◀───┘
+                                                                    │   Database     │    │
+                                                                    │                │    │
+                                                                    └────────────────┘    │
+                                                                            │             │
+                                                                            │             │
+                                                                            ▼             │
+                                                                    ┌────────────────┐    │
+                                                                    │                │    │
+                                                                    │   Web App      │    │
+                                                                    │   (Next.js)    │    │
+                                                                    │                │    │
+                                                                    └────────────────┘    │
+                                                                                          │
+                                                                                          │
+┌──────────────────────────────────────────────────────────────────────────────────────┐  │
+│                                                                                      │  │
+│                                 AWS SageMaker                                        │  │
+│                                                                                      │  │
+│   ┌─────────────────┐        ┌─────────────────┐       ┌─────────────────┐          │  │
+│   │                 │        │                 │       │                 │          │  │
+│   │  Hugging Face   │        │   SageMaker     │       │   API Gateway   │◀─────────┘
+│   │  Deepfake Model │◀───────▶   Endpoint      │◀──────▶   & Lambda      │
+│   │                 │        │                 │       │   Proxy         │
+│   └─────────────────┘        └─────────────────┘       └─────────────────┘          │
+│                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 Each Lambda function is triggered by events from SNS topics, creating a loosely coupled, event-driven architecture that scales automatically based on workload.
@@ -273,6 +305,18 @@ The web app is deployed on Vercel's serverless platform, providing:
 - Zero-downtime deployments
 - Edge network distribution
 
+### SageMaker ML Model Deployment
+
+Our deepfake detection model is deployed using AWS SageMaker, allowing us to:
+
+- **Leverage Hugging Face's Deep-Fake-Detector-Model** - We use the [prithivMLmods/Deep-Fake-Detector-Model](https://huggingface.co/prithivMLmods/Deep-Fake-Detector-Model) from Hugging Face
+- **Scale automatically** - Handle varying loads without manual intervention
+- **Optimize costs** - Pay only for what we use with serverless inference
+- **Ensure low latency** - Process images quickly for real-time threat assessment
+- **Maintain high availability** - Multiple availability zones ensure reliable operation
+
+The model is deployed through our Terraform pipeline, which configures the SageMaker endpoint, necessary IAM roles, and API Gateway integration. This provides a secure, RESTful API that our Lambda functions can call to detect deepfakes in images.
+
 ### Infrastructure as Code with Terraform
 
 VERISHIELD leverages Terraform for infrastructure automation, providing several key benefits:
@@ -301,7 +345,7 @@ Our Terraform workflow defines and provisions:
 3. **Topic Subscriptions** - Connecting Lambdas to their trigger topics
 4. **CloudWatch Rules** - Scheduled events that trigger the pipeline
 5. **IAM Policies** - Fine-grained access control for all services
-6. **SageMaker Endpoints** - ML model deployment for deepfake detection
+6. **SageMaker Endpoints** - ML model deployment for deepfake detection using Hugging Face models
 7. **Environment Variables** - Configuration for all Lambda functions
 
 To deploy the infrastructure:

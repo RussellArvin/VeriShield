@@ -3,12 +3,15 @@ import axios from 'axios';
 import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@supabase/supabase-js';
+import { scrapeImagesFromURL } from './utils/imageUtils';
+import { checkDeepfake } from './utils/deepfakeUtils';
 
 // Initialize constants
 const API_URL = 'https://factchecktools.googleapis.com/v1alpha1/claims:search';
 const GOOGLE_FACT_CHECK_API_KEY = process.env.GOOGLE_FACT_CHECK_API_KEY as string;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY as string;
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const DEEPFAKE_API_ENDPOINT = process.env.DEEPFAKE_API_ENDPOINT as string;
 
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL as string;
@@ -63,6 +66,15 @@ interface ThreatEntry {
   status: 'CRITICAL' | 'MEDIUM' | 'LOW';
   factCheckerUrl: string;
   factCheckerExplanation: string;
+}
+
+// Threat media interface
+interface ThreatMedia {
+  id: string;
+  threatId: string;
+  mediaUrl: string;
+  isDeepFake: boolean;
+  createdAt?: Date;
 }
 
 // Function response interface
@@ -361,6 +373,66 @@ Fact Checker Explanation: ${factCheckerExplanation}`;
   }
 }
 
+// Function to process images from a source URL and store in threat_media table
+async function processImagesFromSourceUrl(sourceUrl: string, threatId: string) {
+  try {
+    console.log(`Processing images from URL: ${sourceUrl} for threat: ${threatId}`);
+    
+    // Scrape images from the source URL
+    const imageUrls = await scrapeImagesFromURL(sourceUrl);
+    console.log(`Found ${imageUrls.length} images from ${sourceUrl}`);
+    
+    // Process each image
+    const mediaPromises = imageUrls.map(async (imageUrl) => {
+      try {
+        // Check if the image is a deepfake
+        const isDeepFake = await checkDeepfake(imageUrl);
+        console.log(`Image ${imageUrl} deepfake check result: ${isDeepFake}`);
+        
+        // Create threat media entry
+        const threatMedia: ThreatMedia = {
+          id: uuidv4(),
+          threatId: threatId,
+          mediaUrl: imageUrl,
+          isDeepFake: isDeepFake
+        };
+        
+        // Store in Supabase
+        const { data, error } = await supabase
+          .from('threat_media')
+          .insert([
+            {
+              id: threatMedia.id,
+              threat_id: threatMedia.threatId,
+              media_url: threatMedia.mediaUrl,
+              is_deepfake: threatMedia.isDeepFake
+            }
+          ]);
+        
+        if (error) {
+          console.error(`Error storing threat media in Supabase:`, error);
+          return null;
+        }
+        
+        console.log(`Successfully stored threat media in Supabase:`, data);
+        return data;
+      } catch (error) {
+        console.error(`Error processing image ${imageUrl}:`, error);
+        return null;
+      }
+    });
+    
+    // Wait for all image processing to complete
+    const results = await Promise.all(mediaPromises);
+    console.log(`Processed ${results.filter(Boolean).length} images successfully`);
+    
+    return results.filter(Boolean);
+  } catch (error) {
+    console.error(`Error processing images from ${sourceUrl}:`, error);
+    return [];
+  }
+}
+
 // Function to store threat in Supabase
 async function storeThreatInSupabase(threatData: {
   id: string
@@ -396,6 +468,10 @@ async function storeThreatInSupabase(threatData: {
     }
     
     console.log('Successfully stored threat in Supabase:', data);
+    
+    // After storing the threat, process images from the source URL
+    await processImagesFromSourceUrl(threatData.sourceUrl, threatData.id);
+    
     return data;
   } catch (error) {
     console.error('Exception storing threat in Supabase:', error);
