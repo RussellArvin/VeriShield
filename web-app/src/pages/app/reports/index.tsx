@@ -43,6 +43,7 @@ export default function ReportsPage() {
                 <DropdownMenuItem>All</DropdownMenuItem>
                 <DropdownMenuItem>Critical</DropdownMenuItem>
                 <DropdownMenuItem>Medium</DropdownMenuItem>
+                <DropdownMenuItem>Low</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
