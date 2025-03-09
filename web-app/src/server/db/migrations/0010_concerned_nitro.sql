@@ -1,0 +1,1 @@
+ALTER TABLE "threats" ADD COLUMN "analysis" text;

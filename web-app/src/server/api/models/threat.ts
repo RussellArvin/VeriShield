@@ -9,6 +9,7 @@ export interface ThreatProps {
     factCheckerUrl: string,
     factCheckerDescription: string
     responseId: string | null
+    analysis: string | null
 }
 
 export class Threat {
@@ -22,6 +23,13 @@ export class Threat {
         return new Threat({
             ...this.props,
             responseId
+        })
+    }
+    
+    public setAnalysis(analysis: string){
+        return new Threat({
+            ...this.props,
+            analysis
         })
     }
 }

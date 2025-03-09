@@ -47,6 +47,7 @@ export const threatSchema = pgTable(
     factCheckerUrl: text("fact_checker_url").notNull(),
     factCheckerDescription: text("fact_checker_description").notNull(),
     responseId: uuid("response_id"),
+    analysis: text("analysis")
   });
   
 export const threatMediaSchema = pgTable(

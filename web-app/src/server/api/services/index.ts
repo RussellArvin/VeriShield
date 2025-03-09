@@ -1,4 +1,5 @@
 import { threatRepository, threatResponseRepository, threatScanRepository, userRepository } from "../repositories";
+import { AnalysisService } from "./analysis-service";
 import { QuickResponseGeneratorService } from "./quick-response-generator-service";
 import { ResponseGenerator } from "./response-generator";
 import { ThreatResponseService } from "./threat-response-service";
@@ -12,3 +13,4 @@ export const threatScanService = new ThreatScanService(threatScanRepository);
 export const quickResponseGeneratorService = new QuickResponseGeneratorService();
 export const responseGenerator = new ResponseGenerator();
 export const threatResponseService = new ThreatResponseService(threatRepository,threatResponseRepository)
+export const analysisService = new AnalysisService();

@@ -3,6 +3,7 @@ import { Threat } from "../models/threat";
 import { ThreatRepository } from "../repositories/threat-repository";
 import { ThreatScanRepository } from "../repositories/threat-scan-repository";
 import { ThreatResponseRepository } from "../repositories/threat-response-repository";
+import { analysisService } from ".";
 
 export class ThreatService {
     constructor(
@@ -15,9 +16,20 @@ export class ThreatService {
         return this.threatRepository.findActiveThreatCountByUserId(userId);
     }
     public async getOneByThreatIdAndUserId(threatId: string, userId: string){
-        const threat =  (await this.threatRepository.findOneByIdAndUserId(threatId,userId)).getValue()
-
-        return {threat}
+        const threat = await this.threatRepository.findOneByIdAndUserId(threatId, userId);
+        
+        if(threat.getValue().analysis != null) {
+            return {threat: threat.getValue()};
+        } else {
+            const analysis = await analysisService.generate(
+                threat.getValue().description,
+                threat.getValue().factCheckerDescription,
+                threat.getValue().status
+            );
+            const updatedThreat = threat.setAnalysis(analysis);
+            await this.threatRepository.update(updatedThreat);
+            return {threat: updatedThreat.getValue()};
+        }
     }
 
     public async findAllResolvedByUserId(userId:string){

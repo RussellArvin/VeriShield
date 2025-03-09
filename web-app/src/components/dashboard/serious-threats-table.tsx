@@ -123,7 +123,10 @@ export function ThreatMonitorTable() {
       accessorKey: "action",
       header: "Action",
       cell: ({row}) => (
-        <Button onClick={() => router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(row.getValue("id")))} variant="secondary" className="w-full">
+        <Button onClick={async () => {
+          const threatId = row.getValue("id");
+          if (typeof threatId === 'string') await router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(threatId))
+        }} variant="secondary" className="w-full">
           RESPOND
         </Button>
       ),

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Navigation } from "~/components/global/navigation"
 import { Badge } from "~/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { api } from "~/utils/api"
 import { useRouter } from "next/navigation"
@@ -15,8 +15,25 @@ import { ThreatStatus } from "~/components/dashboard/misinformation-threats"
 import { useState, useEffect } from "react"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 
+// Fix 1: Remove redundant type constituents in the union type
+type ThreatStatusType = 'critical' | 'medium' | 'low' | Omit<string, 'critical' | 'medium' | 'low'>;
+
+interface Threat {
+  id: string;
+  description: string;
+  source: string;
+  status: ThreatStatusType;
+  createdAt: string | Date;
+  sourceUrl?: string;
+  analysis?: string;
+  factCheckerUrl?: string;
+}
+
+// Fix 2: Remove unused interface
+// interface ThreatData {
+//   threat?: Threat;
+// }
 
 export default function ThreatDescriptionPage() {
   const router = useRouter();
@@ -34,23 +51,28 @@ export default function ThreatDescriptionPage() {
     isLoading,
     data
   } = api.threat.getOne.useQuery(
-    { threatId: threatId! },
+    { threatId: threatId ?? "" },
     {
       enabled: !!threatId, // Only run the query if threatId exists
     }
   );
   
-  const isThreatLoading = isLoading || data === undefined;
-
+  // Fix 3: Use isLoading variable
+  const loadingMessage = isLoading ? "Loading threat data..." : "";
+  
   const breadcrumbItems = [
     { name: "Home", href: APP_ROUTES.APP.HOME },
-    { name: "Threat Monitor", href: APP_ROUTES.APP.THREAT_MONITOR }, // ✅ Ensure this is a valid route
+    // Fix 4: Remove unnecessary type assertion
+    { name: "Threat Monitor", href: APP_ROUTES.APP.THREAT_MONITOR.HOME },
     { name: "Threat Details", href: "#" }
   ];
   
   return (
     <Navigation>
       <div className="flex-1 p-8 pt-6">
+        {/* Display loading message when loading */}
+        {isLoading && <p className="text-gray-500">{loadingMessage}</p>}
+        
         {/* Breadcrumb navigation */}
         <nav className="flex mb-4" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">
@@ -176,10 +198,7 @@ export default function ThreatDescriptionPage() {
             </CardHeader>
             <CardContent className="flex-1 flex flex-col justify-between py-4">
               <div>
-                <p className="text-gray-700">
-                  Analysis details about the claim will be displayed here. 
-                  This section can include fact-checking insights, official statements, or verification status.
-                </p>
+                <p className="text-gray-500 italic">{data?.threat?.analysis}</p>
                 <div className="mt-4 mb-2">
                   {data?.threat?.status ? (
                     <div className="flex items-center">
@@ -188,18 +207,20 @@ export default function ThreatDescriptionPage() {
                   ) : null}
                 </div>
               </div>
-              <div className="mt-6">
-                <Button 
-                  asChild 
-                  className="gap-2 w-full sm:w-auto"
-                  variant="default"
-                >
-                  <a href="#" target="_blank" rel="noopener noreferrer">
-                    <span>Visit Credible Source</span>
-                    <ExternalLink size={16} />
-                  </a>
-                </Button>
-              </div>
+              {data?.threat?.factCheckerUrl && (
+                <div className="mt-6">
+                  <Button 
+                    asChild 
+                    className="gap-2 w-full sm:w-auto"
+                    variant="default"
+                  >
+                    <a href={data.threat.factCheckerUrl} target="_blank" rel="noopener noreferrer">
+                      <span>Visit Credible Source</span>
+                      <ExternalLink size={16} />
+                    </a>
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -238,8 +259,9 @@ export default function ThreatDescriptionPage() {
         {/* Response Button */}
         <div className="mt-6 flex justify-end">
           <Button 
-            onClick={() => router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(threatId!))}
+            onClick={() => threatId && router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(threatId))}
             className="bg-black hover:bg-gray-800 text-white font-medium px-6 py-2"
+            disabled={!threatId}
           >
             Respond to Threat
           </Button>
