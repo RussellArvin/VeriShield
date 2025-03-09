@@ -86,10 +86,6 @@ export default function SettingsPage() {
   const removeKeyword = (keywordToRemove: string) => {
     setKeywords(prevKeywords => prevKeywords.filter(keyword => keyword !== keywordToRemove))
   }
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
-  }
   
   // Handle saving user settings
   const handleSaveChanges = () => {
@@ -107,15 +103,6 @@ export default function SettingsPage() {
       <div className="flex-1 space-y-6 p-8 pt-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <div className="flex items-center space-x-2">
-            <Moon size={18} />
-            <Label htmlFor="dark-mode" className="text-xl">Dark Mode</Label>
-            <Switch 
-              id="dark-mode" 
-              checked={darkMode}
-              onCheckedChange={toggleDarkMode}
-            />
-          </div>
         </div>
 
         {/* Profile Information */}
