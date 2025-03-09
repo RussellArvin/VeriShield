@@ -1,270 +1,312 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
-import { 
-  FileText, 
-  Filter, 
-  BarChart2, 
-  Code, 
-  Palette, 
-  Square, 
-  Type,
-  Circle,
-  Layout
-} from 'lucide-react';
+import { Shield, CheckCircle, BarChart2, Search, FileText, UserCheck, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/router';
 import APP_ROUTES from '~/server/constants/APP_ROUTES';
 import { VeriShieldLogo } from '~/components/global/logo';
 import BlurFade from '~/components/magicui/blur-fade';
+import type { ReactNode } from 'react';
 import { useTheme } from 'next-themes';
 
-const ThreatViewPage = () => {
-  const router = useRouter();
-  const { setTheme } = useTheme();
-  const [activeTool, setActiveTool] = useState('code');
-  
-  // Force light theme for consistency with other pages
-  useEffect(() => {
-    setTheme('light');
-  }, [setTheme]);
-  
-  const handleToolClick = (tool) => {
-    setActiveTool(tool);
-  };
-  
+interface FeatureCardProps {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  delay?: number;
+}
+
+const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) => {
+  const Icon = icon;
   return (
-    <div className="min-h-screen bg-blue-50">
-      {/* Header with navigation */}
-      <header className="bg-white border-b border-gray-200 py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center">
-            <VeriShieldLogo size="medium" />
-            
-            <nav className="ml-8">
-              <ul className="flex space-x-1">
-                <li>
-                  <a href="#" className="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 font-medium px-3 py-2 text-sm border-b-2 border-blue-600">
-                    Reports
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            
-            <div className="ml-auto flex items-center space-x-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search misinformation threats"
-                  className="bg-gray-100 rounded-full py-2 px-4 pl-10 w-64 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                />
-                <div className="absolute left-3 top-2.5 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                <img 
-                  src="/api/placeholder/32/32" 
-                  alt="User avatar" 
-                  className="rounded-full" 
-                />
-              </div>
-            </div>
+    <div>
+      <BlurFade delay={delay} duration={0.5} className="">
+        <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300">
+          <div className="mb-4 bg-blue-100 p-3 rounded-full">
+            <Icon size={24} className="text-blue-700" />
           </div>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="container mx-auto p-4">
-        {/* Toolbar section */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <div className="flex border-b">
-            <div className="p-3 bg-blue-500 text-white rounded-tl-lg">
-              <FileText size={20} />
-            </div>
-            
-            <div className="flex divide-x">
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'code' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('code')}
-              >
-                <Code size={16} className="mr-2" />
-                Code
-              </button>
-              
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'layout' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('layout')}
-              >
-                <Layout size={16} className="mr-2" />
-                Layout
-              </button>
-              
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'style' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('style')}
-              >
-                <Palette size={16} className="mr-2" />
-                Style
-              </button>
-              
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'type' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('type')}
-              >
-                <Type size={16} className="mr-2" />
-                Type
-              </button>
-              
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'components' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('components')}
-              >
-                <Square size={16} className="mr-2" />
-                Components
-              </button>
-              
-              <button 
-                className={`px-4 py-2 flex items-center text-sm ${activeTool === 'assets' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}
-                onClick={() => handleToolClick('assets')}
-              >
-                <Circle size={16} className="mr-2" />
-                Assets
-              </button>
-            </div>
-          </div>
-          
-          {/* Code editor area */}
-          <div className="p-4">
-            <div className="bg-gray-50 rounded border border-gray-200 p-4 h-64 font-mono text-sm overflow-y-auto">
-              {/* This would be a code editor component in the actual implementation */}
-              <pre className="text-gray-800">
-{`// Threat analysis component
-import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardContent } from '~/components/ui/card';
-import { Badge } from '~/components/ui/badge';
-import { Alert, AlertTitle } from '~/components/ui/alert';
-
-export function ThreatAnalysisView({ threatId }) {
-  const [threat, setThreat] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    // Fetch threat data
-    async function fetchThreatData() {
-      try {
-        const response = await fetch(\`/api/threats/\${threatId}\`);
-        const data = await response.json();
-        setThreat(data);
-      } catch (error) {
-        console.error("Failed to fetch threat data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchThreatData();
-  }, [threatId]);
-
-  if (loading) return <div>Loading...</div>;
-  if (!threat) return <div>Threat not found</div>;
-  
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">{threat.title}</h2>
-          <Badge variant={threat.severity === 'critical' ? 'destructive' : 'warning'}>
-            {threat.severity}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* Additional threat details would go here */}
-      </CardContent>
-    </Card>
-  );
-}`}
-              </pre>
-            </div>
-          </div>
-        </div>
-        
-        {/* Preview section */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Preview</h2>
-            <div className="flex items-center space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="text-sm"
-              >
-                Responsive
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="text-sm"
-              >
-                Desktop
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="text-sm bg-blue-50 text-blue-600"
-              >
-                Mobile
-              </Button>
-            </div>
-          </div>
-          
-          {/* Preview content - this would be generated from the code above */}
-          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <div className="max-w-md mx-auto">
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-                <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-                  <h3 className="font-medium">Product safety allegations</h3>
-                  <div className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">CRITICAL</div>
-                </div>
-                <div className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Source:</span>
-                      <span className="font-medium">Social Media</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Region:</span>
-                      <span className="font-medium">New York, USA</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">Last updated:</span>
-                      <span className="font-medium">7 Mar 2025</span>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-gray-100">
-                      <Button 
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                      >
-                        View Full Report
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+          <h3 className="text-xl font-semibold mb-2">{title}</h3>
+          <p className="text-gray-600">{description}</p>
+        </Card>
+      </BlurFade>
     </div>
   );
 };
 
-export default ThreatViewPage;
+const VeriShieldPage = () => {
+  const router = useRouter();
+  const { setTheme } = useTheme();
+  
+  // Force light theme for landing page
+  useEffect(() => {
+    setTheme('light');
+    // No cleanup needed as other pages will handle their own theme
+  }, [setTheme]);
+  
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-screen flex flex-col overflow-hidden">
+        {/* Background - Enhanced gradient with animation */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div 
+            className="w-full h-full bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400"
+            style={{ 
+              backgroundSize: 'cover',
+              position: 'relative'
+            }}
+          >
+            {/* Wave patterns with SVG overlay */}
+            <svg width="100%" height="100%" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" opacity="0.3">
+              <path d="M0,500 C200,400 300,300 500,500 C700,700 800,600 1000,500 L1000,1000 L0,1000 Z" fill="#ffffff">
+                <animate attributeName="d" dur="15s" repeatCount="indefinite" 
+                  values="M0,500 C200,400 300,300 500,500 C700,700 800,600 1000,500 L1000,1000 L0,1000 Z;
+                         M0,500 C150,450 350,350 500,500 C650,650 850,550 1000,500 L1000,1000 L0,1000 Z;
+                         M0,500 C200,400 300,300 500,500 C700,700 800,600 1000,500 L1000,1000 L0,1000 Z" />
+              </path>
+              <path d="M0,600 C150,500 350,700 500,600 C650,500 850,700 1000,600 L1000,1000 L0,1000 Z" fill="#ffffff">
+                <animate attributeName="d" dur="20s" repeatCount="indefinite" 
+                  values="M0,600 C150,500 350,700 500,600 C650,500 850,700 1000,600 L1000,1000 L0,1000 Z;
+                         M0,650 C200,550 300,750 500,650 C700,550 800,750 1000,650 L1000,1000 L0,1000 Z;
+                         M0,600 C150,500 350,700 500,600 C650,500 850,700 1000,600 L1000,1000 L0,1000 Z" />
+              </path>
+            </svg>
+          </div>
+        </div>
+        
+        {/* Navigation */}
+
+        
+        {/* Hero Content */}
+        <main className="container mx-auto grow flex flex-col items-center justify-center text-center px-4">
+          <div className="max-w-3xl">
+            <div>
+              <BlurFade duration={0.5} className="">
+                <VeriShieldLogo size="large" />
+              </BlurFade>
+            </div>
+            
+            <div>
+              <BlurFade delay={0.2} duration={0.5} className="">
+                <div className="mt-4 text-2xl md:text-3xl font-audiowide tracking-wider">
+                  Predict and counter
+                  <br />
+                  misinformation with AI
+                </div>
+              </BlurFade>
+            </div>       
+            <div>
+              <BlurFade delay={0.6} duration={0.5} className="">
+                <div className="mt-10">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    onClick={() => router.push(APP_ROUTES.APP.HOME)} 
+                    className="bg-white px-8 py-6 text-xl hover:bg-blue-50 transition-colors group"
+                  >
+                    GET STARTED
+                    <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </BlurFade>
+            </div>
+          </div>
+        </main>
+        
+        {/* Scroll Down Arrow - Positioned with fixed height from bottom */}
+        <div className="absolute bottom-12 left-0 right-0 flex justify-center z-20" style={{ pointerEvents: 'auto' }}>
+          <BlurFade delay={1.0} duration={0.5}>
+            <button 
+              onClick={() => {
+                document.querySelector('#about-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-white bg-opacity-80 hover:bg-opacity-100 p-4 rounded-full transition-all duration-300 animate-bounce shadow-lg"
+              aria-label="Scroll to next section"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-800">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+              </svg>
+            </button>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about-section" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <BlurFade className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">About VeriShield</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              VeriShield is an advanced platform designed to combat online falsehoods through AI-powered detection and prediction technology.
+            </p>
+          </BlurFade>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard 
+              icon={Shield}
+              title="Detect Misinformation" 
+              description="Our advanced AI algorithms identify false claims and misleading content across the web with high accuracy."
+              delay={0.1}
+            />
+            <FeatureCard 
+              icon={BarChart2}
+              title="Predict Trends" 
+              description="Stay ahead of emerging misinformation trends with predictive analytics that forecast potential false narratives before they spread widely."
+              delay={0.2}
+            />
+            <FeatureCard 
+              icon={Search}
+              title="Real-time Analysis" 
+              description="Monitor online content in real-time and receive instant verification results to respond quickly to misinformation."
+              delay={0.3}
+            />
+            <FeatureCard 
+              icon={FileText}
+              title="Comprehensive Reports" 
+              description="Generate detailed reports on misinformation patterns and sources to better understand the landscape of online falsehoods."
+              delay={0.4}
+            />
+            <FeatureCard 
+              icon={CheckCircle}
+              title="Fact Checking" 
+              description="Cross-reference claims against reliable sources and databases to provide evidence-based verification."
+              delay={0.5}
+            />
+            <FeatureCard 
+              icon={UserCheck}
+              title="User-friendly Interface" 
+              description="Access powerful verification tools through an intuitive dashboard designed for both experts and casual users."
+              delay={0.6}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <BlurFade className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our platform uses cutting-edge artificial intelligence to verify online content and predict misinformation patterns.
+            </p>
+          </BlurFade>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center mb-16">
+              <BlurFade className="md:w-1/2 md:pr-8 mb-6 md:mb-0" delay={0.2}>
+                <div className="bg-blue-100 p-8 rounded-lg flex justify-center items-center h-64 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-200 opacity-50"></div>
+                  <Shield size={80} className="text-blue-600 relative z-10" />
+                </div>
+              </BlurFade>
+              <BlurFade className="md:w-1/2" delay={0.4}>
+                <h3 className="text-2xl font-semibold mb-4">Content Analysis</h3>
+                <p className="text-gray-600 mb-4">
+                  Our AI analyzes text, images, and video content from across the web to identify potential misinformation based on patterns, inconsistencies, and contextual factors.
+                </p>
+                <p className="text-gray-600">
+                  Using natural language processing and computer vision, we can detect subtle signs of manipulated content that might escape human verification.
+                </p>
+              </BlurFade>
+            </div>
+            
+            <div className="flex flex-col md:flex-row-reverse items-center mb-12">
+              <BlurFade className="md:w-1/2 md:pl-8 mb-6 md:mb-0" delay={0.2}>
+                <div className="bg-blue-100 p-8 rounded-lg flex justify-center items-center h-64 overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-200 opacity-50"></div>
+                  <BarChart2 size={80} className="text-blue-600 relative z-10" />
+                </div>
+              </BlurFade>
+              <BlurFade className="md:w-1/2" delay={0.4}>
+                <h3 className="text-2xl font-semibold mb-4">Predictive Analytics</h3>
+                <p className="text-gray-600 mb-4">
+                  By analyzing historical misinformation patterns and current trending topics, our system can predict emerging false narratives before they gain significant traction.
+                </p>
+                <p className="text-gray-600">
+                  This early warning system allows fact-checkers and content moderators to prepare responses to potential misinformation campaigns proactively.
+                </p>
+              </BlurFade>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <BlurFade>
+            <h2 className="text-3xl font-bold mb-6">Ready to Combat Misinformation?</h2>
+          </BlurFade>
+          <BlurFade delay={0.2}>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Join the fight against online falsehoods with our powerful AI-driven platform. Start your free trial today.
+            </p>
+          </BlurFade>
+          <BlurFade delay={0.4}>
+            <div>
+              <Button 
+                size="lg" 
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg"
+              >
+                START FREE TRIAL
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </BlurFade>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-gray-800 text-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <BlurFade className="mb-6 md:mb-0">
+              <VeriShieldLogo size='medium'/>
+              <p className="mt-2 text-gray-400">Fighting misinformation with AI</p>
+            </BlurFade>
+            <div className="flex flex-wrap justify-center gap-8">
+              <BlurFade delay={0.1}>
+                <div>
+                  <h4 className="font-semibold mb-4">Platform</h4>
+                  <ul className="space-y-2">
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">How it works</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API</a></li>
+                  </ul>
+                </div>
+              </BlurFade>
+              <BlurFade delay={0.2}>
+                <div>
+                  <h4 className="font-semibold mb-4">Company</h4>
+                  <ul className="space-y-2">
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About us</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                  </ul>
+                </div>
+              </BlurFade>
+              <BlurFade delay={0.3}>
+                <div>
+                  <h4 className="font-semibold mb-4">Legal</h4>
+                  <ul className="space-y-2">
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</a></li>
+                  </ul>
+                </div>
+              </BlurFade>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400">
+            <p>© 2025 VeriShield. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default VeriShieldPage;
