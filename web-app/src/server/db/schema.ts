@@ -35,7 +35,7 @@ export const userSchema = pgTable(
 export const threatSchema = pgTable(
   "threats",
   {
-    id: uuid("id").primaryKey().notNull(),
+    id: uuid("id").primaryKey().notNull().default(sql`uuid_generate_v4()`),
     userId: text("user_id").notNull().references(() => userSchema.id),
     description: text("description").notNull(),
     sourceUrl: text("source_url").notNull(),
@@ -44,6 +44,8 @@ export const threatSchema = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     status: text("status").notNull(),
+    factCheckerUrl: text("fact_checker_url").notNull(),
+    factCheckerDescription: text("fact_checker_description").notNull(),
   });
   
 export const threatMediaSchema = pgTable(

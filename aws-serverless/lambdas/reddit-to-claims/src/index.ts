@@ -30,7 +30,8 @@ interface Claim {
   text: string;
   sourceUrl: string;
   sourceTitle: string;
-  subreddit: string;
+  sourceType: string;
+  source?: string;
 }
 
 interface ClaimsResult {
@@ -162,7 +163,8 @@ Extract all relevant claims - factual statements, opinions, predictions, and ass
         text: cleanedLine,
         sourceUrl: post.url,
         sourceTitle: post.title,
-        subreddit: subreddit
+        sourceType: "reddit",
+        source: `r/${subreddit}`
       };
     });
     

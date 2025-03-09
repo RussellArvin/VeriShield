@@ -57,11 +57,12 @@ zip -r $ROOT_DIR/lambdas/reddit-to-claims.zip dist package.json
 echo "Building fact-checker Lambda..."
 cd $ROOT_DIR/lambdas/fact-checker
 npm install
+# Use esbuild to create a bundled version with all dependencies included
 npm run build
-# Remove dev dependencies before packaging
-npm prune --production
-# Create smaller package - adjust dependencies as needed
-zip -r $ROOT_DIR/lambdas/fact-checker.zip dist node_modules package.json
+# Create smaller package with just the bundled code - explicitly exclude node_modules
+rm -f $ROOT_DIR/lambdas/fact-checker.zip
+cd dist
+zip -r $ROOT_DIR/lambdas/fact-checker.zip . ../package.json
 
 echo "All Lambda functions built successfully!"
 echo "Zip files created at:"

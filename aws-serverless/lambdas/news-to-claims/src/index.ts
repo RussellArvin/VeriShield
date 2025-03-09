@@ -21,8 +21,9 @@ interface Article {
 
 interface Claim {
   text: string;
-  articleUrl: string;
-  articleTitle: string;
+  sourceUrl: string;
+  sourceTitle: string;
+  sourceType: string;
   source?: string;
 }
 
@@ -161,9 +162,11 @@ const extractClaimsFromArticle = async (article: Article): Promise<Claim[]> => {
       const cleanedLine = line.replace(/^\d+\.\s+/, '').trim();
       return {
         text: cleanedLine,
-        articleUrl: article.url,
-        articleTitle: article.title,
-        source: article.source
+        sourceUrl: article.url,
+        sourceTitle: article.title,
+        sourceType: "news",
+        source: typeof article.source === 'string' ? article.source : 
+          (article.source ? JSON.stringify(article.source) : undefined)
       };
     });
     
