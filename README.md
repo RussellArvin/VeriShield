@@ -1,6 +1,6 @@
 # VERISHIELD 🛡️
 
-VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and responding to misinformation. It helps organizations protect their brand reputation and stakeholders by proactively identifying false narratives across digital channels.
+VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and responding to misinformation. VeriShield goes beyond just detecting misinformation — it predicts emerging threats before they escalate into critical issues. By proactively identifying false narratives across digital channels, VeriShield empowers organizations to safeguard their brand reputation and stakeholders. Its advanced predictive analysis enables early intervention, ensuring potential risks are addressed swiftly and effectively.
 
 <p align="center">
   <a href="https://youtu.be/wfSEPD1uwUk?si=i5-C_owfAJZ2zROd" title="Verishield Demo">
@@ -28,9 +28,9 @@ VERISHIELD monitors content across multiple digital sources, identifies potentia
 
 - **Comprehensive Content Monitoring** - Scans Reddit, news sites, and other digital channels
 - **AI-Powered Fact Verification** - Cross-references claims with verified sources
-- **Threat Detection & Classification** - Evaluates potential damage and categorizes threats from 'Low' to 'Critical'
+- **Threat Detection & Classification** - Evaluates potential damage and categorizes threats from 'No Threat' to 'Critical'
 - **Deepfake Detection** - Identifies manipulated media with precise accuracy scores
-- **Response Generation** - Creates tailored responses following ethical influence principles
+- **Response Generation** - Creates customisable tailored responses following ethical influence principles
 - **Centralized Dashboard** - Provides threat visualization, analytics, and response management
 
 ## System Architecture
@@ -51,12 +51,12 @@ VERISHIELD uses a serverless architecture with AWS Lambda functions to process d
 
 4. **Threat Analysis** - Verified misinformation is assessed for risk
    - Evaluates potential reach and impact
-   - Assigns threat levels from 'Low' to 'Critical'
+   - Assigns threat levels from 'No Threat' to 'Low' to 'Critical'
    - Examines images for manipulation using deepfake detection
 
 5. **Response Generation** - AI creates appropriate responses
    - Tailors responses based on threat level and content
-   - Provides quick-response templates and detailed response options
+   - Provides quick-response templates and detailed response options, which can be edited
 
 All data is stored in Supabase and displayed in the Next.js web application.
 
@@ -243,21 +243,21 @@ Each Lambda function is triggered by events from SNS topics, creating a loosely 
 
 ### Corporate Communications
 - Monitor brand mentions across platforms
-- Identify and address false narratives
+- Identify and address false narratives or rumours
 - Craft effective, fact-based responses
 
 ### Financial Institutions
 - Detect scams and frauds surrounding financial products
-- Protect customers from financial misinformation
+- Protect customers from financial misinformation (i.e. Pump and Dump Schemes)
 - Maintain market confidence during volatility
 
 ### Healthcare Organizations
-- Combat medical misinformation
+- Combat medical misinformation (i.e. Vaccines Hoax)
 - Protect public health messaging
 - Support evidence-based communication
 
 ### Government Agencies
-- Track public service misinformation
+- Track public service misinformation (i.e. Elections, Government Policies)
 - Ensure accurate policy understanding
 - Support clear public communications
 
