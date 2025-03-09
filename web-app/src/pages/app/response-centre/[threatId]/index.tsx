@@ -33,7 +33,8 @@ export default function DashboardPage() {
       enabled: !!router.query.threatId, // Only run the query if `id` exists
     }
   );
-  const isThreatLoading = isLoading && data === undefined
+  // Fix loading state to use OR instead of AND
+  const isThreatLoading = isLoading || data === undefined;
 
   return (
     <Navigation>
@@ -45,7 +46,7 @@ export default function DashboardPage() {
             {isThreatLoading ? (
               <Skeleton className="h-9 w-64" />
             ) : (
-              <h2 className="text-3xl font-bold tracking-tight">{data?.threat?.description || "Threat Details"}</h2>
+              <h2 className="text-3xl font-bold tracking-tight">{data?.threat?.description ?? "Threat Details"}</h2>
             )}
           </div>
           <Button onClick={() => router.push(APP_ROUTES.APP.RESPONSE_CENTRE.HOME)} variant="outline">Go Back</Button>
@@ -70,17 +71,17 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <div>{data?.threat?.source ? capitaliseFirstLetter(data.threat.source) : "Unknown Source"}</div>
-                    <div>{formatTimeAgo(data?.threat.createdAt!)}</div>
+                    <div>{formatTimeAgo(data?.threat?.createdAt ?? new Date())}</div>
                     <div className="inline-flex justify-center w-16 items-center rounded-full bg-red-100 py-0.5 text-xs font-semibold text-red-800">
-                      <ThreatStatus status={data?.threat.status!} />
+                      <ThreatStatus status={data?.threat?.status ?? "unknown"} />
                     </div>
                     <div className="col-span-2"></div>
                     <div className="col-span-5 flex items-center pt-2">
                       <a 
-                        href={data?.threat?.sourceUrl || "#"} 
+                        href={data?.threat?.sourceUrl ?? "#"} 
                         className="text-blue-600 hover:underline"
                       >
-                        {data?.threat?.sourceUrl || "No source URL available"}
+                        {data?.threat?.sourceUrl ?? "No source URL available"}
                       </a>
                     </div>
                   </>
@@ -101,14 +102,14 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <div className="h-20 bg-gray-200 rounded flex items-center justify-center">
-                      <span className="text-gray-500 text-sm">{data?.threat?.factCheckerDescription || "No fact check description available"}</span>
+                      <span className="text-gray-500 text-sm">{data?.threat?.factCheckerDescription ?? "No fact check description available"}</span>
                     </div>
                     <div className="mt-3">
                       <a 
-                        href={data?.threat?.factCheckerUrl || "#"} 
+                        href={data?.threat?.factCheckerUrl ?? "#"} 
                         className="text-blue-600 hover:text-blue-800 text-sm block mt-2"
                       >
-                        {data?.threat?.factCheckerUrl || "No fact checker URL available"}
+                        {data?.threat?.factCheckerUrl ?? "No fact checker URL available"}
                       </a>
                     </div>
                   </>
@@ -160,7 +161,7 @@ export default function DashboardPage() {
               <div className="p-4">
                 <h3 className="font-medium mb-2">Direct Response Strategy</h3>
                 <p className="text-sm text-gray-600">
-                  A straightforward response addressing the claim about {data?.threat?.description || "the issue"}.
+                  A straightforward response addressing the claim about {data?.threat?.description ?? "the issue"}.
                 </p>
               </div>
             )}
@@ -180,7 +181,7 @@ export default function DashboardPage() {
               <div className="p-4">
                 <h3 className="font-medium mb-2">Educational Approach</h3>
                 <p className="text-sm text-gray-600">
-                  Providing factual information related to {data?.threat?.description || "the topic"} to educate the audience.
+                  Providing factual information related to {data?.threat?.description ?? "the topic"} to educate the audience.
                 </p>
               </div>
             )}
