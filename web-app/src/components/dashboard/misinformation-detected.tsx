@@ -29,11 +29,13 @@ const prepareChartData = (apiData: Array<{day: string, count: number, status: st
     const fullDate = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
     
     const dayOfWeek = days[dayIndex]
-    dayData.set(dayOfWeek, {
-      name: dayName,
-      fullDate,
-      detected: 0
-    })
+    if (dayOfWeek) {
+      dayData.set(dayOfWeek, {
+        name: dayName ?? '',
+        fullDate,
+        detected: 0
+      })
+    }
   }
   
   // Update counts from API data
