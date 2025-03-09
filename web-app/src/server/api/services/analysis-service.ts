@@ -40,7 +40,7 @@ export class AnalysisService {
                 max_tokens: 500
             });
             
-            return response.choices[0]?.message?.content || "Analysis generation failed";
+            return response.choices[0]?.message?.content ?? "Analysis generation failed";
         } catch (error) {
             throw new TRPCError({code:"INTERNAL_SERVER_ERROR"})
         }
