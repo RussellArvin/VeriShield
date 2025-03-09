@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Navigation } from "~/components/global/navigation"
-import { TrendingDown, TrendingUp } from "lucide-react"
+import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
@@ -15,6 +15,8 @@ import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
 import { numberShortener } from "~/utils/number-shortener"
 import ColourPercentage from "~/components/dashboard/colour-percentage"
+import Link from "next/link"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
 
 export default function ThreatMonitorPage() {
   const [showThreats, setShowThreats] = useState(false)
@@ -39,9 +41,38 @@ export default function ThreatMonitorPage() {
       data: details
     } = api.user.getDashboardData.useQuery()
 
+    const breadcrumbItems = [
+      { name: "Home", href: APP_ROUTES.APP.HOME },
+      { name: "Threat Monitor", href: "/app/threat-monitor" } // ✅ Correct route
+
+    ];
+  
+
   return (
     <Navigation>
       <div className="flex-1 p-8 pt-6">
+      {/* Breadcrumb navigation */}
+      <nav className="flex mb-4" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            {breadcrumbItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                {index > 0 && (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                )}
+                {index === breadcrumbItems.length - 1 ? (
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
         {/* Top Bar */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Threat Monitor</h2>

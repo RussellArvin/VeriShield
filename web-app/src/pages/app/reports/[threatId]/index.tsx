@@ -9,6 +9,9 @@ import { Navigation } from "~/components/global/navigation"
 import { Input } from "~/components/ui/input"
 import { api } from "~/utils/api"
 import { formatTimeAgo } from "~/utils/formatTimeAgo"
+import { ChevronRight } from "lucide-react"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { Url } from "next/dist/shared/lib/router/router"
 
 export default function ProductSafetyReport() {
   const router = useRouter()
@@ -18,6 +21,18 @@ export default function ProductSafetyReport() {
     { threatId: threatId as string },
     { enabled: !!threatId }
   )
+
+  // Function to handle navigation
+  const handleBreadcrumbNavigation = async (path: Url) => {
+    await router.push(path);
+  };
+  
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", href: APP_ROUTES.APP.HOME },
+    { name: "Reports", href: APP_ROUTES.APP.REPORTS },
+    { name: "Product safety allegations", href: "#" },
+  ];
 
   if (isLoading) {
     return (
@@ -45,7 +60,30 @@ export default function ProductSafetyReport() {
   return (
     <Navigation>
       <div className="flex-1 p-8 pt-6">
-        {/* Breadcrumb Navigation */}
+        {/* Modern Breadcrumb Navigation */}
+        <nav className="flex mb-4" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            {breadcrumbItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                {index > 0 && (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                )}
+                {index === breadcrumbItems.length - 1 ? (
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                ) : (
+                  <a
+                    onClick={() => handleBreadcrumbNavigation(item.href)}
+                    className="text-sm text-muted-foreground hover:text-primary cursor-pointer"
+                  >
+                    {item.name}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        {/* Breadcrumb Navigation (Original - Keeping as requested) */}
         <div className="flex items-center space-x-2 text-sm mb-4">
           <Link href="/app/dashboard" className="text-gray-500 hover:text-blue-600">Home</Link>
           <span className="text-gray-500">/</span>

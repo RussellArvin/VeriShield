@@ -4,26 +4,55 @@ import Link from "next/link"
 import { Button } from "~/components/ui/button"
 import { Navigation } from "~/components/global/navigation"
 import { Input } from "~/components/ui/input"
-import { Filter } from "lucide-react"
+import { Filter, ChevronRight } from "lucide-react"
 import { ReportsTable } from "~/components/dashboard/reports-table"
+import { useRouter } from "next/router"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { Url } from "next/dist/shared/lib/router/router"
 
 export default function ReportsPage() {
+  const router = useRouter();
+  
+  // Function to handle navigation
+  const handleBreadcrumbNavigation = async (path: Url) => {
+    await router.push(path);
+  };
+  
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", href: APP_ROUTES.APP.HOME },
+    { name: "Reports", href: "#" },
+  ];
+  
   return (
     <Navigation>
       <div className="flex-1">
-        {/* Header with navigation */}
-        <header className="bg-white border-b border-gray-200 py-3 px-6">
-          <div className="flex items-center">
-            <div className="flex items-center text-sm text-gray-500 space-x-1">
-              <Link href="/app/dashboard" className="hover:text-blue-600">Home</Link>
-              <span>/</span>
-              <span className="text-gray-700">Reports</span>
-            </div>
-          </div>
-        </header>
         
         {/* Main content */}
         <main className="p-6">
+          {/* Breadcrumb navigation */}
+          <nav className="flex mb-4" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-2">
+              {breadcrumbItems.map((item, index) => (
+                <li key={index} className="flex items-center">
+                  {index > 0 && (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground mx-2" />
+                  )}
+                  {index === breadcrumbItems.length - 1 ? (
+                    <span className="text-sm text-muted-foreground">{item.name}</span>
+                  ) : (
+                    <a
+                      onClick={() => handleBreadcrumbNavigation(item.href)}
+                      className="text-sm text-muted-foreground hover:text-primary cursor-pointer"
+                    >
+                      {item.name}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
+          
           <div className="mb-4 flex justify-between items-center">
             <h1 className="text-xl font-semibold">Resolved Threats</h1>
             
