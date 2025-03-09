@@ -8,6 +8,11 @@ export const threatRouter = createTRPCRouter({
         const threats = await threatService.getCriticalAndMedThreatsByUserIdOrNull(ctx.auth.userId);
         return threats.map((threat) => threat.getValue());
     }),
+    getAll: protectedProcedure
+    .query(async ({ctx}) => {
+        const threats = await threatService.getAllByUserId(ctx.auth.userId);
+        return threats.map((threat) => threat.getValue());
+    }),
     getResponses: protectedProcedure
     .input(z.object({
         threatId: z.string()

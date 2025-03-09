@@ -80,7 +80,7 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
 
 export function ThreatMonitorTable() {
   // Query the API to get threats - using the same endpoint as MisinformationThreats
-  const { data: apiThreats, isLoading } = api.threat.getAll.useQuery();
+  const { data: apiThreats, isLoading } = api.threat.getCriticalAndMedThreats.useQuery()
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   // Define your columns with proper typing
