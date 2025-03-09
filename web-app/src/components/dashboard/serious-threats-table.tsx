@@ -26,9 +26,12 @@ import { Skeleton } from "~/components/ui/skeleton"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 import { Input } from "~/components/ui/input"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { useRouter } from "next/router"
 
 // Define the type for our table view data
 interface ThreatMonitorTable {
+  id: string
   description: string
   source: string
   detection: string
@@ -79,12 +82,18 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
 }
 
 export function ThreatMonitorTable() {
+    const router = useRouter();
   // Query the API to get threats - using the same endpoint as MisinformationThreats
   const { data: apiThreats, isLoading } = api.threat.getCriticalAndMedThreats.useQuery()
   const [globalFilter, setGlobalFilter] = React.useState("");
 
   // Define your columns with proper typing
   const columns: ColumnDef<ThreatMonitorTable>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      enableHiding: true,
+    },
     {
       accessorKey: "description",
       header: "Description",
@@ -113,8 +122,8 @@ export function ThreatMonitorTable() {
     {
       accessorKey: "action",
       header: "Action",
-      cell: () => (
-        <Button variant="secondary" className="w-full">
+      cell: ({row}) => (
+        <Button onClick={() => router.push(APP_ROUTES.APP.RESPONSE_CENTRE.ITEM(row.getValue("id")))} variant="secondary" className="w-full">
           RESPOND
         </Button>
       ),
@@ -161,6 +170,7 @@ export function ThreatMonitorTable() {
       }
       
       return {
+        id: threat.id,
         description: threat.description,
         source: capitaliseFirstLetter(threat.source),
         detection: formatTimeAgo(new Date(threat.createdAt)), // Ensure createdAt is a Date object
@@ -184,6 +194,9 @@ export function ThreatMonitorTable() {
     initialState: {
       pagination: {
         pageSize: 5,
+      },
+      columnVisibility: {
+        id: false, // Hide the ID column
       },
     },
   })

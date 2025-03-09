@@ -4,7 +4,10 @@ const APP_ROUTES = {
     DOCS:"/docs",
     APP:{
         HOME:'/app',
-        RESPONSE_CENTRE:'/app/response-centre',
+        RESPONSE_CENTRE: {
+            HOME: '/app/response-centre',
+            ITEM: (id: string) => { return `/app/response-centre/${id}`}
+        }
     }
 }
 

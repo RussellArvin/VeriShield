@@ -60,7 +60,7 @@ interface Threat {
 }
 
 type ThreatStatusProps = {
-  status: "CRITICAL" | "MED" | "LOW"
+  status: string
 }
 
 export const ThreatStatus = ({ status }: ThreatStatusProps) => {
