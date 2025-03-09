@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Shield, CheckCircle, BarChart2, Search, FileText, UserCheck, ArrowRight } from 'lucide-react';
@@ -7,6 +7,7 @@ import APP_ROUTES from '~/server/constants/APP_ROUTES';
 import { VeriShieldLogo } from '~/components/global/logo';
 import BlurFade from '~/components/magicui/blur-fade';
 import type { ReactNode } from 'react';
+import { useTheme } from 'next-themes';
 
 interface FeatureCardProps {
   icon: React.ElementType;
@@ -34,6 +35,13 @@ const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) 
 
 const VeriShieldPage = () => {
   const router = useRouter();
+  const { setTheme } = useTheme();
+  
+  // Force light theme for landing page
+  useEffect(() => {
+    setTheme('light');
+    // No cleanup needed as other pages will handle their own theme
+  }, [setTheme]);
   
   return (
     <div className="min-h-screen">
