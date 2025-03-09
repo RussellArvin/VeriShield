@@ -10,10 +10,19 @@ import { TrendingDown, TrendingUp } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
+<<<<<<< HEAD
+=======
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
+>>>>>>> main
 import { ThreatMonitorTable } from "~/components/dashboard/threat-monitor-table"
 
 export default function ThreatMonitorPage() {
   const [showThreats, setShowThreats] = useState(false)
+<<<<<<< HEAD
+=======
+  const [file, setFile] = useState<File | null>(null)
+  const [url, setUrl] = useState<string>("")
+>>>>>>> main
 
   const misinformationThreats = [
     { description: "Product safety allegations", source: "Twitter, Reddit", detection: "6 hours ago", region: "New York, USA", status: "CRITICAL" },
@@ -34,6 +43,7 @@ export default function ThreatMonitorPage() {
         {/* Top Bar */}
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Threat Monitor</h2>
+<<<<<<< HEAD
           <div className="flex items-center space-x-2">
             <Input placeholder="Search misinformation threats" className="w-80" />
             <Button onClick={() => setShowThreats(!showThreats)}>
@@ -41,6 +51,59 @@ export default function ThreatMonitorPage() {
             </Button>
           </div>
         </div>
+=======
+
+          {/* Dialog Trigger Button */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Upload Data</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Upload File or Enter URL</DialogTitle>
+              </DialogHeader>
+
+              {/* File Upload */}
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-gray-700 mb-1">Upload File (Optional)</label>
+                  <input
+                    type="file"
+                    className="border border-gray-300 rounded-lg p-2 w-full"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const selectedFile: File | null = e.target.files?.[0] ?? null;
+                      setFile(selectedFile);
+                    }}
+                  />
+                  {file && <p className="text-sm text-gray-600 mt-1">Selected: {file.name}</p>}
+                </div>
+
+                {/* URL Input */}
+                <div>
+                  <label className="block text-gray-700 mb-1">Enter URL (Optional)</label>
+                  <Input
+                    placeholder="Paste a link here..."
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                  />
+                </div>
+
+                {/* Enter Button */}
+                <Button
+                  className="mt-4"
+                  onClick={() => {
+                    console.log("File Uploaded:", file ? file.name : "No file uploaded");
+                    console.log("URL Entered:", url ? url : "No URL entered");
+                  }}
+                >
+                  Submit 
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+>>>>>>> main
         {/* Threat Overview Page */}
         {!showThreats && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-6">

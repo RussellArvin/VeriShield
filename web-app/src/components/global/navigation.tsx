@@ -9,6 +9,7 @@ import { ShieldLogo, VeriShieldLogo } from "./logo"
 import { UserButton } from "@clerk/nextjs"
 import { UserButtonWithName } from "./user-button-with-name" 
 import { ReactNode } from 'react';
+import { ModeToggle } from '../ui/mode-toggle'
 
 interface NavigationProps {
   children: ReactNode;
@@ -78,10 +79,15 @@ export function Navigation({ children }: NavigationProps) {
           <NavItem href="/app/settings" icon={<Settings size={20} />} label="Settings" collapsed={isLoaded && collapsed} pathname={pathname} />
         </div>
         
-        {/* User Button moved up in the sidebar */}
+        {/* Theme toggle before user profile */}
+        <div className="mt-auto">
+          <ModeToggle />
+        </div>
+        
+        {/* User Button */}
         <div className={cn(
-          "mt-auto p-4 border-t border-gray-700",
-          isLoaded && collapsed ? "flex justify-center pt-3 pb-10" : "pt-3 pb-10"
+          "p-4 border-t border-gray-700",
+          isLoaded && collapsed ? "flex justify-center pt-3 pb-6" : "pt-3 pb-6"
         )}>
           {!isLoaded || !collapsed ? (
             <UserButtonWithName />

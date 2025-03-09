@@ -4,5 +4,5 @@ import { ThreatService } from "./threat-service";
 import { UserService } from "./user-service";
 
 export const userService = new UserService(userRepository);
-export const threatService = new ThreatService(threatRepository);
+export const threatService = new ThreatService(threatRepository,threatScanRepository);
 export const threatScanService = new ThreatScanService(threatScanRepository);

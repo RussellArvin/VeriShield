@@ -6,6 +6,8 @@ export interface ThreatProps {
     source: string,
     createdAt: Date,
     status: string
+    factCheckerUrl: string,
+    factCheckerDescription: string
 }
 
 export class Threat {

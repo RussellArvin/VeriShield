@@ -8,7 +8,7 @@ resource "aws_sns_topic" "user_data_topic" {
   name = "user-data-topic"
 }
 
-resource "aws_sns_topic" "subreddit_data_topic" {
+resource "aws_sns_topic" "subreddit_data_topic"{
   name = "subreddit-data-topic"
 }
 
@@ -184,6 +184,8 @@ resource "aws_lambda_function" "subreddit_retrieval" {
     variables = {
       OPENAI_API_KEY = var.openai_api_key
       SNS_TOPIC_ARN = aws_sns_topic.subreddit_data_topic.arn
+      REDDIT_CLIENT_ID = var.reddit_client_id
+      REDDIT_CLIENT_SECRET = var.reddit_client_secret
     }
   }
 }
@@ -603,6 +605,8 @@ resource "aws_lambda_function" "fact_checker" {
   
   environment {
     variables = {
+      SUPABASE_URL = var.supabase_url
+      SUPABASE_SERVICE_ROLE_KEY = var.supabase_key
       GOOGLE_FACT_CHECK_API_KEY = var.google_fact_check_api_key
     }
   }
