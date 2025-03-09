@@ -47,7 +47,7 @@ export default function ProductSafetyReport() {
                 [Company Name] is currently facing false allegations regarding the safety of our product, [Product Name], claiming it poses health risks due to harmful ingredients. These
                 accusations are completely unfounded and lack scientific evidence. If not addressed promptly, these rumors could severely damage our brand reputation, erode consumer
                 trust, and lead to potential legal and financial consequences. We are taking immediate action to provide transparent, factual information and reassure our customers about the
-                product's safety.
+                product&apos;s safety.
               </p>
             </div>
 
@@ -89,7 +89,7 @@ export default function ProductSafetyReport() {
                 </div>
                 <div className="mb-2 text-sm text-gray-500">Platform: Social Media</div>
                 <p className="text-gray-700">
-                  We take product safety seriously. We are aware of recent allegations regarding [Product Name]. We want to assure our customers that these claims are not based on facts. Our product has passed rigorous safety testing and fully complies with all industry standards. Here's the full report from [reputable testing lab name] proving its safety: [Link to report]
+                  We take product safety seriously. We are aware of recent allegations regarding [Product Name]. We want to assure our customers that these claims are not based on facts. Our product has passed rigorous safety testing and fully complies with all industry standards. Here&apos;s the full report from [reputable testing lab name] proving its safety: [Link to report]
                 </p>
               </div>
             </div>

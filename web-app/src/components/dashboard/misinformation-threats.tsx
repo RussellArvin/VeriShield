@@ -32,6 +32,8 @@ import { Skeleton } from "~/components/ui/skeleton"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 import { Input } from "~/components/ui/input"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { useRouter } from "next/router"
+import APP_ROUTES from "~/server/constants/APP_ROUTES"
 
 // Define the type for our table view data
 interface MisinformationThreat {
@@ -60,7 +62,7 @@ interface Threat {
 }
 
 type ThreatStatusProps = {
-  status: "CRITICAL" | "MED" | "LOW"
+  status: string
 }
 
 export const ThreatStatus = ({ status }: ThreatStatusProps) => {
@@ -106,9 +108,15 @@ export function MisinformationThreats() {
   // Query the API to get threats
   const { data: apiThreats, isLoading } = api.threat.getCriticalAndMedThreats.useQuery();
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const router = useRouter();
 
   // Define your columns with proper typing
   const columns: ColumnDef<MisinformationThreat>[] = [
+    {
+      accessorKey: "id",
+      header: "ID",
+      enableHiding: true,
+    },
     {
       accessorKey: "description",
       header: "Description",
@@ -137,7 +145,7 @@ export function MisinformationThreats() {
     {
       accessorKey: "action",
       header: "Action",
-      cell: () => (
+      cell: ({row}) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
@@ -148,10 +156,10 @@ export function MisinformationThreats() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Disclaimer</DropdownMenuItem>
-            <DropdownMenuItem>Email</DropdownMenuItem>
-            <DropdownMenuItem>Press Statement</DropdownMenuItem>
-            <DropdownMenuItem>Social Media</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(APP_ROUTES.APP.QUICK_RESPONSE(row.getValue("id"),"disclaimer"))}>Disclaimer</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(APP_ROUTES.APP.QUICK_RESPONSE(row.getValue("id"),"email"))}>Email</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(APP_ROUTES.APP.QUICK_RESPONSE(row.getValue("id"),"press"))}>Press Statement</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(APP_ROUTES.APP.QUICK_RESPONSE(row.getValue("id"),"social"))}>Social Media</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -198,6 +206,7 @@ export function MisinformationThreats() {
       }
       
       return {
+        id: threat.id,
         sourceUrl: threat.sourceUrl,
         description: threat.description,
         source: capitaliseFirstLetter(threat.source),

@@ -46,6 +46,7 @@ export const threatSchema = pgTable(
     status: text("status").notNull(),
     factCheckerUrl: text("fact_checker_url").notNull(),
     factCheckerDescription: text("fact_checker_description").notNull(),
+    responseId: uuid("response_id"),
   });
   
 export const threatMediaSchema = pgTable(
@@ -75,6 +76,7 @@ export const threatScanSchema = pgTable(
     id: uuid("id").primaryKey().notNull(),
     threatId: uuid("threat_id").notNull().references(() => threatSchema.id),
     type: text("type").notNull(),
+    length: text("length").notNull(),
     response: text("response").notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)

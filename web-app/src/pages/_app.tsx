@@ -4,6 +4,7 @@ import Head from "next/head";
 
 import { api } from "~/utils/api";
 import { ThemeProvider } from "~/components/theme-provider";
+import { Toaster } from "~/components/ui/sonner";
 
 import "~/styles/globals.css";
 
@@ -21,6 +22,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         disableTransitionOnChange
       >
         <Component {...pageProps} />
+        <Toaster />
       </ThemeProvider>
     </ClerkProvider>
   );
