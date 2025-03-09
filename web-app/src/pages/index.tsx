@@ -105,8 +105,8 @@ const VeriShieldPage = () => {
           </div>
         </main>
         
-        {/* Scroll Down Arrow - Positioned with fixed height from bottom */}
-        <div className="absolute bottom-12 left-0 right-0 flex justify-center z-20" style={{ pointerEvents: 'auto' }}>
+        {/* Scroll Down Arrow - Changed from absolute to fixed positioning */}
+        <div className="fixed bottom-12 left-0 right-0 flex justify-center z-20" style={{ pointerEvents: 'auto' }}>
           <BlurFade delay={1.0} duration={0.5}>
             <button 
               onClick={() => {
