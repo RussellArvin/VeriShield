@@ -16,6 +16,10 @@ export class ThreatService {
         return this.threatRepository.findAllCriticalAndMedByUserIdOrNull(userId);
     }
 
+    public getAllByUserId(userId:string): Promise<Threat[]> {
+        return this.threatRepository.findAllByUserIdOrNull(userId);
+    }
+
     public async getMisinformationSentiment(userId: string): Promise<number> {
         const [critical, medium, low, scans] = await Promise.all([
             this.threatRepository.findCriticalThreatCountByUserId(userId),

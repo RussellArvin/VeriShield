@@ -12,6 +12,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
 import { ThreatMonitorTable } from "~/components/dashboard/threat-monitor-table"
+import { api } from "~/utils/api"
+import { Skeleton } from "~/components/ui/skeleton"
+import { numberShortener } from "~/utils/number-shortener"
+import ColourPercentage from "~/components/dashboard/colour-percentage"
 
 export default function ThreatMonitorPage() {
   const [showThreats, setShowThreats] = useState(false)
@@ -30,6 +34,11 @@ export default function ThreatMonitorPage() {
     { description: "Fabricated customer testimonials", source: "TikTok", detection: "5 days ago", region: "Tokyo, Japan", status: "LOW" },
     { description: "Fake product recall notices", source: "YouTube", detection: "5 days ago", region: "Tokyo, Japan", status: "LOW" },
   ]
+
+  const {
+      isLoading: isDetailsLoading,
+      data: details
+    } = api.user.getDashboardData.useQuery()
 
   return (
     <Navigation>
@@ -89,58 +98,120 @@ export default function ThreatMonitorPage() {
         </div>
 
         {/* Threat Overview Page */}
-        {!showThreats && (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-6">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-bold uppercase tracking-wider">ACTIVE THREATS</h2>
-                  <div className="text-5xl font-bold">14</div>
-                  <div className="flex items-center justify-end gap-1 text-emerald-500">
-                    <TrendingUp className="h-4 w-4" />
-                    <span className="text-sm">3% from yesterday</span>
-                  </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-6">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold uppercase tracking-wider">
+                  ACTIVE THREATS
+                </h2>
+                <div className="flex flex-col">
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-20 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-5xl font-bold">{details.threatCount}</div>
+                      <div className="flex items-center justify-end gap-1 text-emerald-500">
+                        <TrendingUp className="h-4 w-4" />
+                        <span className="text-sm">3% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-bold uppercase tracking-wider">REACH POTENTIAL</h2>
-                  <div className="text-5xl font-bold">1.2M</div>
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">12% from yesterday</span>
-                  </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold uppercase tracking-wider">
+                  SCANNED MEDIA
+                </h2>
+                <div className="flex flex-col">
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-20 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-5xl font-bold">{numberShortener(details.scanCount)}</div>
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">3% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-bold uppercase tracking-wider">MISINFO SENTIMENT</h2>
-                  <div className="text-5xl font-bold text-orange-400">63%</div>
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">5% from yesterday</span>
-                  </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold uppercase tracking-wider">
+                  Misinfo Sentiment
+                </h2>
+                <div className="flex flex-col">
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-24 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ColourPercentage value={details.misinformationSentiment} invert={true} className="text-5xl" />
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">5% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-2">
-                  <h2 className="text-lg font-bold uppercase tracking-wider">RISK SCORE</h2>
-                  <div className="text-5xl font-bold text-red-500">72</div>
-                  <div className="flex items-center justify-end gap-1 text-red-500">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm">8% from yesterday</span>
-                  </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold uppercase tracking-wider">
+                  RISK SCORE
+                </h2>
+                <div className="flex flex-col">
+                  {isDetailsLoading || details == undefined ? (
+                    <>
+                      <Skeleton className="h-10 w-24 mb-1" />
+                      <div className="flex items-center justify-end gap-1">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ColourPercentage invert={true} value={details.riskThreat} className="text-5xl" />
+                      <div className="flex items-center justify-end gap-1 text-red-500">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm">8% from yesterday</span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         
         <Card className="col-span-3 mt-8">

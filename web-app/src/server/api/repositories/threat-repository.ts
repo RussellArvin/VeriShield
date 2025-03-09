@@ -110,7 +110,7 @@ export class ThreatRepository {
             const results = await this.db
             .select(getTableColumns(threatSchema))
             .from(threatSchema)
-            .where(and(eq(threatSchema.userId, userId),ne(threatSchema.status,"low")))
+            .where(and(eq(threatSchema.userId, userId),ne(threatSchema.status,"LOW")))
 
             if(results.length === 0){
                 return []
