@@ -17,12 +17,21 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { Label } from "~/components/ui/label"
 import { Shield } from "lucide-react"
 import { useRouter } from "next/router"
+import { api } from "~/utils/api"
 
 // Removed metadata export as it's not compatible with "use client"
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const threatId = router.query.threatId as string;
+  // const router = useRouter();
+  // const {
+  //   isLoading: isThreatLoading,
+  //   data
+  // } = api.threat.getOne.useQuery(
+  //   { threatId: router.query.threatId as string },
+  //   {
+  //     enabled: !!router.query.threatId, // Only run the query if `id` exists
+  //   }
+  // );
 
   return (
     <Navigation>
@@ -31,7 +40,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between space-y-2">
           <div className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-primary" />
-            <h2 className="text-3xl font-bold tracking-tight">Product Safety Allegations</h2>
+            <h2 className="text-3xl font-bold tracking-tight">Tiktok USA pushes videos to kids that promote self-harm, eating disorders and suicide</h2>
           </div>
           <Link href="./item">
             <Button variant="outline">Go Back</Button>
