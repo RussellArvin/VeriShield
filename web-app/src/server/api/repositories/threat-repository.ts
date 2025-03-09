@@ -124,6 +124,56 @@ export class ThreatRepository {
             })
         }
     }
+
+    public async findOneById(threatId: string) : Promise<Threat>{
+        try{
+            const results = await this.db
+            .select(getTableColumns(threatSchema))
+            .from(threatSchema)
+            .where(eq(threatSchema.id,threatId))
+            .limit(1)
+
+            if(results[0] == null) throw new TRPCError({
+                code:"NOT_FOUND",
+                message:"Unable to find threat"
+            })
+            return new Threat(results[0])
+        } catch(err){
+            if(err instanceof TRPCError) throw err;
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
+
+
+    public async findOneByIdAndUserId(threatId: string,userId: string) : Promise<Threat>{
+        try{
+            const results = await this.db
+            .select(getTableColumns(threatSchema))
+            .from(threatSchema)
+            .where(and(
+                eq(threatSchema.id,threatId),
+                eq(threatSchema.userId,userId)
+            ))
+            .limit(1)
+
+            if(results[0] == null) throw new TRPCError({
+                code:"NOT_FOUND",
+                message:"Unable to find threat"
+            })
+            return new Threat(results[0])
+        } catch(err){
+            if(err instanceof TRPCError) throw err;
+            const e = err as Error;
+            throw new TRPCError({
+                code:"INTERNAL_SERVER_ERROR",
+                message:e.message
+            })
+        }
+    }
     
 
     public async findAllByUserIdOrNull(userId: string) : Promise<Threat[]>{
