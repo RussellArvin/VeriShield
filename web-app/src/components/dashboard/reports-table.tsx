@@ -21,27 +21,26 @@ import {
   TableRow,
 } from "~/components/ui/table"
 import { Badge } from "~/components/ui/badge"
-import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
-import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
 import { Input } from "~/components/ui/input"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 // Define the type for our table view data
-interface ThreatMonitorTable {
-  id: string // Added ID field for routing
+interface ReportsTable {
+  id: string
   description: string
-  source: string
-  detection: string
-  status: "CRITICAL" | "MED" | "LOW"
+  template: string
+  lastEdited: string
+  region: string
+  status: "CRITICAL" | "MILD" | "LOW"
 }
 
-type ThreatStatusProps = {
-  status: "CRITICAL" | "MED" | "LOW"
+type ReportStatusProps = {
+  status: "CRITICAL" | "MILD" | "LOW"
 }
 
-export const ThreatStatus = ({ status }: ThreatStatusProps) => {
+export const ReportStatus = ({ status }: ReportStatusProps) => {
   // Set styling based on status
   const getStyles = () => {
     switch (status) {
@@ -50,7 +49,7 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
           variant: "destructive", // Use built-in destructive variant for red
           className: "px-4 py-1"
         }
-      case "MED":
+      case "MILD":
         return {
           variant: "outline", // Use outline and override with custom bg/text color
           className: "px-4 py-1 bg-orange-500 text-white border-orange-500"
@@ -80,45 +79,67 @@ export const ThreatStatus = ({ status }: ThreatStatusProps) => {
   )
 }
 
-export function ThreatMonitorTable() {
-  const router = useRouter(); // Initialize the router for navigation
-  // Query the API to get threats - using the same endpoint as MisinformationThreats
-  const { data: apiThreats, isLoading } = api.threat.getAll.useQuery();
+export function ReportsTable() {
+  const router = useRouter();
   const [globalFilter, setGlobalFilter] = React.useState("");
+  
+  // Sample data for reports - in a real implementation, this would come from an API
+  const data: ReportsTable[] = React.useMemo(() => [
+    {
+      id: "product-safety",
+      description: "Product safety allegations",
+      template: "Social Media",
+      lastEdited: "7 Mar 2025",
+      region: "New York, USA",
+      status: "CRITICAL",
+    },
+    {
+      id: "ceo-statement",
+      description: "CEO statement misquote",
+      template: "Press Statement",
+      lastEdited: "27 Feb 2025",
+      region: "California, USA",
+      status: "MILD",
+    }
+  ], []);
+  
+  // In a real implementation, we would have a loading state from an API
+  const isLoading = false;
 
-  // Handle navigation to threat detail page
-  const navigateToThreatDetail = (threatId: string) => {
-    router.push(`/app/threat-monitor/${threatId}`);
+  // Handle navigation to report detail page
+  const navigateToReportDetail = (reportId: string) => {
+    router.push(`/app/reports/${reportId}`);
   };
 
   // Define your columns with proper typing
-  const columns: ColumnDef<ThreatMonitorTable>[] = [
+  const columns: ColumnDef<ReportsTable>[] = [
     {
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => (
-        <button 
-          onClick={() => navigateToThreatDetail(row.original.id)}
-          className="font-medium text-blue-600 hover:text-blue-800 underline text-left w-full"
-        >
+        <div className="font-medium text-left">
           {row.getValue("description")}
-        </button>
+        </div>
       ),
     },
     {
-      accessorKey: "source",
-      header: "Source",
+      accessorKey: "template",
+      header: "Template",
     },
     {
-      accessorKey: "detection",
-      header: "Detection",
+      accessorKey: "lastEdited",
+      header: "Last Edited",
+    },
+    {
+      accessorKey: "region",
+      header: "Region",
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-        const status = row.getValue("status") as "CRITICAL" | "MED" | "LOW"
-        return <ThreatStatus status={status} />
+        const status = row.getValue("status") as "CRITICAL" | "MILD" | "LOW"
+        return <ReportStatus status={status} />
       },
     },
     {
@@ -128,62 +149,13 @@ export function ThreatMonitorTable() {
         <Button 
           variant="secondary" 
           className="w-full"
-          onClick={() => router.push(`/app/response-centre/${row.original.id}`)}
+          onClick={() => navigateToReportDetail(row.original.id)}
         >
-          RESPOND
+          VIEW
         </Button>
       ),
     },
   ]
-
-  // Transform API data to table data format
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffMs = now.getTime() - new Date(date).getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    
-    if (diffMinutes < 1) {
-      return "Now";
-    } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
-    } else {
-      const diffHours = Math.floor(diffMinutes / 60);
-      if (diffHours < 24) {
-        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-      } else {
-        const diffDays = Math.floor(diffHours / 24);
-        return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-      }
-    }
-  };
-
-  // Map API data to our table format - same as in MisinformationThreats
-  const data: ThreatMonitorTable[] = React.useMemo(() => {
-    if (!apiThreats) return [];
-    
-    return apiThreats.map((threat) => {
-      
-      // Convert status to expected format
-      let status: "CRITICAL" | "MED" | "LOW";
-      const threatStatus = threat.status.toLowerCase();
-      
-      if (threatStatus === "critical") {
-        status = "CRITICAL";
-      } else if (threatStatus === "med" || threatStatus === "medium") {
-        status = "MED";
-      } else {
-        status = "LOW";
-      }
-      
-      return {
-        id: threat.id, // Include the threat ID for routing
-        description: threat.description,
-        source: capitaliseFirstLetter(threat.source),
-        detection: formatTimeAgo(new Date(threat.createdAt)), // Ensure createdAt is a Date object
-        status,
-      };
-    });
-  }, [apiThreats]);
 
   const table = useReactTable({
     data: data ?? [],
@@ -211,7 +183,7 @@ export function ThreatMonitorTable() {
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search threats..."
+            placeholder="Search reports..."
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="pl-8"
