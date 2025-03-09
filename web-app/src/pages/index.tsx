@@ -19,19 +19,18 @@ interface FeatureCardProps {
 const FeatureCard = ({ icon, title, description, delay = 0 }: FeatureCardProps) => {
   const Icon = icon;
   return (
-    <div>
-      <BlurFade delay={delay} duration={0.5} className="">
-        <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300">
-          <div className="mb-4 bg-blue-100 p-3 rounded-full">
-            <Icon size={24} className="text-blue-700" />
-          </div>
-          <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <p className="text-gray-600">{description}</p>
-        </Card>
-      </BlurFade>
-    </div>
+    <BlurFade delay={delay} duration={0.5}>
+      <Card className="p-6 flex flex-col items-center text-center h-full hover:shadow-lg transition-shadow duration-300">
+        <div className="mb-4 bg-blue-100 p-3 rounded-full">
+          <Icon size={24} className="text-blue-700" />
+        </div>
+        <h3 className="text-xl font-semibold mb-2">{title}</h3>
+        <p className="text-gray-600 flex-grow">{description}</p>
+      </Card>
+    </BlurFade>
   );
 };
+
 
 const VeriShieldPage = () => {
   const router = useRouter();
@@ -76,7 +75,6 @@ const VeriShieldPage = () => {
         
         {/* Navigation */}
 
-        
         {/* Hero Content */}
         <main className="container mx-auto grow flex flex-col items-center justify-center text-center px-4">
           <div className="max-w-3xl">
@@ -113,23 +111,38 @@ const VeriShieldPage = () => {
           </div>
         </main>
         
-        {/* Scroll Down Arrow - Positioned with fixed height from bottom */}
+        {/* Scroll Down Arrow - Positioned with fixed height from bottom and delayed appearance */}
         <div className="absolute bottom-12 left-0 right-0 flex justify-center z-20" style={{ pointerEvents: 'auto' }}>
-          <BlurFade delay={1.0} duration={0.5}>
-            <button 
-              onClick={() => {
-                document.querySelector('#about-section')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="bg-white bg-opacity-80 hover:bg-opacity-100 p-4 rounded-full transition-all duration-300 animate-bounce shadow-lg"
-              aria-label="Scroll to next section"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-800">
-                <path d="M12 5v14M5 12l7 7 7-7"/>
-              </svg>
-            </button>
-          </BlurFade>
+          <button 
+            onClick={() => {
+              document.querySelector('#about-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-white bg-opacity-80 hover:bg-opacity-100 p-4 rounded-full transition-all duration-300 animate-bounce shadow-lg opacity-0"
+            style={{ 
+              animation: 'fadeIn 0.5s ease-in-out 0.9s forwards, bounce 1s infinite 2.5s' 
+            }}
+            aria-label="Scroll to next section"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-800">
+              <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+          </button>
         </div>
+        
+        {/* Add keyframes for the fadeIn animation */}
+        <style jsx global>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+        `}</style>
       </section>
+
+      {/* About Section */}
 
       {/* About Section */}
       <section id="about-section" className="py-20 bg-white">
@@ -140,44 +153,25 @@ const VeriShieldPage = () => {
               VeriShield is an advanced platform designed to combat online falsehoods through AI-powered detection and prediction technology.
             </p>
           </BlurFade>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard 
-              icon={Shield}
-              title="Detect Misinformation" 
-              description="Our advanced AI algorithms identify false claims and misleading content across the web with high accuracy."
-              delay={0.1}
-            />
-            <FeatureCard 
-              icon={BarChart2}
-              title="Predict Trends" 
-              description="Stay ahead of emerging misinformation trends with predictive analytics that forecast potential false narratives before they spread widely."
-              delay={0.2}
-            />
-            <FeatureCard 
-              icon={Search}
-              title="Real-time Analysis" 
-              description="Monitor online content in real-time and receive instant verification results to respond quickly to misinformation."
-              delay={0.3}
-            />
-            <FeatureCard 
-              icon={FileText}
-              title="Comprehensive Reports" 
-              description="Generate detailed reports on misinformation patterns and sources to better understand the landscape of online falsehoods."
-              delay={0.4}
-            />
-            <FeatureCard 
-              icon={CheckCircle}
-              title="Fact Checking" 
-              description="Cross-reference claims against reliable sources and databases to provide evidence-based verification."
-              delay={0.5}
-            />
-            <FeatureCard 
-              icon={UserCheck}
-              title="User-friendly Interface" 
-              description="Access powerful verification tools through an intuitive dashboard designed for both experts and casual users."
-              delay={0.6}
-            />
+            {[
+              { icon: Shield, title: "Detect Misinformation", description: "Our advanced AI algorithms identify false claims and misleading content across the web with high accuracy.", delay: 0.1 },
+              { icon: BarChart2, title: "Predict Trends", description: "Stay ahead of emerging misinformation trends with predictive analytics that forecast potential false narratives before they spread widely.", delay: 0.2 },
+              { icon: Search, title: "Real-time Analysis", description: "Monitor online content in real-time and receive instant verification results to respond quickly to misinformation.", delay: 0.3 },
+              { icon: FileText, title: "Comprehensive Reports", description: "Generate detailed reports on misinformation patterns and sources to better understand the landscape of online falsehoods.", delay: 0.4 },
+              { icon: CheckCircle, title: "Fact Checking", description: "Cross-reference claims against reliable sources and databases to provide evidence-based verification.", delay: 0.5 },
+              { icon: UserCheck, title: "User-friendly Interface", description: "Access powerful verification tools through an intuitive dashboard designed for both experts and casual users.", delay: 0.6 }
+            ].map((feature, index) => (
+              <div key={index} className="h-full flex">
+                <FeatureCard 
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                  delay={feature.delay}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -233,7 +227,7 @@ const VeriShieldPage = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="py-20 bg-gradient-to-r from-blue-400 to-blue-500 text-white">
         <div className="container mx-auto px-4 text-center">
           <BlurFade>
             <h2 className="text-3xl font-bold mb-6">Ready to Combat Misinformation?</h2>
@@ -310,3 +304,4 @@ const VeriShieldPage = () => {
 };
 
 export default VeriShieldPage;
+
