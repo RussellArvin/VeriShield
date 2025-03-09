@@ -9,6 +9,7 @@ export const env = createEnv({
   server: {
     OPENAI_API_KEY: z.string(),
     CLERK_WEBHOOK_SECRET: z.string(),
+    DEEPFAKE_URL: z.string(),
     DATABASE_URL: z
       .string()
       .url()
@@ -36,6 +37,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
+    DEEPFAKE_URL: process.env.DEEPFAKE_URL,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
     NODE_ENV: process.env.NODE_ENV,

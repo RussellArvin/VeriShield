@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { threatResponseService, threatService } from "../services";
+import { deepFakeService, threatResponseService, threatService } from "../services";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { RESPONSE_FORMATS } from "../services/response-generator";
 
@@ -69,5 +69,17 @@ export const threatRouter = createTRPCRouter({
 
         const responses = await threatResponseService.generateRegularResponses(threatId, ctx.auth.userId, format);
         return responses.map(response => response.getValue());
+    }),
+
+    detectDeepfake: protectedProcedure
+    .input(z.object({
+        imageBase64: z.string().min(1)
+    }))
+    .mutation(async ({input}) => {
+        const isReal = await deepFakeService.isImageReal({
+            image: input.imageBase64
+        });
+        
+        return { isReal };
     })
 });

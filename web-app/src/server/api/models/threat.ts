@@ -13,6 +13,7 @@ export interface ThreatProps {
 }
 
 export class Threat {
+    factCheckerUrl: string | undefined;
     constructor(private readonly props: Readonly<ThreatProps>){}
 
     public getValue(): ThreatProps{

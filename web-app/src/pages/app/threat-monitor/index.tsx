@@ -9,7 +9,7 @@ import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu"
 import { MisinformationThreats } from "~/components/dashboard/misinformation-threats"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "~/components/ui/dialog"
 import { ThreatMonitorTable } from "~/components/dashboard/threat-monitor-table"
 import { api } from "~/utils/api"
 import { Skeleton } from "~/components/ui/skeleton"
@@ -17,11 +17,27 @@ import { numberShortener } from "~/utils/number-shortener"
 import ColourPercentage from "~/components/dashboard/colour-percentage"
 import Link from "next/link"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert"
+import { CheckCircle, XCircle, AlertCircle } from "lucide-react"
 
 export default function ThreatMonitorPage() {
   const [showThreats, setShowThreats] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [url, setUrl] = useState<string>("")
+  const [isChecking, setIsChecking] = useState(false)
+  const [checkResult, setCheckResult] = useState<{ isReal: boolean } | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const detectDeepfake = api.threat.detectDeepfake.useMutation({
+    onSuccess: (data) => {
+      setCheckResult(data)
+      setIsChecking(false)
+    },
+    onError: (error) => {
+      setError(error.message)
+      setIsChecking(false)
+    }
+  })
 
   const misinformationThreats = [
     { description: "Product safety allegations", source: "Twitter, Reddit", detection: "6 hours ago", region: "New York, USA", status: "CRITICAL" },
@@ -78,50 +94,107 @@ export default function ThreatMonitorPage() {
           <h2 className="text-3xl font-bold tracking-tight">Threat Monitor</h2>
 
           {/* Dialog Trigger Button */}
-          <Dialog>
+          <Dialog 
+            onOpenChange={(open) => {
+              if (!open) {
+                setFile(null);
+                setUrl("");
+                setCheckResult(null);
+                setError(null);
+              }
+            }}
+          >
             <DialogTrigger asChild>
               <Button>Quick Check</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Upload File or Enter URL</DialogTitle>
+                <DialogTitle>Image Deepfake Check</DialogTitle>
               </DialogHeader>
 
               {/* File Upload */}
               <div className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-gray-700 mb-1">Upload File (Optional)</label>
+                  <label className="block text-gray-700 mb-1">Upload Image</label>
                   <input
                     type="file"
+                    accept="image/*"
                     className="border border-gray-300 rounded-lg p-2 w-full"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const selectedFile: File | null = e.target.files?.[0] ?? null;
                       setFile(selectedFile);
+                      // Reset results when a new file is selected
+                      setCheckResult(null);
+                      setError(null);
                     }}
                   />
                   {file && <p className="text-sm text-gray-600 mt-1">Selected: {file.name}</p>}
                 </div>
 
-                {/* URL Input */}
-                <div>
-                  <label className="block text-gray-700 mb-1">Enter URL (Optional)</label>
-                  <Input
-                    placeholder="Paste a link here..."
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                  />
-                </div>
+                {checkResult && (
+                  <Alert className={checkResult.isReal ? "bg-green-50" : "bg-red-50"}>
+                    {checkResult.isReal ? (
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-red-600" />
+                    )}
+                    <AlertTitle>{checkResult.isReal ? "Image is Real" : "Deepfake Detected"}</AlertTitle>
+                    <AlertDescription>
+                      {checkResult.isReal 
+                        ? "Our analysis indicates this is likely a real image." 
+                        : "Our analysis indicates this is likely a deepfake or manipulated image."}
+                    </AlertDescription>
+                  </Alert>
+                )}
 
-                {/* Enter Button */}
-                <Button
-                  className="mt-4"
-                  onClick={() => {
-                    console.log("File Uploaded:", file ? file.name : "No file uploaded");
-                    console.log("URL Entered:", url ? url : "No URL entered");
-                  }}
-                >
-                  Submit 
-                </Button>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                
+                <DialogFooter className="sm:justify-center">
+                  <Button
+                    className="mt-4 w-full"
+                    disabled={!file || isChecking}
+                    onClick={async () => {
+                      if (!file) return;
+                      
+                      try {
+                        setIsChecking(true);
+                        setError(null);
+                        
+                        // Convert file to base64
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => {
+                          const base64String = reader.result as string;
+                          // Remove the data URL prefix (e.g., data:image/jpeg;base64,)
+                          const imageBase64 = base64String.split(',')[1];
+                          
+                          // Call the deepfake detection endpoint
+                          if (imageBase64) {
+                            detectDeepfake.mutate({ imageBase64 });
+                          } else {
+                            setError("Failed to convert image to base64");
+                            setIsChecking(false);
+                          }
+                        };
+                        reader.onerror = () => {
+                          setError("Failed to read the image file");
+                          setIsChecking(false);
+                        };
+                      } catch (err) {
+                        setError("An unexpected error occurred");
+                        setIsChecking(false);
+                      }
+                    }}
+                  >
+                    {isChecking ? "Checking..." : "Check Image"}
+                  </Button>
+                </DialogFooter>
               </div>
             </DialogContent>
           </Dialog>
