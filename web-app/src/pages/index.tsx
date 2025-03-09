@@ -157,7 +157,7 @@ const VeriShieldPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { icon: Shield, title: "Detect Misinformation", description: "Our advanced AI algorithms identify false claims and misleading content across the web with high accuracy.", delay: 0.1 },
-              { icon: BarChart2, title: "Predict Trends", description: "Stay ahead of emerging misinformation trends with predictive analytics that forecast potential false narratives before they spread widely.", delay: 0.2 },
+              { icon: BarChart2, title: "Predict Trends", description: "Anticipate emerging misinformation trends with predictive analytics that identify potential false narratives before they gain widespread traction.", delay: 0.2 },
               { icon: Search, title: "Real-time Analysis", description: "Monitor online content in real-time and receive instant verification results to respond quickly to misinformation.", delay: 0.3 },
               { icon: FileText, title: "Comprehensive Reports", description: "Generate detailed reports on misinformation patterns and sources to better understand the landscape of online falsehoods.", delay: 0.4 },
               { icon: CheckCircle, title: "Fact Checking", description: "Cross-reference claims against reliable sources and databases to provide evidence-based verification.", delay: 0.5 },
@@ -234,16 +234,16 @@ const VeriShieldPage = () => {
           </BlurFade>
           <BlurFade delay={0.2}>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Join the fight against online falsehoods with our powerful AI-driven platform. Start your free trial today.
+              Join the fight against online falsehoods with our powerful AI-driven platform. 
             </p>
           </BlurFade>
           <BlurFade delay={0.4}>
             <div>
               <Button 
                 size="lg" 
-                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg"
+                className="bg-white text-blue-500 hover:bg-gray-100 px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg"
               >
-                START FREE TRIAL
+                GET STARTED
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
