@@ -20,13 +20,25 @@ export const threatRouter = createTRPCRouter({
         const threats = await threatService.getAllByUserId(ctx.auth.userId);
         return threats.map((threat) => threat.getValue());
     }),
-    getResponses: protectedProcedure
+    saveResponse: protectedProcedure
     .input(z.object({
-        threatId: z.string()
+        threatId: z.string(),
+        threatResponseId: z.string()
     }))
     .mutation(async ({ctx,input}) => {
-        const { threatId } = input;
+        console.log(input)
+        const { threatId, threatResponseId } = input;
+        await threatResponseService.saveResponse(threatId,threatResponseId,ctx.auth.userId)
+    }),
+    getQuickResponses: protectedProcedure
+    .input(z.object({
+        threatId: z.string(),
+        threatType: z.enum(["social-media", "disclaimer", "email", "press-statement"])
+    }))
+    .mutation(async ({ctx,input}) => {
+        const { threatId, threatType } = input;
 
-       return await threatResponseService.checkAndGenerateResponses(threatId,ctx.auth.userId)
+       const response =  await threatResponseService.checkAndGenerateQuickResponses(threatId,ctx.auth.userId,threatType)
+       return response.getValue()
     })
 });

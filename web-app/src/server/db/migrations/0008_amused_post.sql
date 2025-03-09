@@ -1,0 +1,1 @@
+ALTER TABLE "threat_response" ADD COLUMN "length" text NOT NULL;

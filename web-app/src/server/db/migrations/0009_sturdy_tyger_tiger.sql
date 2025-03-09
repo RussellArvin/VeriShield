@@ -1,0 +1,1 @@
+ALTER TABLE "threats" ADD COLUMN "response_id" uuid;

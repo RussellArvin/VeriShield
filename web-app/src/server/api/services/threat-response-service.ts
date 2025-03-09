@@ -1,9 +1,10 @@
-import { responseGeneratorService } from ".";
+import { quickResponseGeneratorService } from ".";
 import { ThreatResponse } from "../models/threat-response";
 import { threatResponseRepository } from "../repositories";
 import { ThreatRepository } from "../repositories/threat-repository";
 import { ThreatResponseRepository } from "../repositories/threat-response-repository";
-import { RESPONSE_TYPES, ResponseType, ThreatLevel } from "./response-generator-service";
+import { RESPONSE_TYPES, ResponseType, ThreatLevel } from "./quick-response-generator-service";
+import { v4 as uuidv4 } from 'uuid';
 
 export class ThreatResponseService {
     constructor(
@@ -11,63 +12,53 @@ export class ThreatResponseService {
         private readonly threatResponseRepository: ThreatResponseRepository
     ) {}
 
-    public async checkAndGenerateQuickResponse(
+    public async saveResponse(
         threatId: string,
-        userId: string
+        threatResponseId: string,
+        userId: string,
     ) {
-        const threat = (await this.threatRepository.findOneByIdAndUserId(threatId,userId)).getValue()
-        const existingResponses = await this.threatResponseRepository.findManyByThreatId(threatId);
+        const threat = (await this.threatRepository.findOneByIdAndUserId(threatId,userId))
+        const threatResponse = (await this.threatResponseRepository.findOneByIdAndUserId(threatId,threatResponseId)).getValue()
+
+        const updatedThreat = threat.setResponseId(threatResponseId);
+        await this.threatRepository.update(updatedThreat)
+        return;
     }
 
-    public async checkAndGenerateResponses(
+
+    public async checkAndGenerateQuickResponses(
         threatId: string,
-        userId: string
-    ) {
+        userId: string,
+        threatType: ResponseType
+    ): Promise<ThreatResponse> {
         const threat = (await this.threatRepository.findOneByIdAndUserId(threatId,userId)).getValue()
-        const existingResponses = await this.threatResponseRepository.findManyByThreatId(threatId);
+        const existingResponse = (await this.threatResponseRepository.findOneByThreatIdAndLengthAndResponseTypeOrNull(
+            threatId,
+            "quick",
+            threatType
+        ))
 
-        // Get the response types that already exist
-        const existingResponseTypes = existingResponses.map(response => response.getValue().type as ResponseType);
+        if(existingResponse) return existingResponse
         
-        // Find which response types are missing
-        const missingResponseTypes = RESPONSE_TYPES.filter(
-            responseType => !existingResponseTypes.includes(responseType)
-        );
-
-        if(missingResponseTypes.length == 0) return existingResponses.map((r) => r.getValue());
-
-        const newlyGeneratedResponses: ThreatResponse[] = []
-
-        for (const responseType of missingResponseTypes) {
-            // Generate the response content
-            const responseContent = await responseGeneratorService.generateResponse({
-                content: threat.description,
+        const newResponse = await quickResponseGeneratorService.generateResponse({
+            content: threat.description,
                 threatLevel: threat.status as ThreatLevel,
                 truth: threat.factCheckerDescription,
                 source: threat.source,
-                responseType: responseType
-            });
-            
-            if(responseContent != null){
-                newlyGeneratedResponses.push(new ThreatResponse({
-                    id: uuidv4(),
-                    threatId,
-                    type:responseType,
-                    response: responseContent,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                }));
-            }
-        }
-        if(newlyGeneratedResponses.length !== 0){
-            await threatResponseRepository.saveMany(newlyGeneratedResponses);
-        }
+                responseType: threatType
+        })
 
-        const updatedResponses = await this.threatResponseRepository.findManyByThreatId(threatId);
-        return updatedResponses.map((r) => r.getValue());
+        const formattedResponse = new ThreatResponse({
+            id: uuidv4(),
+            threatId,
+            type: threatType,
+            length: "quick",
+            response: newResponse!,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        })
+
+        await threatResponseRepository.saveMany([formattedResponse])
+        return formattedResponse
     }
-}
-
-function uuidv4(): string {
-    throw new Error("Function not implemented.");
 }

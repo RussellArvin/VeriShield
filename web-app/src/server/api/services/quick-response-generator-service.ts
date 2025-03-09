@@ -21,7 +21,7 @@ export interface ThreatRequest {
   responseType: ResponseType
 }
 
-export class ResponseGeneratorService {
+export class QuickResponseGeneratorService {
   private openai: OpenAI;
 
   constructor() {
