@@ -38,7 +38,7 @@ const VeriShieldPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex flex-col">
+      <section className="relative h-screen flex flex-col overflow-hidden">
         {/* Background - Enhanced gradient with animation */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div 
@@ -86,16 +86,7 @@ const VeriShieldPage = () => {
                   misinformation with AI
                 </div>
               </BlurFade>
-            </div>
-            
-            <div>
-              <BlurFade delay={0.4} duration={0.5} className="">
-                <p className="mt-6 text-lg text-gray-700 max-w-2xl mx-auto">
-                  Our AI-powered platform helps organizations identify, analyze, and respond to false information before it spreads.
-                </p>
-              </BlurFade>
-            </div>
-            
+            </div>       
             <div>
               <BlurFade delay={0.6} duration={0.5} className="">
                 <div className="mt-10">
@@ -113,10 +104,27 @@ const VeriShieldPage = () => {
             </div>
           </div>
         </main>
+        
+        {/* Scroll Down Arrow - Positioned with fixed height from bottom */}
+        <div className="absolute bottom-12 left-0 right-0 flex justify-center z-20" style={{ pointerEvents: 'auto' }}>
+          <BlurFade delay={1.0} duration={0.5}>
+            <button 
+              onClick={() => {
+                document.querySelector('#about-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="bg-white bg-opacity-80 hover:bg-opacity-100 p-4 rounded-full transition-all duration-300 animate-bounce shadow-lg"
+              aria-label="Scroll to next section"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-800">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+              </svg>
+            </button>
+          </BlurFade>
+        </div>
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-white">
+      <section id="about-section" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <BlurFade className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">About VeriShield</h2>
