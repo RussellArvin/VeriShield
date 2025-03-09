@@ -105,6 +105,30 @@ export class ThreatResponseRepository {
             })
         }
     }
+    
+    public async findByThreatIdAndResponseTypeOrNull(
+        threatId: string,
+        type: string
+    ): Promise<ThreatResponse[] | null> {
+        try {
+            const results = await this.db
+                .select(getTableColumns(threatResponseSchema))
+                .from(threatResponseSchema)
+                .where(and(
+                    eq(threatResponseSchema.threatId, threatId),
+                    eq(threatResponseSchema.type, type)
+                ));
+
+            if (results.length === 0) return null;
+            return results.map(result => new ThreatResponse(result));
+        } catch (err) {
+            const e = err as Error;
+            throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: e.message
+            });
+        }
+    }
 
     public async saveMany(entities: ThreatResponse[]) {
         try{

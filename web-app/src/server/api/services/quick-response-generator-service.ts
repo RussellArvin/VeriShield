@@ -1,7 +1,7 @@
 import { OpenAI } from "openai";
 import { ThreatRepository } from "../repositories/threat-repository";
 
-export type  ThreatLevel  ="CRITCAL" | "MED" | "LOW";
+export type  ThreatLevel  ="CRITICAL" | "MED" | "LOW";
 export const RESPONSE_TYPES = [
     "social-media",
     "press-statement", 
@@ -96,7 +96,7 @@ export class QuickResponseGeneratorService {
             role: "user",
             content: `Generate a response to address this misinformation: "${content}". 
             The truth for this source is as follows: ${truth}
-            I have 3 threat levels: CRITCAL, MED, LOW
+            I have 3 threat levels: CRITICAL, MED, LOW
             Consider that this has a threat level of ${threatLevel} on ${source}.`
           }
         ]

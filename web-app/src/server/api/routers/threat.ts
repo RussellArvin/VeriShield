@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { threatResponseService, threatService } from "../services";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { RESPONSE_FORMATS } from "../services/response-generator";
 
 export const threatRouter = createTRPCRouter({
     getCriticalAndMedThreats: protectedProcedure
@@ -40,5 +41,17 @@ export const threatRouter = createTRPCRouter({
 
        const response =  await threatResponseService.checkAndGenerateQuickResponses(threatId,ctx.auth.userId,threatType)
        return response.getValue()
+    }),
+    
+    getRegularResponses: protectedProcedure
+    .input(z.object({
+        threatId: z.string(),
+        format: z.enum(RESPONSE_FORMATS)
+    }))
+    .mutation(async ({ctx, input}) => {
+        const { threatId, format } = input;
+
+        const responses = await threatResponseService.generateRegularResponses(threatId, ctx.auth.userId, format);
+        return responses.map(response => response.getValue());
     })
 });

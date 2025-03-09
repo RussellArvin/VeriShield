@@ -13,7 +13,7 @@ import {
 import { Navigation } from "~/components/global/navigation" 
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group"
 import { Label } from "~/components/ui/label"
-import { Shield, Clock, Info, Link2 } from "lucide-react"
+import { Shield, Clock, Info, Link2, Check } from "lucide-react"
 import { useRouter } from "next/router"
 import { api } from "~/utils/api"
 import { capitaliseFirstLetter } from "~/lib/capitaliseFirstLetter"
@@ -21,7 +21,8 @@ import { Skeleton } from "~/components/ui/skeleton"
 import { formatTimeAgo } from "~/utils/formatTimeAgo"
 import { ThreatStatus } from "~/components/dashboard/misinformation-threats"
 import APP_ROUTES from "~/server/constants/APP_ROUTES"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { toast } from "sonner"
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -37,6 +38,99 @@ export default function DashboardPage() {
   const isThreatLoading = isLoading || data === undefined;
   const [selectedCard, setSelectedCard] = useState<null | 'concise' | 'detailed' | 'collaborative'>(null);
   const [responseFormat, setResponseFormat] = useState("social");
+  const [responses, setResponses] = useState<Record<string, {id: string, response: string}>>({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
+  const [selectedResponseId, setSelectedResponseId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Format map for API compatibility
+  const formatMap: Record<string, string> = {
+    "disclaimer": "disclaimer",
+    "email": "email",
+    "press": "press-statement",
+    "social": "social-media"
+  };
+
+  // Create a mutation to generate responses
+  const regularResponseMutation = api.threat.getRegularResponses.useMutation({
+    onSuccess: (data) => {
+      // Transform API response into a more usable format
+      const newResponses = data.reduce((acc, curr) => {
+        acc[curr.length] = {
+          id: curr.id,
+          response: curr.response
+        };
+        return acc;
+      }, {} as Record<string, {id: string, response: string}>);
+      
+      setResponses(newResponses);
+      // Auto-select the currently selected card's response
+      if (selectedCard && newResponses[selectedCard]) {
+        setSelectedResponse(newResponses[selectedCard].response);
+        setSelectedResponseId(newResponses[selectedCard].id);
+      }
+      setIsGenerating(false);
+      setIsSaved(false);
+    },
+    onError: (error) => {
+      console.error("Failed to generate responses:", error);
+      setIsGenerating(false);
+      toast.error("Failed to generate responses");
+    }
+  });
+
+  // Create a mutation to save response
+  const saveResponseMutation = api.threat.saveResponse.useMutation({
+    onSuccess: () => {
+      setIsSaving(false);
+      setIsSaved(true);
+      toast.success("Response saved successfully");
+    },
+    onError: (error) => {
+      console.error("Failed to save response:", error);
+      setIsSaving(false);
+      toast.error("Failed to save response");
+    }
+  });
+
+  // Update selected response when card changes
+  useEffect(() => {
+    if (selectedCard && responses[selectedCard]) {
+      setSelectedResponse(responses[selectedCard].response);
+      setSelectedResponseId(responses[selectedCard].id);
+      setIsSaved(false);
+    } else {
+      setSelectedResponse(null);
+      setSelectedResponseId(null);
+    }
+  }, [selectedCard, responses]);
+
+  // Handle the generate response button click
+  const handleGenerateResponse = () => {
+    if (!selectedCard || !responseFormat || !router.query.threatId) return;
+    
+    setIsGenerating(true);
+    setIsSaved(false);
+    
+    regularResponseMutation.mutate({
+      threatId: router.query.threatId as string,
+      format: formatMap[responseFormat] as any
+    });
+  };
+
+  // Handle save response
+  const handleSaveResponse = () => {
+    if (!selectedResponseId || !router.query.threatId) return;
+    
+    setIsSaving(true);
+    
+    saveResponseMutation.mutate({
+      threatId: router.query.threatId as string,
+      threatResponseId: selectedResponseId
+    });
+  };
 
   return (
     <Navigation>
@@ -299,19 +393,48 @@ export default function DashboardPage() {
                       {responseFormat === 'press' && "Press Statement"}
                       {responseFormat === 'social' && "Social Media"}
                     </h4>
-                    <Button className="gap-2">
-                      <span>Generate Response</span>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        className="gap-2" 
+                        onClick={handleGenerateResponse}
+                        disabled={isGenerating || !selectedCard}
+                      >
+                        <span>{isGenerating ? "Generating..." : "Generate Response"}</span>
+                      </Button>
+                      {selectedResponse && (
+                        <Button
+                          className="gap-2"
+                          onClick={handleSaveResponse}
+                          disabled={isSaving || isSaved || !selectedResponseId}
+                          variant={isSaved ? "outline" : "default"}
+                        >
+                          {isSaved ? (
+                            <>
+                              <Check className="h-4 w-4" />
+                              <span>Saved</span>
+                            </>
+                          ) : (
+                            <span>{isSaving ? "Saving..." : "Save Response"}</span>
+                          )}
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   <div className="bg-muted/20 p-4 rounded-md border">
-                    {selectedCard === 'concise' && (
-                      <p className="text-sm">A brief outline addressing the key facts in 2-3 sentences, directly countering the misinformation.</p>
-                    )}
-                    {selectedCard === 'detailed' && (
-                      <p className="text-sm">A comprehensive explanation with background context, evidence, and detailed factual information to thoroughly address the issue.</p>
-                    )}
-                    {selectedCard === 'collaborative' && (
-                      <p className="text-sm">An engaging message that invites community dialogue while providing accurate information and encouraging critical thinking.</p>
+                    {isGenerating ? (
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-3/4" />
+                      </div>
+                    ) : selectedResponse ? (
+                      <p className="text-sm whitespace-pre-wrap">{selectedResponse}</p>
+                    ) : (
+                      <p className="text-sm">
+                        {selectedCard === 'concise' && "A brief outline addressing the key facts in 2-3 sentences, directly countering the misinformation."}
+                        {selectedCard === 'detailed' && "A comprehensive explanation with background context, evidence, and detailed factual information to thoroughly address the issue."}
+                        {selectedCard === 'collaborative' && "An engaging message that invites community dialogue while providing accurate information and encouraging critical thinking."}
+                      </p>
                     )}
                   </div>
                 </div>
