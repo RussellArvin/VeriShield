@@ -60,7 +60,8 @@ export function MisinformationOverview() {
           labelFormatter={(label, payload) => {
             // Use the fullDate from the payload data for better tooltip labeling
             if (payload?.length > 0 && payload[0]?.payload) {
-              return `${label} (${payload[0].payload.fullDate}): Misinformation Instances`
+              const data = payload[0].payload as { fullDate: string }
+              return `${label} (${data.fullDate}): Misinformation Instances`
             }
             return `${String(label)}: Misinformation Instances`
           }}

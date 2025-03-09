@@ -37,7 +37,7 @@ export default function DashboardPage() {
   );
   const isThreatLoading = isLoading || data === undefined;
   const [selectedCard, setSelectedCard] = useState<null | 'concise' | 'detailed' | 'collaborative'>(null);
-  const [responseFormat, setResponseFormat] = useState("social");
+  const [responseFormat, setResponseFormat] = useState<FormatMapKey>("social");
   const [responses, setResponses] = useState<Record<string, {id: string, response: string}>>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
@@ -46,7 +46,10 @@ export default function DashboardPage() {
   const [isSaved, setIsSaved] = useState(false);
 
   // Format map for API compatibility
-  const formatMap: Record<string, string> = {
+  type FormatMapKey = "disclaimer" | "email" | "press" | "social";
+  type FormatMapValue = "disclaimer" | "email" | "press-statement" | "social-media";
+  
+  const formatMap: Record<FormatMapKey, FormatMapValue> = {
     "disclaimer": "disclaimer",
     "email": "email",
     "press": "press-statement",
@@ -114,9 +117,10 @@ export default function DashboardPage() {
     setIsGenerating(true);
     setIsSaved(false);
     
+    // Type assertion is safely applied since formatMap has a fixed set of values
     regularResponseMutation.mutate({
       threatId: router.query.threatId as string,
-      format: formatMap[responseFormat] as any
+      format: formatMap[responseFormat] as FormatMapValue
     });
   };
 
@@ -263,7 +267,7 @@ export default function DashboardPage() {
                   defaultValue="social" 
                   className="flex flex-wrap gap-6"
                   value={responseFormat}
-                  onValueChange={setResponseFormat}
+                  onValueChange={(value) => setResponseFormat(value as FormatMapKey)}
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="disclaimer" id="disclaimer" />

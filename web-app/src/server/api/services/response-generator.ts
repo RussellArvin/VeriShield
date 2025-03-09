@@ -46,7 +46,7 @@ export class ResponseGenerator {
 
   constructor(apiKey?: string) {
     this.openai = new OpenAI({
-      apiKey: apiKey || process.env.OPENAI_API_KEY,
+      apiKey: apiKey ?? process.env.OPENAI_API_KEY,
     });
   }
 
@@ -83,9 +83,9 @@ export class ResponseGenerator {
       return {
         format,
         responses: {
-          concise: conciseResponse || "",
-          detailed: detailedResponse || "",
-          collaborative: collaborativeResponse || ""
+          concise: conciseResponse ?? "",
+          detailed: detailedResponse ?? "",
+          collaborative: collaborativeResponse ?? ""
         }
       };
     } catch (error) {
@@ -184,7 +184,7 @@ Consider that this misinformation has a ${threatSeverity} threat level, so adjus
       });
 
       // Explicitly cast to string to handle any potential undefined values
-      return (completion.choices[0]?.message?.content || "") as string;
+      return (completion.choices[0]?.message?.content ?? "");
     } catch (error) {
       console.error(`Error generating ${responseStyle} response:`, error);
       return `Error generating ${responseStyle} response. Please try again later.`;
