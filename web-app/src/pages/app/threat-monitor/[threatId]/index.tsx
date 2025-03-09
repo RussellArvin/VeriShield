@@ -17,7 +17,7 @@ import APP_ROUTES from "~/server/constants/APP_ROUTES"
 import Link from "next/link";
 
 // Simplified type definition
-type ThreatStatusType = 'critical' | 'medium' | 'low' | string;
+type ThreatStatusType = string;
 
 // Define media type
 interface Media {
@@ -36,8 +36,8 @@ interface Threat {
   factCheckerUrl?: string;
 }
 
-// Define the API response type
-interface ThreatResponse {
+// Define the API response type (used by API client)
+interface ThreatApiResponse {
   threat?: Threat;
   media?: Media[];
 }

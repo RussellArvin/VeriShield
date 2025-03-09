@@ -164,7 +164,7 @@ export default function DashboardPage() {
                   <span className="text-sm text-muted-foreground">{item.name}</span>
                 ) : (
                   <Link
-                    href={item.href}
+                    href={typeof item.href === 'string' ? item.href : '#'}
                     className="text-sm text-muted-foreground hover:text-primary"
                   >
                     {item.name}
