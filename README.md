@@ -9,16 +9,29 @@ VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and resp
 </p>
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Key Features](#key-features)
-3. [System Architecture](#system-architecture)
-4. [Technology Stack](#technology-stack)
-5. [Getting Started](#getting-started)
-6. [Use Cases](#use-cases)
-7. [Project Structure](#project-structure)
-8. [Development](#development)
-9. [Deployment](#deployment)
-10. [Future Developments](#future-developments)
+1. [Collaborators](#collaborators)
+2. [Overview](#overview)
+3. [Key Features](#key-features)
+4. [System Architecture](#system-architecture)
+5. [Technology Stack](#technology-stack)
+6. [Getting Started](#getting-started)
+7. [Use Cases](#use-cases)
+8. [Project Structure](#project-structure)
+9. [Development](#development)
+10. [Deployment](#deployment)
+11. [Future Developments](#future-developments)
+
+## Collaborators
+
+The VERISHIELD project is made possible by the contributions of the following individuals:
+
+| Name | GitHub | LinkedIn |
+|------|--------|----------|
+| Russell Arvin | [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/russellarvin) | [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/russellarvin/) |
+| Teow Choon Ray | [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/TeowChoonRay) | [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/choonray/) |
+| Leanne Yeong | [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/leanneyeong) | [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/leanne-yeong-24957a261/) |
+| Celeste Ho | [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/celestehosq) | [![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/celeste-ho-b44678287/) |
+
 
 ## Overview
 
@@ -385,3 +398,4 @@ VERISHIELD is continuously evolving:
 - **Expanded API Ecosystem** - Integration with more third-party tools
 - **Industry-Specific Modules** - Specialized solutions for different sectors
 - **Real-time Alert System** - Immediate notifications for critical threats
+
