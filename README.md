@@ -81,15 +81,6 @@ VERISHIELD integrates advanced deep learning for detecting manipulated media con
 2. **Analyzes each image** for potential manipulation using a state-of-the-art deepfake detection model
 3. **Stores detection results** alongside the threat data for a comprehensive analysis
 
-For our deepfake detection capabilities, we leverage [prithivMLmods/Deep-Fake-Detector-Model](https://huggingface.co/prithivMLmods/Deep-Fake-Detector-Model) from Hugging Face. This model:
-
-- Is trained on diverse datasets of real and manipulated images
-- Provides confidence scores for classification decisions
-- Has been optimized for both accuracy and performance in a serverless environment
-- Is deployed as a SageMaker endpoint through AWS infrastructure
-
-The model is integrated into our serverless architecture using AWS SageMaker, with an API Gateway and Lambda proxy to ensure secure, scalable access from our processing pipeline.
-
 ### Lambda Function Pipeline
 
 The following diagram illustrates the data flow through our serverless architecture:
@@ -198,7 +189,7 @@ Each Lambda function is triggered by events from SNS topics, creating a loosely 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/verishield.git
+   git clone https://github.com/russellarvin/verishield.git
    cd verishield/web-app
    ```
 
@@ -245,7 +236,33 @@ Each Lambda function is triggered by events from SNS topics, creating a loosely 
    ./scripts/build.sh
    ```
 
-3. **Deploy serverless infrastructure**
+3. **Set up Terraform variables**
+   Create a `terraform.tfvars` file in the `aws-serverless/terraform` directory:
+   ```
+   # AWS Configuration
+   region            = "ap-southeast-1"  # Your preferred AWS region
+   environment       = "dev"             # dev, staging, or prod
+   
+   # Database
+   supabase_url      = "your_supabase_url"
+   supabase_key      = "your_supabase_service_role_key"
+   
+   # AI/ML
+   openai_api_key    = "your_openai_api_key"
+   
+   # External APIs
+   reddit_client_id     = "your_reddit_client_id"
+   reddit_client_secret = "your_reddit_client_secret"
+   google_news_api_key  = "your_google_news_api_key"
+   google_fact_check_api_key = "your_google_fact_check_api_key"
+   
+   # SageMaker Configuration (optional - defaults provided)
+   # model_name      = "prithivMLmods/Deep-Fake-Detector-Model"
+   # instance_type   = "ml.t2.medium"
+   # instance_count  = 1
+   ```
+
+4. **Deploy serverless infrastructure**
    ```bash
    cd terraform
    terraform init
@@ -330,17 +347,16 @@ The web app is deployed on Vercel's serverless platform, providing:
 - Zero-downtime deployments
 - Edge network distribution
 
-### SageMaker ML Model Deployment
+### ML Model Deployment on AWS
 
-Our deepfake detection model is deployed using AWS SageMaker, allowing us to:
+For our AI capabilities including deepfake detection, we use AWS SageMaker with the [prithivMLmods/Deep-Fake-Detector-Model](https://huggingface.co/prithivMLmods/Deep-Fake-Detector-Model) from Hugging Face. This setup:
 
-- **Leverage Hugging Face's Deep-Fake-Detector-Model** - We use the [prithivMLmods/Deep-Fake-Detector-Model](https://huggingface.co/prithivMLmods/Deep-Fake-Detector-Model) from Hugging Face
-- **Scale automatically** - Handle varying loads without manual intervention
-- **Optimize costs** - Pay only for what we use with serverless inference
-- **Ensure low latency** - Process images quickly for real-time threat assessment
-- **Maintain high availability** - Multiple availability zones ensure reliable operation
+- **Scales automatically** with varying loads
+- **Optimizes costs** through serverless inference (pay-per-use)
+- **Ensures low latency** for real-time threat assessment
+- **Maintains high availability** across multiple availability zones
 
-The model is deployed through our Terraform pipeline, which configures the SageMaker endpoint, necessary IAM roles, and API Gateway integration. This provides a secure, RESTful API that our Lambda functions can call to detect deepfakes in images.
+Our Terraform pipeline configures the SageMaker endpoints, IAM roles, and API Gateway integration, providing a secure API for Lambda functions.
 
 ### Infrastructure as Code with Terraform
 
