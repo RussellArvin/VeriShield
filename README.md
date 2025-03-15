@@ -1,8 +1,6 @@
 # VERISHIELD 🛡️
 
 <p align="center">
-  <a href="https://github.com/russellarvin/verishield"><img src="https://img.shields.io/badge/Status-Hackathon%20Project%20(Completed)-blue" alt="Status"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-13-black?logo=next.js" alt="Next.js"></a>
   <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-4.9-blue?logo=typescript" alt="TypeScript"></a>
