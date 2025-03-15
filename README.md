@@ -1,5 +1,24 @@
 # VERISHIELD 🛡️
 
+<p align="center">
+  <a href="https://github.com/russellarvin/verishield"><img src="https://img.shields.io/badge/Status-Hackathon%20Project%20(Completed)-blue" alt="Status"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-13-black?logo=next.js" alt="Next.js"></a>
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React"></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-4.9-blue?logo=typescript" alt="TypeScript"></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind-3.3-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://ui.shadcn.com"><img src="https://img.shields.io/badge/UI-shadcn%2Fui-000000?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1jaXJjbGUiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PC9zdmc+" alt="shadcn/ui"></a>
+  <a href="https://trpc.io"><img src="https://img.shields.io/badge/tRPC-10-2596BE?logo=trpc" alt="tRPC"></a>
+  <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-Database-3ECF8E?logo=supabase" alt="Supabase"></a>
+  <a href="https://clerk.com"><img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?logo=clerk" alt="Clerk"></a>
+  <a href="https://openai.com"><img src="https://img.shields.io/badge/OpenAI-API-412991?logo=openai" alt="OpenAI"></a>
+  <a href="https://aws.amazon.com/sagemaker/"><img src="https://img.shields.io/badge/AWS%20SageMaker-ML-FF9900?logo=amazon-aws" alt="AWS SageMaker"></a>
+  <a href="https://aws.amazon.com/lambda/"><img src="https://img.shields.io/badge/AWS%20Lambda-Serverless-FF9900?logo=amazon-aws" alt="AWS Lambda"></a>
+  <a href="https://aws.amazon.com/sns/"><img src="https://img.shields.io/badge/AWS%20SNS-Messaging-FF9900?logo=amazon-aws" alt="AWS SNS"></a>
+  <a href="https://www.terraform.io"><img src="https://img.shields.io/badge/Terraform-1.x-7B42BC?logo=terraform" alt="Terraform"></a>
+  <a href="https://vercel.com"><img src="https://img.shields.io/badge/Vercel-Deployment-000000?logo=vercel" alt="Vercel"></a>
+</p>
+
 VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and responding to misinformation. VeriShield goes beyond just detecting misinformation — it predicts emerging threats before they escalate into critical issues. By proactively identifying false narratives across digital channels, VeriShield empowers organizations to safeguard their brand reputation and stakeholders. Its advanced predictive analysis enables early intervention, ensuring potential risks are addressed swiftly and effectively.
 
 <p align="center">
