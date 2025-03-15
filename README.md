@@ -3,23 +3,32 @@
 VERISHIELD is an advanced AI-powered platform for detecting, analyzing, and responding to misinformation. VeriShield goes beyond just detecting misinformation — it predicts emerging threats before they escalate into critical issues. By proactively identifying false narratives across digital channels, VeriShield empowers organizations to safeguard their brand reputation and stakeholders. Its advanced predictive analysis enables early intervention, ensuring potential risks are addressed swiftly and effectively.
 
 <p align="center">
+  <img src="logo.jpg" alt="VeriShield Logo">
+</p>
+
+## Watch the Demo
+
+See VeriShield in action! Click below to watch a demonstration of our platform's capabilities:
+
+<p align="center">
   <a href="https://youtu.be/wfSEPD1uwUk?si=i5-C_owfAJZ2zROd" title="Verishield Demo">
-    <img src="logo.jpg">
+    <img src="https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Demo on YouTube">
   </a>
 </p>
 
 ## Table of Contents
-1. [Collaborators](#collaborators)
-2. [Overview](#overview)
-3. [Key Features](#key-features)
-4. [System Architecture](#system-architecture)
-5. [Technology Stack](#technology-stack)
-6. [Getting Started](#getting-started)
-7. [Use Cases](#use-cases)
-8. [Project Structure](#project-structure)
-9. [Development](#development)
-10. [Deployment](#deployment)
-11. [Future Developments](#future-developments)
+1. [Watch the Demo](#watch-the-demo)
+2. [Collaborators](#collaborators)
+3. [Overview](#overview)
+4. [Key Features](#key-features)
+5. [System Architecture](#system-architecture)
+6. [Technology Stack](#technology-stack)
+7. [Getting Started](#getting-started)
+8. [Use Cases](#use-cases)
+9. [Project Structure](#project-structure)
+10. [Development](#development)
+11. [Deployment](#deployment)
+12. [Future Developments](#future-developments)
 
 ## Collaborators
 
